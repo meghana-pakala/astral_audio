@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony of the Spheres — Your {{ day_name }} feels</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:         #0e0c14;
+    --paper:       #f5f0e8;
+    --gold:        #c8a84b;
+    --gold-pale:   #e8d9a8;
+    --muted:       #9a9088;
+    --trine-blue:  #7ab3c8;
+    --square-amber:#d4924a;
+    --conj-cream:  #e8d9a8;
+    --opp-rose:    #c47a8a;
+    --border:      rgba(200,168,75,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .starfield { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 52px;
+    opacity: 0; animation: fadeUp 0.6s ease forwards;
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .nav-date { font-size: 0.78rem; letter-spacing: 0.12em; color: var(--muted); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  /* ── HOROSCOPE BLOCK ── */
+  .horoscope-block {
+    margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.7s 0.1s ease forwards;
+  }
+
+  .horoscope-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem; font-weight: 300; line-height: 1.2;
+    color: var(--paper); margin-bottom: 20px;
+  }
+
+  .horoscope-title em { font-style: italic; color: var(--gold); }
+
+  .keywords {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .kw {
+    font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 13px;
+    border: 1px solid rgba(200,168,75,0.3);
+    border-radius: 20px; color: var(--gold-pale);
+    background: rgba(200,168,75,0.05);
+  }
+
+  .horoscope-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.12rem; line-height: 1.8; font-weight: 300;
+    color: rgba(245,240,232,0.85);
+  }
+
+  /* ── TRANSITS + WHEEL ROW ── */
+  .transits-row {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 36px;
+    align-items: center;
+    margin-bottom: 44px;
+    opacity: 0; animation: fadeUp 0.6s 0.25s ease forwards;
+  }
+
+  /* ── ASPECT PILLS ── */
+  .aspects-list {
+    display: flex; flex-direction: column; gap: 10px;
+    padding-top: 4px;
+  }
+
+  .aspect-pill {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; border-radius: 4px;
+    font-size: 0.75rem; letter-spacing: 0.05em;
+    position: relative; cursor: default;
+    transition: transform 0.15s;
+  }
+  .aspect-pill:hover { transform: translateX(3px); }
+  .aspect-pill.aspect-highlighted {
+    transform: translateX(3px);
+  }
+
+  .aspect-pill.trine,
+  .aspect-pill.square,
+  .aspect-pill.conjunction,
+  .aspect-pill.opposition,
+  .aspect-pill.sextile {
+    background: rgba(255,252,245,0.03);
+    border: 1px solid rgba(200,168,75,0.18);
+    color: var(--paper);
+  }
+
+  .aspect-name { flex: 1; }
+
+  .aspect-meaning {
+    font-size: 0.68rem; color: var(--muted);
+    margin-top: 3px; line-height: 1.5;
+    display: block;
+  }
+
+  .aspect-pill-inner { flex: 1; }
+
+  /* ── MINIMAL TRANSIT WHEEL ── */
+  .wheel-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+
+  .wheel-label {
+    font-size: 0.58rem; letter-spacing: 0.18em; color: var(--muted);
+    text-transform: uppercase; text-align: center;
+  }
+
+  #transit-wheel { width: 260px; height: 260px; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 36px 0; }
+
+  /* ── TWO-COLUMN LAYOUT ── */
+  .two-col { display: contents; }   /* stacked by default — no layout change */
+  .left-col, .right-col { display: contents; }
+
+  @media (min-width: 1140px) {
+    .page { max-width: 1220px; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 56px;
+      align-items: start;
+    }
+    .left-col, .right-col { display: block; }
+    .divider { display: none; }
+    .right-col {
+      position: sticky;
+      top: 32px;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(200,168,75,0.15) transparent;
+      padding-top: 4px;
+    }
+    .right-col .playlist-header { animation: none; opacity: 1; }
+    .right-col .audio-targets   { animation: none; opacity: 1; }
+    .right-col .playlist        { animation: none; opacity: 1; }
+  }
+
+  /* ── PLAYLIST SECTION ── */
+  .playlist-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.6s 0.35s ease forwards;
+  }
+
+  /* ── AUDIO FEATURE PILLS ── */
+  .audio-targets {
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.6s 0.4s ease forwards;
+  }
+
+  .audio-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  .audio-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 11px; border-radius: 20px;
+    border: 1px solid rgba(200,168,75,0.2);
+    background: rgba(200,168,75,0.04);
+    font-size: 0.63rem; letter-spacing: 0.04em;
+  }
+  .audio-pill-label {
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.09em;
+  }
+  .audio-pill-value { color: var(--gold); }
+
+  /* ── TRACKS ── */
+  .playlist {
+    display: flex; flex-direction: column; gap: 2px;
+    opacity: 0; animation: fadeUp 0.6s 0.45s ease forwards;
+  }
+
+  .track-row {
+    display: grid;
+    grid-template-columns: 32px 44px 1fr 32px;
+    gap: 12px; align-items: center;
+    padding: 9px 10px; border-radius: 3px;
+    cursor: pointer; transition: background 0.15s;
+    position: relative;
+  }
+  .track-row:hover { background: rgba(255,255,255,0.04); }
+  .track-row:hover .track-play { opacity: 1; }
+  .track-row:hover .track-num  { opacity: 0; }
+
+  .track-num {
+    font-size: 0.68rem; color: var(--muted);
+    text-align: right; transition: opacity 0.15s;
+  }
+
+  .track-play {
+    position: absolute; left: 10px; width: 32px;
+    font-size: 0.8rem; opacity: 0;
+    transition: opacity 0.15s; text-align: right;
+  }
+
+  .track-open-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent; border: 1px solid rgba(200,168,75,0.18);
+    color: var(--gold); font-size: 0.55rem;
+    cursor: pointer; transition: all 0.15s;
+    opacity: 0.45; flex-shrink: 0;
+    padding-left: 2px; /* optical centre for ▶ */
+  }
+  .track-open-btn:hover,
+  .track-row:hover .track-open-btn {
+    opacity: 1; background: rgba(200,168,75,0.1); border-color: var(--gold);
+  }
+
+  /* Album art placeholder */
+  .track-art {
+    width: 44px; height: 44px; border-radius: 2px;
+    background: rgba(200,168,75,0.06);
+    border: 1px solid rgba(200,168,75,0.1);
+    flex-shrink: 0; object-fit: cover;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .track-art-placeholder {
+    width: 44px; height: 44px; border-radius: 2px;
+    background: rgba(200,168,75,0.06);
+    border: 1px solid rgba(200,168,75,0.1);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .track-art-placeholder svg { opacity: 0.2; }
+
+  .track-info { min-width: 0; }
+
+  .track-name {
+    font-size: 0.84rem; color: var(--paper);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  .track-artist {
+    font-size: 0.68rem; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+
+  .section-heading {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--paper); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-heading::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .transits-row { grid-template-columns: 1fr; }
+    .wheel-wrap { display: none; }
+    .horoscope-title { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas class="starfield" id="stars"></canvas>
+
+<div class="page">
+  <nav>
+    <div class="logo">✦ Harmony of the Spheres</div>
+  </nav>
+
+  <div class="two-col">
+
+  <!-- LEFT: horoscope + transits -->
+  <div class="left-col">
+
+  <!-- HOROSCOPE BLOCK -->
+  <div class="horoscope-block">
+    <h1 class="horoscope-title">Your {{ day_name }} <em>feels</em></h1>
+    <div class="keywords">
+      {% for keyword in horoscope.daily_keywords %}
+      <span class="kw">{{ keyword }}</span>
+      {% endfor %}
+    </div>
+    <p class="horoscope-text">{{ horoscope.daily_summary }}</p>
+  </div>
+
+  <!-- TRANSITS + WHEEL -->
+  <h2 class="section-heading" style="margin-bottom:16px">Active Transits</h2>
+  <div class="transits-row">
+    <div>
+      <div class="aspects-list">
+        {% for aspect in aspects[:3] %}
+        <div class="aspect-pill {{ aspect.aspect_type }}" data-aspect-idx="{{ loop.index0 }}">
+          <div class="aspect-pill-inner">
+            <div class="aspect-name">Natal {{ aspect.planet1 }} in {{ aspect.aspect_type }} with Transiting {{ aspect.planet2 }}</div>
+            <span class="aspect-meaning">{{ aspect.meaning }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="wheel-wrap">
+      <svg id="transit-wheel" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </div>
+
+  </div><!-- end .left-col -->
+
+  <!-- RIGHT: playlist -->
+  <div class="right-col">
+
+  <div class="divider"></div>
+
+  <!-- PLAYLIST -->
+  <div class="playlist-header">
+    <h2 class="section-heading" style="margin-bottom:0">Today's Playlist</h2>
+  </div>
+
+  <!-- AUDIO TARGETS -->
+  <div class="audio-targets">
+    <div class="audio-pills">
+      <span class="audio-pill"><span class="audio-pill-label">Energy</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.energy) }}</span></span>
+      <span class="audio-pill"><span class="audio-pill-label">Valence</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.valence) }}</span></span>
+      <span class="audio-pill"><span class="audio-pill-label">Dance</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.danceability) }}</span></span>
+      <span class="audio-pill"><span class="audio-pill-label">Acoustic</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.acousticness) }}</span></span>
+      <span class="audio-pill"><span class="audio-pill-label">Tempo</span><span class="audio-pill-value">{{ target_vector.tempo | int }} BPM</span></span>
+    </div>
+  </div>
+
+  <!-- TRACKS -->
+  <div class="playlist">
+    {% for track in tracks %}
+    <div class="track-row"{% if track.spotify_url %} onclick="window.open('{{ track.spotify_url }}','_blank')"{% endif %}>
+      <div class="track-num">{{ loop.index }}</div>
+      <div class="track-play">▶</div>
+      {% if track.album_art_url %}
+      <img class="track-art" src="{{ track.album_art_url }}" alt="">
+      {% else %}
+      <div class="track-art-placeholder">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+      </div>
+      {% endif %}
+      <div class="track-info">
+        <div class="track-name">{{ track.name }}</div>
+        <div class="track-artist">{{ track.artist }}</div>
+      </div>
+      {% if track.spotify_url %}
+      <button class="track-open-btn" onclick="event.stopPropagation(); window.open('{{ track.spotify_url }}','_blank')" title="Open in Spotify">▶</button>
+      {% else %}
+      <div></div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  </div><!-- end .right-col -->
+  </div><!-- end .two-col -->
+
+</div>
+
+<!-- Planet + aspect data injected by Flask for the transit wheel -->
+<script>
+const NATAL_PLANETS   = {{ natal_planets | tojson }};
+const TRANSIT_PLANETS = {{ transit_planets | tojson }};
+const ASPECT_DATA     = {{ aspects | tojson }};
+</script>
+
+<script>
+// ── Starfield ──
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const stars = Array.from({length:140}, () => ({
+  x:Math.random(), y:Math.random(),
+  r:Math.random()*0.9+0.2, a:Math.random()*Math.PI*2,
+  speed:Math.random()*0.004+0.001
+}));
+function drawStars() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s => {
+    s.a += s.speed;
+    const alpha = ((Math.sin(s.a)+1)/2)*0.6+0.1;
+    ctx.beginPath(); ctx.arc(s.x*canvas.width, s.y*canvas.height, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(245,240,232,${alpha})`; ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// ── TRANSIT WHEEL ──
+const svg = document.getElementById('transit-wheel');
+const ns  = 'http://www.w3.org/2000/svg';
+const cx = 130, cy = 130;
+
+const R_OUTER   = 122;
+const R_ZODIAC  = 106;
+const R_TRANSIT = 90;
+const R_DIVIDER = 72;
+const R_NATAL   = 52;
+const R_CENTER  = 22;
+
+// Custom HTML tooltip
+const tip = document.createElement('div');
+Object.assign(tip.style, {
+  position:'fixed', background:'#1a1624',
+  border:'1px solid rgba(200,168,75,0.35)',
+  borderRadius:'4px', padding:'8px 12px',
+  fontSize:'0.7rem', lineHeight:'1.5',
+  color:'#f5f0e8', fontFamily:'DM Mono, monospace',
+  pointerEvents:'none', opacity:'0',
+  transition:'opacity 0.15s', zIndex:'1000',
+  maxWidth:'220px', whiteSpace:'normal'
+});
+document.body.appendChild(tip);
+
+function showTip(e, html) {
+  tip.innerHTML = html;
+  tip.style.opacity = '1';
+  moveTip(e);
+}
+function moveTip(e) {
+  const x = e.clientX + 14, y = e.clientY - 10;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = (x + w > window.innerWidth ? e.clientX - w - 10 : x) + 'px';
+  tip.style.top  = (y + h > window.innerHeight ? e.clientY - h - 10 : y) + 'px';
+}
+function hideTip() { tip.style.opacity = '0'; }
+
+function el(tag, attrs) {
+  const e = document.createElementNS(ns, tag);
+  Object.entries(attrs).forEach(([k,v]) => e.setAttribute(k,v));
+  return e;
+}
+
+function polar(deg, r) {
+  const rad = (deg - 90) * Math.PI / 180;
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+}
+
+function addTip(elem, html) {
+  elem.style.cursor = 'default';
+  elem.addEventListener('mouseenter', e => showTip(e, html));
+  elem.addEventListener('mousemove',  e => moveTip(e));
+  elem.addEventListener('mouseleave', hideTip);
+}
+
+// ── Rings ──
+const ringStroke = 'rgba(200,168,75,0.25)';
+const outerRing = el('circle', {cx,cy,r:R_OUTER, fill:'none', stroke:ringStroke, 'stroke-width':'1'});
+svg.appendChild(outerRing);
+
+const innerZodiac = el('circle', {cx,cy,r:R_ZODIAC, fill:'none', stroke:ringStroke, 'stroke-width':'1'});
+svg.appendChild(innerZodiac);
+
+const divRing = el('circle', {cx,cy,r:R_DIVIDER, fill:'rgba(14,12,20,0.4)', stroke:'rgba(255,255,255,0.22)', 'stroke-width':'1'});
+svg.appendChild(divRing);
+
+svg.appendChild(el('circle', {cx,cy,r:R_CENTER, fill:'rgba(14,12,20,0.85)', stroke:'rgba(200,168,75,0.15)', 'stroke-width':'0.5'}));
+
+// ── Zodiac sign sections ──
+const SIGNS = [
+  { sym:'♈︎', name:'Aries',       desc:'Fire · Cardinal · Mar 21–Apr 19' },
+  { sym:'♉︎', name:'Taurus',      desc:'Earth · Fixed · Apr 20–May 20' },
+  { sym:'♊︎', name:'Gemini',      desc:'Air · Mutable · May 21–Jun 20' },
+  { sym:'♋︎', name:'Cancer',      desc:'Water · Cardinal · Jun 21–Jul 22' },
+  { sym:'♌︎', name:'Leo',         desc:'Fire · Fixed · Jul 23–Aug 22' },
+  { sym:'♍︎', name:'Virgo',       desc:'Earth · Mutable · Aug 23–Sep 22' },
+  { sym:'♎︎', name:'Libra',       desc:'Air · Cardinal · Sep 23–Oct 22' },
+  { sym:'♏︎', name:'Scorpio',     desc:'Water · Fixed · Oct 23–Nov 21' },
+  { sym:'♐︎', name:'Sagittarius', desc:'Fire · Mutable · Nov 22–Dec 21' },
+  { sym:'♑︎', name:'Capricorn',   desc:'Earth · Cardinal · Dec 22–Jan 19' },
+  { sym:'♒︎', name:'Aquarius',    desc:'Air · Fixed · Jan 20–Feb 18' },
+  { sym:'♓︎', name:'Pisces',      desc:'Water · Mutable · Feb 19–Mar 20' },
+];
+
+for (let i = 0; i < 12; i++) {
+  const deg = i * 30;
+  const [x1,y1] = polar(deg, R_OUTER);
+  const [x2,y2] = polar(deg, R_ZODIAC);
+  svg.appendChild(el('line', {x1,y1,x2,y2, stroke:'rgba(200,168,75,0.25)', 'stroke-width':'0.75'}));
+
+  const midR = (R_OUTER + R_ZODIAC) / 2;
+  const startDeg = deg - 90, endDeg = deg + 30 - 90;
+  const s1 = startDeg * Math.PI / 180, e1 = endDeg * Math.PI / 180;
+  const ox1 = cx + R_OUTER * Math.cos(s1), oy1 = cy + R_OUTER * Math.sin(s1);
+  const ox2 = cx + R_OUTER * Math.cos(e1), oy2 = cy + R_OUTER * Math.sin(e1);
+  const ix2 = cx + R_ZODIAC * Math.cos(e1), iy2 = cy + R_ZODIAC * Math.sin(e1);
+  const ix1 = cx + R_ZODIAC * Math.cos(s1), iy1 = cy + R_ZODIAC * Math.sin(s1);
+  const wedge = el('path', {
+    d: `M${ox1},${oy1} A${R_OUTER},${R_OUTER} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_ZODIAC},${R_ZODIAC} 0 0,0 ${ix1},${iy1} Z`,
+    fill: 'transparent', stroke: 'none'
+  });
+  addTip(wedge, `<strong style="color:#c8a84b">${SIGNS[i].sym} ${SIGNS[i].name}</strong>`);
+  svg.appendChild(wedge);
+
+  const [lx,ly] = polar(deg + 15, midR);
+  const txt = el('text', {x:lx, y:ly, 'text-anchor':'middle', 'dominant-baseline':'middle',
+    fill:'rgba(255,255,255,0.55)', 'font-size':'8', 'font-family':'sans-serif',
+    'font-variant':'normal', style:'font-variant-emoji:text'});
+  txt.textContent = SIGNS[i].sym;
+  svg.appendChild(txt);
+}
+
+// ── Transit ring hit areas ──
+const TRANSIT_TIP = '<strong style="color:#c8a84b">Transit Chart</strong><br>Today\'s planet positions in the sky';
+const NATAL_TIP   = '<strong style="color:#c8a84b">Natal Chart</strong><br>Planet positions at the moment of your birth';
+
+for (let i = 0; i < 12; i++) {
+  const s = (i * 30 - 90) * Math.PI / 180;
+  const e = ((i + 1) * 30 - 90) * Math.PI / 180;
+  const ox1 = cx + (R_ZODIAC-1)  * Math.cos(s), oy1 = cy + (R_ZODIAC-1)  * Math.sin(s);
+  const ox2 = cx + (R_ZODIAC-1)  * Math.cos(e), oy2 = cy + (R_ZODIAC-1)  * Math.sin(e);
+  const ix1 = cx + (R_DIVIDER+1) * Math.cos(s), iy1 = cy + (R_DIVIDER+1) * Math.sin(s);
+  const ix2 = cx + (R_DIVIDER+1) * Math.cos(e), iy2 = cy + (R_DIVIDER+1) * Math.sin(e);
+  const tw = el('path', {
+    d:`M${ox1},${oy1} A${R_ZODIAC-1},${R_ZODIAC-1} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_DIVIDER+1},${R_DIVIDER+1} 0 0,0 ${ix1},${iy1} Z`,
+    fill:'transparent', stroke:'none'
+  });
+  addTip(tw, TRANSIT_TIP);
+  svg.appendChild(tw);
+}
+
+// TRANSITS label
+const tRingLabel = el('text', {x:cx, y:cy - R_DIVIDER - 10, 'text-anchor':'middle',
+  fill:'rgba(200,168,75,0.45)', 'font-size':'6.5',
+  'font-family':'DM Mono, monospace', 'letter-spacing':'1.5'});
+tRingLabel.textContent = 'TRANSITS';
+svg.appendChild(tRingLabel);
+
+// ── Natal ring hit areas ──
+for (let i = 0; i < 12; i++) {
+  const s = (i * 30 - 90) * Math.PI / 180;
+  const e = ((i + 1) * 30 - 90) * Math.PI / 180;
+  const ox1 = cx + (R_DIVIDER-1) * Math.cos(s), oy1 = cy + (R_DIVIDER-1) * Math.sin(s);
+  const ox2 = cx + (R_DIVIDER-1) * Math.cos(e), oy2 = cy + (R_DIVIDER-1) * Math.sin(e);
+  const ix1 = cx + (R_CENTER+1)  * Math.cos(s), iy1 = cy + (R_CENTER+1)  * Math.sin(s);
+  const ix2 = cx + (R_CENTER+1)  * Math.cos(e), iy2 = cy + (R_CENTER+1)  * Math.sin(e);
+  const nw = el('path', {
+    d:`M${ox1},${oy1} A${R_DIVIDER-1},${R_DIVIDER-1} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_CENTER+1},${R_CENTER+1} 0 0,0 ${ix1},${iy1} Z`,
+    fill:'transparent', stroke:'none'
+  });
+  addTip(nw, NATAL_TIP);
+  svg.appendChild(nw);
+}
+
+// NATAL label
+const nRingLabel = el('text', {x:cx, y:cy - R_CENTER - 12, 'text-anchor':'middle',
+  fill:'rgba(200,168,75,0.35)', 'font-size':'6.5',
+  'font-family':'DM Mono, monospace', 'letter-spacing':'1.5'});
+nRingLabel.textContent = 'NATAL';
+svg.appendChild(nRingLabel);
+
+// ── Planet descriptions & symbols ──
+const PLANET_DESC = {
+  'Sun':     'Your core identity and life force — vitality, ego, conscious self.',
+  'Moon':    'Your emotional world, instincts, and inner needs.',
+  'Mercury': 'How you think, communicate, and process information.',
+  'Venus':   'How you love, what you value, and your sense of beauty.',
+  'Mars':    'Your drive, ambition, and how you take action.',
+  'Jupiter': 'Expansion, luck, and where life feels abundant.',
+  'Saturn':  'Discipline, structure, and the lessons life asks you to learn.',
+  'Uranus':  'Disruption, innovation, and sudden change.',
+  'Neptune': 'Dreams, intuition, spirituality, and dissolving boundaries.',
+  'Pluto':   'Deep transformation, power, and what cannot stay hidden.',
+  'Chiron':  'The "wounded healer" — your deepest wound and greatest gift.',
+};
+
+const PLANET_SYMBOLS = {
+  'Sun': '☉', 'Moon': '☽', 'Mercury': '☿', 'Venus': '♀',
+  'Mars': '♂', 'Jupiter': '♃', 'Saturn': '♄', 'Uranus': '♅',
+  'Neptune': '♆', 'Pluto': '♇', 'Chiron': '⚷',
+};
+
+const ASPECT_DESC = {
+  trine:       'Trine (120°) — harmonious, easy energy flow between the two planets',
+  opposition:  'Opposition (180°) — tension between two planets calling for balance',
+  conjunction: "Conjunction (0°) — planets merged, intensifying each other's energy",
+  square:      'Square (90°) — friction and challenge that drives growth',
+  sextile:     'Sextile (60°) — opportunity and cooperative energy between planets',
+};
+
+// ── Per-aspect accent colors (cycles if more than 3 aspects) ──
+const ASPECT_COLORS = ['#c8a84b', '#c47a8a', '#7ab3c8'];
+
+// ── Filter: only show planets that participate in the active aspects ──
+const _natalNames   = new Set(ASPECT_DATA.map(a => a.planet1));
+const _transitNames = new Set(ASPECT_DATA.map(a => a.planet2));
+const activaNatal   = NATAL_PLANETS.filter(p => _natalNames.has(p.name));
+const activaTransit = TRANSIT_PLANETS.filter(p => _transitNames.has(p.name));
+
+// ── Per-aspect wheel element registry (line, natal g, transit g) ──
+const aspectWheelGroups = ASPECT_DATA.map(() => ({ line: null, natal: null, transit: null }));
+
+// ── Draw aspect lines ──
+ASPECT_DATA.forEach((a, idx) => {
+  const np = activaNatal.find(p => p.name === a.planet1);
+  const tp = activaTransit.find(p => p.name === a.planet2);
+  if (!np || !tp) return;
+
+  const [x1,y1] = polar(np.deg, R_NATAL + 10);
+  const [x2,y2] = polar(tp.deg, R_TRANSIT - 10);
+  const line = el('line', {
+    x1, y1, x2, y2,
+    stroke: 'rgba(200,168,75,0.25)',
+    'stroke-width': '0.75',
+    'stroke-dasharray': a.aspect_type === 'trine' ? '' : '3,2',
+  });
+
+  // Hover on line → tooltip + highlight pill
+  addTip(line, `<strong style="color:#c8a84b">Natal ${a.planet1} ${a.aspect_type} Transiting ${a.planet2}</strong><br>${ASPECT_DESC[a.aspect_type] || ''}`);
+  line.addEventListener('mouseenter', () => { hideTip(); setAspectHighlight(idx, 'wheel'); });
+  line.addEventListener('mouseleave', clearAspectHighlight);
+
+  svg.appendChild(line);
+  aspectWheelGroups[idx].line = line;
+});
+
+// ── Helper: draw a planet glyph group ──
+function makePlanetGlyph(x, y, planet, isNatal) {
+  const sym = PLANET_SYMBOLS[planet.name] || planet.name[0];
+  const g   = document.createElementNS(ns, 'g');
+  g.style.cursor = 'default';
+
+  // Hidden highlight ring — shown in per-aspect color on hover
+  const hlCircle = el('circle', {
+    cx: x, cy: y, r: '11',
+    fill: 'none', stroke: '#c8a84b',
+    'stroke-width': '1.5', opacity: '0',
+  });
+  g.appendChild(hlCircle);
+  g._hlCircle = hlCircle;
+
+  // Planet symbol (Unicode glyph) — no backing disc
+  const t = document.createElementNS(ns, 'text');
+  t.setAttribute('x', x);
+  t.setAttribute('y', y);
+  t.setAttribute('text-anchor', 'middle');
+  t.setAttribute('dominant-baseline', 'middle');
+  t.setAttribute('fill', planet.color);
+  t.setAttribute('font-size', '10');
+  t.setAttribute('font-family', 'serif');
+  t.setAttribute('opacity', isNatal ? '0.8' : '1');
+  t.textContent = sym;
+  g.appendChild(t);
+
+  // Transparent hit-area ring
+  g.appendChild(el('circle', { cx: x, cy: y, r: '11', fill: 'transparent', stroke: 'none' }));
+
+  return g;
+}
+
+// ── Draw transit planet symbols ──
+activaTransit.forEach(p => {
+  const [x, y] = polar(p.deg, R_TRANSIT);
+  const [tx1, ty1] = polar(p.deg, R_ZODIAC - 1);
+  const [tx2, ty2] = polar(p.deg, R_ZODIAC - 7);
+  // Tick from zodiac band inward
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.7', opacity:'0.35' }));
+
+  const g = makePlanetGlyph(x, y, p, false);
+
+  // Which aspect(s) reference this transit planet?
+  const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet2 === p.name ? [...acc, i] : acc), []);
+
+  addTip(g, `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(transit)</span></strong><br>${PLANET_DESC[p.name] || ''}`);
+  g.addEventListener('mouseenter', (e) => { showTip(e, g._tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
+  g.addEventListener('mousemove',  moveTip);
+  g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+  // override addTip's own listeners — store html for manual call above
+  g._tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(transit)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
+
+  svg.appendChild(g);
+  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].transit = g; });
+});
+
+// ── Draw natal planet symbols ──
+activaNatal.forEach(p => {
+  const [x, y] = polar(p.deg, R_NATAL);
+  const [tx1, ty1] = polar(p.deg, R_DIVIDER - 1);
+  const [tx2, ty2] = polar(p.deg, R_DIVIDER - 6);
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.7', opacity:'0.4' }));
+
+  const g = makePlanetGlyph(x, y, p, true);
+
+  const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet1 === p.name ? [...acc, i] : acc), []);
+
+  const tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(natal)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
+  g._tipHtml = tipHtml;
+  g.addEventListener('mouseenter', (e) => { showTip(e, tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
+  g.addEventListener('mousemove',  moveTip);
+  g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+
+  svg.appendChild(g);
+  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].natal = g; });
+});
+
+// ── Bidirectional highlight ──
+let _hlIdx = -1;
+
+function setAspectHighlight(idx, source) {
+  if (idx < 0 || idx >= ASPECT_DATA.length) return;
+  clearAspectHighlight();
+  _hlIdx = idx;
+  const color = ASPECT_COLORS[idx % ASPECT_COLORS.length];
+
+  // Color aspect line
+  const wg = aspectWheelGroups[idx];
+  if (wg.line) {
+    wg.line.setAttribute('stroke', color);
+    wg.line.setAttribute('stroke-width', '1.5');
+    wg.line.setAttribute('opacity', '0.85');
+  }
+
+  // Show highlight ring on the two planets in that aspect's color
+  if (wg.natal && wg.natal._hlCircle) {
+    wg.natal._hlCircle.setAttribute('stroke', color);
+    wg.natal._hlCircle.setAttribute('opacity', '1');
+  }
+  if (wg.transit && wg.transit._hlCircle) {
+    wg.transit._hlCircle.setAttribute('stroke', color);
+    wg.transit._hlCircle.setAttribute('opacity', '1');
+  }
+  if (wg.natal)   wg.natal.style.opacity   = '1';
+  if (wg.transit) wg.transit.style.opacity = '1';
+
+  // Color the active pill (always, regardless of source)
+  document.querySelectorAll('.aspect-pill[data-aspect-idx]').forEach(p => {
+    const isActive = parseInt(p.dataset.aspectIdx) === idx;
+    p.classList.toggle('aspect-highlighted', isActive);
+    if (isActive) {
+      p.style.borderColor = color;
+      p.style.background  = color + '18';  // ~10% opacity tint
+    }
+  });
+}
+
+function clearAspectHighlight() {
+  if (_hlIdx < 0) return;
+  const wg = aspectWheelGroups[_hlIdx];
+  if (wg.line) {
+    wg.line.setAttribute('stroke', 'rgba(200,168,75,0.25)');
+    wg.line.setAttribute('stroke-width', '0.75');
+    wg.line.setAttribute('opacity', '1');
+  }
+  if (wg.natal && wg.natal._hlCircle)     wg.natal._hlCircle.setAttribute('opacity', '0');
+  if (wg.transit && wg.transit._hlCircle) wg.transit._hlCircle.setAttribute('opacity', '0');
+  if (wg.natal)   wg.natal.style.opacity   = '';
+  if (wg.transit) wg.transit.style.opacity = '';
+  document.querySelectorAll('.aspect-pill').forEach(p => {
+    p.classList.remove('aspect-highlighted');
+    p.style.borderColor = '';
+    p.style.background  = '';
+  });
+  _hlIdx = -1;
+}
+
+// ── Wire aspect pill hover → highlight wheel (no tooltip) ──
+document.querySelectorAll('.aspect-pill[data-aspect-idx]').forEach(pill => {
+  const idx = parseInt(pill.dataset.aspectIdx);
+  pill.addEventListener('mouseenter', () => setAspectHighlight(idx, 'pill'));
+  pill.addEventListener('mouseleave', clearAspectHighlight);
+});
+
+</script>
+</body>
+</html>
