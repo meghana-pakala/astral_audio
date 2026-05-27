@@ -1,7 +1,9 @@
 FROM python:3.13-slim
 
-# Install libsqlite3 — required by swisseph (used by kerykeion)
-RUN apt-get update && apt-get install -y libsqlite3-0 libsqlite3-dev && rm -rf /var/lib/apt/lists/*
+# Install build tools + libsqlite3 — required to compile pyswisseph
+RUN apt-get update && apt-get install -y \
+    gcc build-essential libsqlite3-0 libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
