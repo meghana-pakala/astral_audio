@@ -35,52 +35,6 @@ Return only valid JSON:
              {"aspect": "...", "meaning": "...", "keywords": ["...", "..."]}
              ]}"""
 
-def _stub_horoscope(transit_aspects):
-    """
-    Build a valid horoscope dict from real aspects without calling Gemini.
-    Uses the first 3 aspects so the rest of the pipeline runs normally.
-    Enable with BYPASS_GEMINI=1 in your environment.
-    """
-    selected = transit_aspects[:3]
-    stub_meanings = {
-        'conjunction': 'These two energies merge, intensifying their shared themes.',
-        'opposition':  'A push-pull dynamic invites reflection and balance.',
-        'trine':       'A harmonious flow supports ease and creative expression.',
-        'square':      'Friction between these planets sparks growth and action.',
-        'sextile':     'A cooperative energy opens up new opportunities.',
-    }
-    stub_keywords = {
-        'conjunction': ['intensity', 'focus', 'merging'],
-        'opposition':  ['balance', 'tension', 'awareness'],
-        'trine':       ['ease', 'flow', 'harmony'],
-        'square':      ['drive', 'challenge', 'momentum'],
-        'sextile':     ['opportunity', 'curiosity', 'connection'],
-    }
-    aspects_out = []
-    all_keywords = []
-    for a in selected:
-        key = f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}'
-        kws = stub_keywords.get(a.aspect, ['reflection', 'energy', 'movement'])
-        aspects_out.append({
-            'aspect':   key,
-            'meaning':  f'{a.p1_name} and {a.p2_name}: {stub_meanings.get(a.aspect, "Notable planetary contact today.")}',
-            'keywords': kws[:2],
-        })
-        all_keywords.extend(kws[:1])
-
-    daily_keywords = list(dict.fromkeys(all_keywords))[:3] or ['reflection', 'flow', 'presence']
-    summary_planets = ' and '.join({a.p1_name for a in selected} | {a.p2_name for a in selected})
-    return {
-        'daily_summary': (
-            f'Today\'s chart highlights {summary_planets}, '
-            'weaving a mood that calls for presence and attunement. '
-            'Let the music reflect where you are right now.'
-        ),
-        'daily_keywords': daily_keywords,
-        'aspects': aspects_out,
-    }
-
-
 # call Gemini to interpret aspects and generate horoscope
 def get_horoscope(transit_aspects):
     if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
@@ -96,7 +50,7 @@ def get_horoscope(transit_aspects):
     prompt = f"{SYSTEM_PROMPT}\n\nAspects:\n{aspects_text}"
     
     response = client.models.generate_content(
-        model='gemini-2.0-flash',
+        model='gemini-2.5-flash',
         contents=prompt
         )
     
