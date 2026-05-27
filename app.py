@@ -103,60 +103,67 @@ def index():
                            pool_count=_pool_count())
 
 
-@app.route('/generate', methods=['GET', 'POST'])
-def generate():
-    """
-    POST: validate form, save CSV upload, store birth data in session, run pipeline.
-    GET:  re-run pipeline using birth data already in session (regenerate).
-    """
-    if request.method == 'POST':
-        required = ['birth_date', 'birth_time', 'birth_lat', 'birth_lng', 'birth_tz',
-                    'current_lat', 'current_lng', 'current_tz']
-        for field in required:
-            if not request.form.get(field):
-                return redirect(f'/?error=missing_{field}')
+@app.route('/start', methods=['POST'])
+def start():
+    """Validate form, save data to session, redirect to loading page."""
+    required = ['birth_date', 'birth_time', 'birth_lat', 'birth_lng', 'birth_tz',
+                'current_lat', 'current_lng', 'current_tz']
+    for field in required:
+        if not request.form.get(field):
+            return redirect(f'/?error=missing_{field}')
 
+    try:
+        session['birth_data'] = {
+            'name': request.form.get('name', 'You').strip() or 'You',
+            'date': request.form['birth_date'],
+            'time': request.form['birth_time'],
+            'lat':  float(request.form['birth_lat']),
+            'lng':  float(request.form['birth_lng']),
+            'tz':   request.form['birth_tz'],
+        }
+        session['current_location'] = {
+            'lat': float(request.form['current_lat']),
+            'lng': float(request.form['current_lng']),
+            'tz':  request.form['current_tz'],
+        }
+    except (ValueError, KeyError):
+        return redirect('/?error=invalid_form_data')
+
+    # library choice + filters
+    session['library_choice']  = request.form.get('library_choice', 'upload')
+    session['genre_filters']   = request.form.getlist('genre_filter')
+    session['decade_filters']  = request.form.getlist('decade_filter')
+
+    # handle optional Exportify CSV upload
+    csv_file = request.files.get('liked_songs_csv')
+    if csv_file and csv_file.filename:
+        upload_id = session.get('upload_id') or uuid.uuid4().hex
+        session['upload_id'] = upload_id
+        csv_path = os.path.join(UPLOAD_DIR, f'{upload_id}.csv')
         try:
-            session['birth_data'] = {
-                'name': request.form.get('name', 'You').strip() or 'You',
-                'date': request.form['birth_date'],
-                'time': request.form['birth_time'],
-                'lat':  float(request.form['birth_lat']),
-                'lng':  float(request.form['birth_lng']),
-                'tz':   request.form['birth_tz'],
-            }
-            session['current_location'] = {
-                'lat': float(request.form['current_lat']),
-                'lng': float(request.form['current_lng']),
-                'tz':  request.form['current_tz'],
-            }
-        except (ValueError, KeyError):
-            return redirect('/?error=invalid_form_data')
-
-        # library choice + filters
-        session['library_choice']  = request.form.get('library_choice', 'upload')
-        session['genre_filters']   = request.form.getlist('genre_filter')
-        session['decade_filters']  = request.form.getlist('decade_filter')
-
-        # handle optional Exportify CSV upload
-        csv_file = request.files.get('liked_songs_csv')
-        if csv_file and csv_file.filename:
-            upload_id = session.get('upload_id') or uuid.uuid4().hex
-            session['upload_id'] = upload_id
-            csv_path = os.path.join(UPLOAD_DIR, f'{upload_id}.csv')
+            csv_file.save(csv_path)
+            session['csv_path'] = csv_path
             try:
-                csv_file.save(csv_path)
-                session['csv_path'] = csv_path
-                # Merge new tracks into shared local library (fire-and-forget)
-                try:
-                    merge_into_library(csv_path, LOCAL_LIBRARY_PATH)
-                except Exception:
-                    pass
+                merge_into_library(csv_path, LOCAL_LIBRARY_PATH)
             except Exception:
-                session.pop('csv_path', None)
+                pass
+        except Exception:
+            session.pop('csv_path', None)
 
-    # ---- both GET and POST continue here ----
+    return redirect('/loading')
 
+
+@app.route('/loading')
+def loading_page():
+    """Show the animated loading page; JS will navigate to /generate."""
+    if 'birth_data' not in session:
+        return redirect('/')
+    return render_template('loading.html')
+
+
+@app.route('/generate')
+def generate():
+    """Run the astrological pipeline using birth data stored in session."""
     if 'birth_data' not in session:
         return redirect('/')
 
