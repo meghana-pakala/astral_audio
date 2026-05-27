@@ -492,7 +492,7 @@ background-image:
       </div>
       {% endif %}
 
-      <form id="birthForm" action="/generate" method="POST" enctype="multipart/form-data">
+      <form id="birthForm" action="/start" method="POST" enctype="multipart/form-data">
 
         <!-- Name -->
         <div class="form-group">
@@ -750,15 +750,17 @@ if (typeof google !== 'undefined' && google.maps && google.maps.places) {
 
 // ── Form submit ──
 document.getElementById('birthForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var form     = this;
   var birthLat   = document.getElementById('birth_lat');
   var currentLat = document.getElementById('current_lat');
   if (!birthLat.value || !currentLat.value) {
-    e.preventDefault();
     var btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = 'Resolving locations…';
     try { await geocodeBothLocations(); } catch(_) {}
     if (document.getElementById('birth_lat').value && document.getElementById('current_lat').value) {
-      showLoading(); this.submit();
+      showLoading();
+      setTimeout(function(){ form.submit(); }, 50);
     } else {
       btn.disabled = false; btn.textContent = 'Generate My Playlist →';
       if (!document.getElementById('birthStatus').textContent.startsWith('✓'))
@@ -767,6 +769,7 @@ document.getElementById('birthForm').addEventListener('submit', async function(e
     return;
   }
   showLoading();
+  setTimeout(function(){ form.submit(); }, 50);
 });
 
 async function geocodeBothLocations() {

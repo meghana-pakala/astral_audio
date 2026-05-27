@@ -222,25 +222,14 @@ body::before {
 
 </div>
 
-{% if poll_url %}
 <script>
-// Poll for completion and redirect when ready
-(function() {
-  var pollUrl  = {{ poll_url | tojson }};
-  var interval = setInterval(function() {
-    fetch(pollUrl)
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.ready && data.redirect) {
-          clearInterval(interval);
-          window.location.href = data.redirect;
-        }
-      })
-      .catch(function() { /* keep polling */ });
-  }, 1500);
-})();
+// After animation settles, navigate to the pipeline route.
+// The browser will wait here while the server runs (10-30s),
+// then land on result.html when it's ready.
+setTimeout(function() {
+  window.location.href = '/generate';
+}, 900);
 </script>
-{% endif %}
 
 </body>
 </html>
