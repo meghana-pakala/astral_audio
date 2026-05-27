@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony of the Spheres — Reading Your Stars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #0d1128;
+  --navy-mid:  #111830;
+  --navy-card: #141c35;
+  --gold:      #d4af6a;
+  --gold-dim:  #a88840;
+  --gold-pale: #f0dfa0;
+  --cream:     #f2e8cc;
+  --border:    rgba(212,175,106,0.18);
+  --border-h:  rgba(212,175,106,0.45);
+  --text-dim:  rgba(242,232,204,0.5);
+
+  --display: 'Playfair Display', Georgia, serif;
+  --cinzel:  'Cinzel Decorative', Georgia, serif;
+  --mono:    'Space Mono', monospace;
+  --serif:   'IM Fell English', Georgia, serif;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background:#080A23;
+  font-family: var(--mono);
+  color: var(--cream);
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* ── CSS Starfield ── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 63.8% 3.0%,  rgba(255,255,255,0.64) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 73.4% 67.5%,  rgba(255,255,255,0.58) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 42.3% 3.4%,  rgba(255,255,255,0.75) 0%,transparent 100%),
+    radial-gradient(2px 2px at 3.1% 20.2%,  rgba(255,255,255,0.77) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 22.3% 58.8%,  rgba(255,255,255,0.55) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 80.3% 69.6%,  rgba(255,255,255,0.61) 0%,transparent 100%),
+    radial-gradient(1px 1px at 95.3% 33.8%,  rgba(255,255,255,0.59) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 84.4% 60.3%,  rgba(255,255,255,0.84) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 53.6% 96.8%,  rgba(255,255,255,0.77) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 82.6% 61.7%,  rgba(255,255,255,0.78) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 70.3% 5.0%,  rgba(255,255,255,0.67) 0%,transparent 100%),
+    radial-gradient(1px 1px at 8.4% 23.5%,  rgba(255,255,255,0.66) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 63.4% 36.6%,  rgba(255,255,255,0.63) 0%,transparent 100%),
+    radial-gradient(2px 2px at 26.9% 93.2%,  rgba(255,255,255,0.79) 0%,transparent 100%),
+    radial-gradient(1px 1px at 17.4% 72.7%,  rgba(255,255,255,0.7) 0%,transparent 100%),
+    radial-gradient(2px 2px at 98.5% 63.9%,  rgba(255,255,255,0.82) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 83.9% 77.3%,  rgba(255,255,255,0.56) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 31.7% 27.0%,  rgba(255,255,255,0.93) 0%,transparent 100%),
+    radial-gradient(2px 2px at 87.3% 31.7%,  rgba(255,255,255,0.71) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 91.0% 45.9%,  rgba(255,255,255,0.65) 0%,transparent 100%),
+    radial-gradient(2px 2px at 56.1% 26.5%,  rgba(255,255,255,0.91) 0%,transparent 100%),
+    radial-gradient(3px 3px at 40.0% 22.2%,  rgba(255,255,255,0.75) 0%,transparent 100%),
+    radial-gradient(1px 1px at 9.5% 5.2%,  rgba(255,255,255,0.8) 0%,transparent 100%),
+    radial-gradient(1px 1px at 78.9% 42.3%,  rgba(255,255,255,0.7) 0%,transparent 100%),
+    radial-gradient(3px 3px at 99.1% 52.9%,  rgba(255,255,255,0.89) 0%,transparent 100%),
+    radial-gradient(2px 2px at 1.6% 71.9%,  rgba(255,255,255,0.76) 0%,transparent 100%),
+    radial-gradient(1px 1px at 26.9% 64.0%,  rgba(255,255,255,0.72) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 45.4% 94.9%,  rgba(255,255,255,0.66) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 50.1% 18.2%,  rgba(255,255,255,0.9) 0%,transparent 100%),
+    radial-gradient(2px 2px at 30.0% 63.8%,  rgba(255,255,255,0.61) 0%,transparent 100%),
+    radial-gradient(3px 3px at 45.5% 42.4%,  rgba(255,255,255,0.95) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 38.0% 98.0%,  rgba(255,255,255,0.86) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 7.5% 63.0%,  rgba(255,255,255,0.91) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 85.6% 7.5%,  rgba(255,255,255,0.82) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 21.7% 13.6%,  rgba(255,255,255,0.78) 0%,transparent 100%),
+    radial-gradient(3px 3px at 7.7% 45.9%,  rgba(255,255,255,0.95) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 7.8% 21.6%,  rgba(255,255,255,0.92) 0%,transparent 100%),
+    radial-gradient(2px 2px at 83.0% 70.2%,  rgba(255,255,255,0.94) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 65.2% 1.3%,  rgba(255,255,255,0.67) 0%,transparent 100%),
+    radial-gradient(2px 2px at 71.5% 20.7%,  rgba(255,255,255,0.66) 0%,transparent 100%),
+    radial-gradient(2px 2px at 63.6% 26.4%,  rgba(255,255,255,0.77) 0%,transparent 100%),
+    radial-gradient(3px 3px at 64.0% 40.1%,  rgba(255,255,255,0.76) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 15.2% 13.1%,  rgba(255,255,255,0.91) 0%,transparent 100%),
+    radial-gradient(2px 2px at 25.2% 10.7%,  rgba(255,255,255,0.9) 0%,transparent 100%),
+    radial-gradient(3px 3px at 48.4% 72.2%,  rgba(255,255,255,0.76) 0%,transparent 100%),
+    radial-gradient(3px 3px at 33.0% 86.1%,  rgba(255,255,255,0.66) 0%,transparent 100%);
+}
+
+/* ── Loading page ── */
+.loading-page {
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:48px; position:relative;
+  z-index:1;
+}
+
+/* Natal chart backdrop — 7% opacity */
+.load-chart-bg {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0.07; pointer-events:none;
+}
+.load-chart-bg svg { width:min(70vh,70vw); height:min(70vh,70vw); }
+
+/* Spinning orbital ring */
+.load-ring { position:relative; width:280px; height:280px; z-index:1; }
+.load-ring svg { width:100%; height:100%; animation:orb 12s linear infinite; }
+@keyframes orb { to { transform:rotate(360deg); } }
+
+/* Star-glow orbs */
+.star-glow {
+  position:absolute; width:12px; height:12px; border-radius:50%;
+  background: var(--gold-pale);
+  box-shadow:0 0 20px 7px rgba(240,223,160,.7), 0 0 40px 14px rgba(240,223,160,.2);
+}
+.star-glow::before, .star-glow::after {
+  content:''; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%); background: var(--gold-pale);
+}
+.star-glow::before { width:1.5px; height:44px; }
+.star-glow::after  { width:44px;  height:1.5px; }
+
+.sg1 { top:10%; left:30%; animation:sf 4s ease-in-out infinite; }
+.sg2 { bottom:16%; right:26%; animation:sf 4s ease-in-out 2s infinite; }
+@keyframes sf {
+  0%,100% { transform:translateY(0); opacity:1; }
+  50%     { transform:translateY(-10px); opacity:.55; }
+}
+
+/* Loading text */
+.load-text {
+  font-family: var(--display);
+  font-size:18px; font-style:italic;
+  color: var(--gold-pale); letter-spacing:.1em;
+  z-index:1;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.load-dots span { animation:blink 1.4s ease-in-out infinite; opacity:0; }
+.load-dots span:nth-child(2) { animation-delay:.2s; }
+.load-dots span:nth-child(3) { animation-delay:.4s; }
+
+@keyframes blink { 0%,80%,100% { opacity:0; } 40% { opacity:1; } }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+
+/* Fade-in on load */
+.loading-page { animation:fadeIn .5s ease both; }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+</style>
+</head>
+<body>
+
+<div class="loading-page">
+
+  <!-- Natal chart as faint backdrop -->
+  <div class="load-chart-bg">
+    <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer rings -->
+      <circle cx="300" cy="300" r="280" fill="none" stroke="rgba(212,175,106,0.9)" stroke-width="1.2"/>
+      <circle cx="300" cy="300" r="240" fill="none" stroke="rgba(212,175,106,0.7)" stroke-width="0.8"/>
+      <circle cx="300" cy="300" r="200" fill="none" stroke="rgba(212,175,106,0.5)" stroke-width="0.8"/>
+      <circle cx="300" cy="300" r="160" fill="none" stroke="rgba(212,175,106,0.4)" stroke-width="0.8" stroke-dasharray="5 8"/>
+      <circle cx="300" cy="300" r="120" fill="none" stroke="rgba(212,175,106,0.3)" stroke-width="0.6" stroke-dasharray="2 5"/>
+      <!-- 12 house dividers at 30° intervals -->
+      <line x1="300" y1="20"  x2="300" y2="580" stroke="rgba(212,175,106,0.4)" stroke-width="0.7"/>
+      <line x1="20"  y1="300" x2="580" y2="300" stroke="rgba(212,175,106,0.4)" stroke-width="0.7"/>
+      <line x1="94"  y1="94"  x2="506" y2="506" stroke="rgba(212,175,106,0.3)" stroke-width="0.6"/>
+      <line x1="506" y1="94"  x2="94"  y2="506" stroke="rgba(212,175,106,0.3)" stroke-width="0.6"/>
+      <line x1="156" y1="44"  x2="444" y2="556" stroke="rgba(212,175,106,0.22)" stroke-width="0.5"/>
+      <line x1="44"  y1="156" x2="556" y2="444" stroke="rgba(212,175,106,0.22)" stroke-width="0.5"/>
+      <line x1="44"  y1="444" x2="556" y2="156" stroke="rgba(212,175,106,0.22)" stroke-width="0.5"/>
+      <line x1="156" y1="556" x2="444" y2="44"  stroke="rgba(212,175,106,0.22)" stroke-width="0.5"/>
+      <line x1="20"  y1="196" x2="580" y2="404" stroke="rgba(212,175,106,0.18)" stroke-width="0.5"/>
+      <line x1="20"  y1="404" x2="580" y2="196" stroke="rgba(212,175,106,0.18)" stroke-width="0.5"/>
+      <line x1="196" y1="580" x2="404" y2="20"  stroke="rgba(212,175,106,0.18)" stroke-width="0.5"/>
+      <line x1="404" y1="580" x2="196" y2="20"  stroke="rgba(212,175,106,0.18)" stroke-width="0.5"/>
+      <!-- Aspect lines -->
+      <line x1="194" y1="78"  x2="450" y2="390" stroke="rgba(212,175,106,0.35)" stroke-width="0.8"/>
+      <line x1="450" y1="390" x2="120" y2="420" stroke="rgba(212,175,106,0.28)" stroke-width="0.8"/>
+      <line x1="120" y1="420" x2="480" y2="180" stroke="rgba(212,175,106,0.32)" stroke-width="0.8"/>
+      <line x1="480" y1="180" x2="340" y2="530" stroke="rgba(212,175,106,0.25)" stroke-width="0.7"/>
+      <line x1="194" y1="78"  x2="80"  y2="290" stroke="rgba(212,175,106,0.22)" stroke-width="0.7"/>
+      <!-- Planet dots with glow -->
+      <circle cx="194" cy="78"  r="6"   fill="rgba(212,175,106,0.9)" filter="url(#glow)"/>
+      <circle cx="450" cy="390" r="5"   fill="rgba(212,175,106,0.8)"/>
+      <circle cx="120" cy="420" r="5.5" fill="rgba(212,175,106,0.85)"/>
+      <circle cx="480" cy="180" r="4.5" fill="rgba(212,175,106,0.75)"/>
+      <circle cx="340" cy="530" r="5"   fill="rgba(212,175,106,0.8)"/>
+      <circle cx="80"  cy="290" r="4"   fill="rgba(212,175,106,0.7)"/>
+      <circle cx="500" cy="310" r="4.5" fill="rgba(212,175,106,0.75)"/>
+      <circle cx="260" cy="48"  r="3.5" fill="rgba(212,175,106,0.65)"/>
+      <circle cx="530" cy="240" r="4"   fill="rgba(212,175,106,0.7)"/>
+      <!-- Center -->
+      <circle cx="300" cy="300" r="10" fill="none" stroke="rgba(212,175,106,0.5)" stroke-width="1"/>
+      <circle cx="300" cy="300" r="3"  fill="rgba(212,175,106,0.7)"/>
+      <defs>
+        <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- Spinning orbital ring -->
+  <div class="load-ring">
+    <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="140" cy="140" r="130" fill="none" stroke="rgba(212,175,106,.1)" stroke-width="1"/>
+      <circle cx="140" cy="140" r="96"  fill="none" stroke="rgba(212,175,106,.15)" stroke-width="1" stroke-dasharray="3 6"/>
+      <circle cx="140" cy="140" r="62"  fill="none" stroke="rgba(212,175,106,.08)" stroke-width="1"/>
+      <!-- Glowing arc highlights -->
+      <path d="M 140 10 A 130 130 0 0 1 270 140" fill="none" stroke="rgba(212,175,106,.5)" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M 140 186 A 96 96 0 0 0 44 140"   fill="none" stroke="rgba(212,175,106,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="star-glow sg1"></div>
+    <div class="star-glow sg2"></div>
+  </div>
+
+  <p class="load-text">reading your stars<span class="load-dots"><span>.</span><span>.</span><span>.</span></span></p>
+
+</div>
+
+{% if poll_url %}
+<script>
+// Poll for completion and redirect when ready
+(function() {
+  var pollUrl  = {{ poll_url | tojson }};
+  var interval = setInterval(function() {
+    fetch(pollUrl)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ready && data.redirect) {
+          clearInterval(interval);
+          window.location.href = data.redirect;
+        }
+      })
+      .catch(function() { /* keep polling */ });
+  }, 1500);
+})();
+</script>
+{% endif %}
+
+</body>
+</html>
