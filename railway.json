@@ -1,7 +1,8 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "DOCKERFILE"
+    "builder": "RAILPACK",
+    "buildCommand": "apt-get update -qq && apt-get install -y libsqlite3-0 libsqlite3-dev && pip install -r requirements.txt"
   },
   "deploy": {
     "startCommand": "gunicorn app:app --bind 0.0.0.0:$PORT",
