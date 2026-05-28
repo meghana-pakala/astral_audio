@@ -24,7 +24,7 @@ from aspects import (NATAL_PLANETS_LIST, TRANSIT_PLANETS_LIST,
                      get_planet_list, get_transit_aspects)
 from horoscope import get_horoscope, get_select_aspects
 from library import load_music_library, merge_into_library
-from score import build_target_vector, score_tracks
+from score import build_target_vector, score_tracks, rescore as rescore_tracks
 
 # optional Spotipy for album art — graceful fallback if not installed / no creds
 try:
@@ -36,6 +36,21 @@ except ImportError:
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-please-change')
+
+# ---------------------------------------------------------------------------
+# In-memory result cache
+# Keyed by a per-session cache_id (uuid stored in the Flask session cookie).
+# Stores library_df and target_vector so /rescore never reruns the pipeline.
+# ---------------------------------------------------------------------------
+_RESULT_CACHE: dict = {}
+_MAX_CACHE_ENTRIES = 50
+
+
+def _cache_set(cache_id: str, data: dict):
+    if len(_RESULT_CACHE) >= _MAX_CACHE_ENTRIES:
+        oldest = next(iter(_RESULT_CACHE))
+        del _RESULT_CACHE[oldest]
+    _RESULT_CACHE[cache_id] = data
 
 # Resolve the local library path. Priority:
 #   1. LIBRARY_PATH env var — set this in Render to your persistent disk path,
@@ -223,6 +238,11 @@ def generate():
         })
         top_tracks = matched_df.to_dict('records')
 
+        # Cache library + target so /rescore can reuse them without rerunning pipeline
+        cache_id = session.get('cache_id') or uuid.uuid4().hex
+        session['cache_id'] = cache_id
+        _cache_set(cache_id, {'library_df': library_df, 'target_vector': target_vector})
+
         # 6. Batch-fetch album art via Spotify (300 px images)
         sp = get_spotify_client()
         if sp:
@@ -275,6 +295,57 @@ def generate():
     except Exception as e:
         app.logger.exception('Pipeline error')
         return render_template('error.html', error=str(e))
+
+
+# ---------------------------------------------------------------------------
+# Rescore endpoint
+# ---------------------------------------------------------------------------
+
+@app.route('/rescore', methods=['POST'])
+def rescore_endpoint():
+    """Adjust playlist from slider values + liked/disliked track URIs."""
+    data = request.get_json(force=True) or {}
+
+    cache_id = session.get('cache_id')
+    if not cache_id or cache_id not in _RESULT_CACHE:
+        return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
+
+    cached       = _RESULT_CACHE[cache_id]
+    library_df   = cached['library_df']
+    base_target  = cached['target_vector']
+
+    slider_values  = data.get('sliders', {})
+    liked_uris     = data.get('liked', [])
+    disliked_uris  = data.get('disliked', [])
+
+    new_df, adjusted = rescore_tracks(
+        library_df, base_target, slider_values,
+        liked_uris=liked_uris, disliked_uris=disliked_uris,
+    )
+    new_df = new_df.rename(columns={'track_name': 'name', 'artist_names': 'artist'})
+
+    tracks = []
+    for t in new_df.to_dict('records'):
+        tracks.append({
+            'name':          t.get('name', ''),
+            'artist':        t.get('artist', ''),
+            'track_uri':     t.get('track_uri', ''),
+            'spotify_id':    t.get('spotify_id', ''),
+            'spotify_url':   t.get('spotify_url', ''),
+            'album_art_url': None,
+        })
+
+    sp = get_spotify_client()
+    if sp:
+        ids     = [t['spotify_id'] for t in tracks if t.get('spotify_id')]
+        art_map = fetch_album_art(sp, ids)
+        for t in tracks:
+            t['album_art_url'] = art_map.get(t.get('spotify_id'))
+
+    return jsonify({
+        'tracks': tracks,
+        'target': {k: adjusted[k] for k in ['valence', 'energy', 'danceability', 'acousticness']},
+    })
 
 
 # ---------------------------------------------------------------------------
