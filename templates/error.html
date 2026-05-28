@@ -88,8 +88,8 @@ body::before {
 
 /* ── Nav ── */
 nav {
-  display: flex; align-items: center;
-  margin-bottom: 44px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 40px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -107,48 +107,44 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
-  gap: 28px;
-  padding: 60px 0 40px;
-}
-
-.error-glyph {
-  font-size: 2rem;
-  opacity: 0.35;
-  letter-spacing: 0.15em;
-  color: var(--gold);
-  font-family: 'Playfair Display', Georgia, serif;
-  font-style: italic;
+  padding: 40px 0 40px;
 }
 
 .error-heading {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 400;
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+  font-weight: 700;
   color: var(--cream);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.1em;
+  font-style: italic;
+  margin-bottom: 25px;
 }
 
 .error-divider {
-  width: 80px;
+  width: 90px;
   height: 1px;
   background: rgba(212,175,106,0.35);
+  margin: 0 auto;
 }
 
 .error-body {
   font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
+  font-size: .8rem;
   line-height: 1.85;
-  color: var(--text-dim);
+  color: var(--gold);
+  font-style: italic;
   max-width: 480px;
   letter-spacing: 0.03em;
+  margin-top: 20px;
+  margin-bottom: 20px
 }
 
 .error-detail {
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  color: rgba(242,232,204,0.3);
+  color: var(--text-dim);
   background: rgba(212,175,106,0.04);
   border: 1px solid var(--border);
   border-radius: 3px;
@@ -156,6 +152,8 @@ nav {
   max-width: 560px;
   line-height: 1.7;
   word-break: break-word;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .error-back {
@@ -163,7 +161,7 @@ nav {
   align-items: center;
   gap: 8px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
@@ -171,7 +169,7 @@ nav {
   border-radius: 3px;
   padding: 10px 24px;
   transition: all .15s;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 .error-back:hover {
   background: rgba(212,175,106,0.08);
@@ -192,14 +190,13 @@ nav {
   </nav>
 
   <div class="error-card">
-    <div class="error-glyph">✦ ✦ ✦</div>
-    <h1 class="error-heading">Something went wrong</h1>
+    <h1 class="error-heading">Your reading encountered a black hole.</h1>
     <div class="error-divider"></div>
-    <p class="error-body">The stars encountered an black hole.<br>The pipeline was unable to complete your reading.</p>
+    <p class="error-body">What was written in the stars was briefly unwritten.<br>Try again when the skies are clear.</p>
     {% if error %}
     <div class="error-detail">{{ error }}</div>
     {% endif %}
-    <a href="/" class="error-back">← Start over</a>
+    <a href="/" class="error-back">← Rewrite the stars</a>
   </div>
 </div>
 
