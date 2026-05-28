@@ -8,28 +8,28 @@ import re
 from google import genai
 from aspects import format_aspects
 
-SYSTEM_PROMPT = """You are an astrology interpreter using planetary aspects to generate a daily horoscope and music playlist.
+SYSTEM_PROMPT = """You are an astrology interpreter. Given today's planetary aspects, you generate a daily horoscope and select the aspects that will shape a personalized music playlist.
 
 Instructions:
-1. Select the 3 most significant aspects for today's emotional and sonic character.
+
+1. Select the 3 most significant aspects for today's emotional character.
    Prioritize:
    - Personal planets (Moon, Sun, Mercury, Venus, Mars) over outer planets
    - Aspects that form a coherent emotional theme rather than contradicting each other
    - Tighter orbs over wider ones, but not at the expense of personal relevance
 
 2. For each selected aspect provide:
-   - "aspect": e.g. "Natal Moon in square with transiting Saturn"
-   - "meaning": 1-2 sentence interpretation
-   - "keywords": 2-3 keywords describing the aspect energy
+   - "aspect": the aspect label exactly as given, e.g. "Natal Moon in square with transiting Saturn"
+   - "meaning": 1-2 sentences. Describe the psychological and felt quality of this energy — how it shows up in mood, attention, or the texture of the day. Subtly hint at its sonic character (e.g. something restless and percussive, something slow and reverb-heavy, something bright and melodic) without making it explicitly about music.
+   - "keywords": 2-3 single-word descriptors for the aspect energy
 
-3. Then synthesize into:
-   - "daily_summary": 2-3 sentences capturing the overall energy of the day
-   - "daily_keywords": 3 keywords representing today's overall mood
-   - "aspects": the 3 selected aspects with meanings and keywords
+3. Synthesize into:
+   - "daily_summary": 2-3 sentences. Capture the overall feeling of the day — what kind of inner weather it brings, and implicitly what it might sound like. Write for a general audience; keep it grounded and personal, not mystical or overwrought.
+   - "daily_keywords": exactly 3 single-word adjectives describing today's mood. Each must be one word only — no hyphens, no phrases. Choose words that work both emotionally and sonically (e.g. "tender", "electric", "grounded", "restless", "luminous", "raw", "浮遊" — but in English). Avoid abstract nouns like "growth" or "maturity".
 
-Return only valid JSON:
+Return only valid JSON with no markdown fences:
 {"daily_summary": "...",
- "daily_keywords": ["...", "...", "..."],
+ "daily_keywords": ["word", "word", "word"],
  "aspects": [{"aspect": "...", "meaning": "...", "keywords": ["...", "..."]},
              {"aspect": "...", "meaning": "...", "keywords": ["...", "..."]},
              {"aspect": "...", "meaning": "...", "keywords": ["...", "..."]}
@@ -50,11 +50,11 @@ def _stub_horoscope(transit_aspects):
         'sextile':     'A cooperative energy opens up new opportunities.',
     }
     stub_keywords = {
-        'conjunction': ['intensity', 'focus', 'merging'],
-        'opposition':  ['balance', 'tension', 'awareness'],
-        'trine':       ['ease', 'flow', 'harmony'],
-        'square':      ['drive', 'challenge', 'momentum'],
-        'sextile':     ['opportunity', 'curiosity', 'connection'],
+        'conjunction': ['electric', 'focused', 'charged'],
+        'opposition':  ['restless', 'searching', 'open'],
+        'trine':       ['fluid', 'warm', 'luminous'],
+        'square':      ['driven', 'edgy', 'kinetic'],
+        'sextile':     ['bright', 'curious', 'light'],
     }
     aspects_out = []
     all_keywords = []
@@ -96,7 +96,7 @@ def get_horoscope(transit_aspects):
     prompt = f"{SYSTEM_PROMPT}\n\nAspects:\n{aspects_text}"
     
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-2.0-flash',
         contents=prompt
         )
     
