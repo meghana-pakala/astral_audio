@@ -181,15 +181,15 @@ nav {
 .controls-row {
   display: flex;
   gap: 32px;
-  align-items: center;
+  align-items: stretch;
   margin-bottom: 16px;
 }
 .sliders-col {
   flex: 0 0 260px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 4px;
+  justify-content: space-between;
+  padding: 6px 0;
 }
 .slider-group {
   display: flex;
@@ -250,8 +250,8 @@ nav {
   min-width: 0;
 }
 #audio-radar {
-  max-width: 340px;
-  max-height: 300px;
+  max-width: 290px;
+  max-height: 255px;
   width: 100%;
 }
 
@@ -406,7 +406,7 @@ nav {
 
 .transits-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 290px;
   gap: 28px; align-items: center;
 }
 .aspects-list {
@@ -414,8 +414,8 @@ nav {
   padding-top: 4px;
 }
 .aspect-pill {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 16px; border-radius: 4px;
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 16px; border-radius: 4px;
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem; letter-spacing: 0.05em;
   position: relative; cursor: default;
@@ -427,17 +427,39 @@ nav {
 .aspect-pill:hover { transform: translateX(3px); }
 .aspect-pill.aspect-highlighted { transform: translateX(3px); }
 .aspect-pill-inner { flex: 1; }
-.aspect-name { color: var(--cream); }
+.aspect-name {
+  color: var(--cream);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+}
 .aspect-meaning {
   font-size: 0.63rem; color: var(--text-dim);
-  margin-top: 3px; line-height: 1.5; display: block;
+  margin-top: 5px; line-height: 1.5; display: block;
+  font-family: 'Space Mono', monospace;
+}
+.aspect-features {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(212,175,106,0.1);
+}
+.aspect-feature {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.aspect-feature-val {
+  color: var(--gold);
+  margin-left: 3px;
 }
 
 /* ── Transit wheel ── */
 .wheel-wrap {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-#transit-wheel { width: 340px; height: 340px; }
+#transit-wheel { width: 290px; height: 290px; }
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
@@ -501,6 +523,14 @@ nav {
           <div class="aspect-pill-inner">
             <div class="aspect-name">Natal {{ aspect.planet1 }} in {{ aspect.aspect_type }} with Transiting {{ aspect.planet2 }}</div>
             <span class="aspect-meaning">{{ aspect.meaning }}</span>
+            {% if aspect.profile %}
+            <div class="aspect-features">
+              <span class="aspect-feature">val<span class="aspect-feature-val">{{ '%.2f' | format(aspect.profile.valence) }}</span></span>
+              <span class="aspect-feature">nrg<span class="aspect-feature-val">{{ '%.2f' | format(aspect.profile.energy) }}</span></span>
+              <span class="aspect-feature">dnc<span class="aspect-feature-val">{{ '%.2f' | format(aspect.profile.danceability) }}</span></span>
+              <span class="aspect-feature">acou<span class="aspect-feature-val">{{ '%.2f' | format(aspect.profile.acousticness) }}</span></span>
+            </div>
+            {% endif %}
           </div>
         </div>
         {% endfor %}
