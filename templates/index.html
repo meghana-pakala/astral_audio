@@ -114,11 +114,11 @@ body::before{
   font-family:'Cinzel Decorative',Georgia,serif;
   font-size:clamp(28px,3.5vw,62px);
   font-weight:700;line-height:1.05;letter-spacing:-1.1px;
-  margin-bottom:clamp(10px,1.2vw,18px);
+  margin-bottom:0;
 }
 
 /* ── Form section wrapper ── */
-.form-section{padding:56px 7vw 80px;max-width:800px;margin:0 auto}
+.form-section{padding:56px 4vw 80px;max-width:960px;margin:0 auto}
 
 /* ── Form card ── */
 .form-card{
@@ -452,27 +452,27 @@ background-image:
     </div>
 
     <!-- Text column -->
-    <div style="position:relative;z-index:2;padding:clamp(28px,4vw,52px) 0 clamp(28px,4vw,52px) clamp(7vw,10vw,12vw);display:flex;flex-direction:column;gap:0;grid-column:1;margin-left:auto;max-width:42vw;">
+    <div style="position:relative;z-index:2;padding:clamp(28px,4vw,52px) 0 clamp(28px,4vw,52px) clamp(7vw,10vw,12vw);display:flex;flex-direction:column;gap:clamp(16px,1.9vw,28px);grid-column:1;margin-left:auto;max-width:42vw;">
 
       <h1 class="cinzel-title">Harmony of<br>the Spheres</h1>
 
-      <p style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0 0 clamp(14px,1.5vw,22px) 0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
+      <p style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
 
-      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);margin-bottom:clamp(16px,1.8vw,26px);"></div>
+      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);"></div>
 
       <div style="font-family:var(--mono);font-size:clamp(11px,1vw,14px);line-height:1.9;color:var(--text-dim);max-width:38vw;">
         <p style="margin:0 0 1.2em 0;">
           <em style="color:var(--gold);font-style:italic;">Musica Universalis</em> — Harmony of the Spheres — is the ancient idea that <span style="color:var(--cream);opacity:0.9;">planetary motion has a frequency.</span>
         </p>
-        <p style="margin:0 0 1.2em 0;">
-          Music theory gives us the overtone series: <span style="color:var(--cream);opacity:0.9;">the natural harmonic ratios produced by any vibrating object.</span> These ratios are the mathematical bridge between the geometry of the solar system and the structure of sound.
+        <p style="margin:0;">
+          Music theory defines <span style="color:var(--cream);opacity:0.9;"> natural harmonic ratios</span>, giving us a mathematical bridge between the geometry of the solar system and the structure of sound.
         </p>
       </div>
 
-      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);margin:clamp(16px,1.8vw,26px) 0;"></div>
+      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);"></div>
 
-      <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.7;color:var(--cream);margin:0;max-width:38vw;">
-        Enter your details below to generate a reading of your key planetary transits and a playlist matched to their audio features. <span style="color:var(--gold);font-style:italic;">Your music, mapped to the sky.</span>
+      <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.7;margin:0;max-width:38vw;">
+        <span style="color:var(--cream);">Enter your details below</span><span style="color:var(--text-dim);"> to generate your astrological chart and derive its audio features.</span> <span style="color:var(--gold);font-style:italic;">Your songs, mapped to the stars.</span>
       </p>
 
     </div>
@@ -576,20 +576,20 @@ background-image:
         <div class="form-group">
           <label class="lbl">Music Library</label>
           <div class="lib-toggle">
-            <div class="lib-opt" id="optUpload">
+            <div class="lib-opt on" id="optUpload">
               <div class="lib-t">Upload Playlist</div>
               <span class="lib-badge">Recommended</span>
             </div>
-            <div class="lib-opt on" id="optPool">
+            <div class="lib-opt" id="optPool">
               <div class="lib-t">Local Library</div>
               <div class="lib-s">{% if pool_count %}~{{ (pool_count // 1000) }}K Track Database{% else %}~12K Track Database{% endif %}</div>
             </div>
           </div>
-          <input type="hidden" id="library_choice" name="library_choice" value="pool">
+          <input type="hidden" id="library_choice" name="library_choice" value="upload">
         </div>
 
-        <!-- Pool panel (shown by default) -->
-        <div class="library-panel" id="panelPool">
+        <!-- Pool panel (hidden by default) -->
+        <div class="library-panel" id="panelPool" style="display:none">
           <div class="form-group" style="margin-bottom:20px">
             <div class="filter-label">Genre</div>
             <div class="pill-group">
@@ -623,7 +623,7 @@ background-image:
         </div>
 
         <!-- Upload panel (hidden by default) -->
-        <div class="library-panel" id="panelUpload" style="display:none">
+        <div class="library-panel" id="panelUpload">
           <p class="library-upload-hint">For a personalized playlist, export your Liked Songs at <a href="https://exportify.net" target="_blank" rel="noopener">exportify.net</a></p>
           <div class="upload-area" id="uploadArea">
             <input class="upload-input" type="file" id="csvFile" name="liked_songs_csv" accept=".csv">
