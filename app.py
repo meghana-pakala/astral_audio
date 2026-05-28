@@ -238,11 +238,12 @@ def generate():
         })
         top_tracks = matched_df.to_dict('records')
 
-        # Cache library + target so /rescore can reuse them without rerunning pipeline
+        # Cache only target_vector so /rescore can reuse it without rerunning the pipeline.
+        # library_df is reloaded from disk in /rescore (fast CSV read, no memory overhead).
         cache_id = session.get('cache_id') or uuid.uuid4().hex
         session['cache_id'] = cache_id
         session['target_vector'] = target_vector  # persist to cookie for cache-miss recovery
-        _cache_set(cache_id, {'library_df': library_df, 'target_vector': target_vector})
+        _cache_set(cache_id, {'target_vector': target_vector})
 
         # 6. Batch-fetch album art via Spotify (300 px images)
         sp = get_spotify_client()
@@ -313,34 +314,30 @@ def rescore_endpoint():
     cache_id = session.get('cache_id')
     cached   = _RESULT_CACHE.get(cache_id) if cache_id else None
 
-    if cached is None:
-        # Server was restarted and in-memory cache was cleared.
-        # Recover target_vector from the session cookie and reload the library.
-        target_vector = session.get('target_vector')
-        if not target_vector:
+    # Get target_vector from cache or fall back to session cookie
+    if cached is not None:
+        base_target = cached['target_vector']
+    else:
+        base_target = session.get('target_vector')
+        if not base_target:
             return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
-        try:
-            uploaded_csv   = session.get('csv_path')
-            library_choice = session.get('library_choice', 'upload')
-            use_upload     = (library_choice == 'upload')
-            user_csv       = uploaded_csv if use_upload else None
-            library_df     = load_music_library(
-                user_playlist_path=user_csv,
-                local_library_path=LOCAL_LIBRARY_PATH,
-                genre_filters=session.get('genre_filters') or [],
-                decade_filters=session.get('decade_filters') or [],
-            )
-            cache_id = cache_id or uuid.uuid4().hex
-            session['cache_id'] = cache_id
-            _cache_set(cache_id, {'library_df': library_df, 'target_vector': target_vector})
-            cached = _RESULT_CACHE[cache_id]
-            app.logger.info('Rescore: recovered from session after cache miss')
-        except Exception as e:
-            app.logger.warning(f'Rescore recovery failed: {e}')
-            return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
+        app.logger.info('Rescore: using target_vector from session cookie after cache miss')
 
-    library_df   = cached['library_df']
-    base_target  = cached['target_vector']
+    # Always reload library from disk — fast CSV read, avoids holding DataFrames in memory
+    try:
+        uploaded_csv   = session.get('csv_path')
+        library_choice = session.get('library_choice', 'upload')
+        use_upload     = (library_choice == 'upload')
+        user_csv       = uploaded_csv if use_upload else None
+        library_df     = load_music_library(
+            user_playlist_path=user_csv,
+            local_library_path=LOCAL_LIBRARY_PATH,
+            genre_filters=session.get('genre_filters') or [],
+            decade_filters=session.get('decade_filters') or [],
+        )
+    except Exception as e:
+        app.logger.warning(f'Rescore library load failed: {e}')
+        return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
 
     slider_values  = data.get('sliders', {})
     liked_uris     = data.get('liked', [])
