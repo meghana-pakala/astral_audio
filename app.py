@@ -24,7 +24,7 @@ from aspects import (NATAL_PLANETS_LIST, TRANSIT_PLANETS_LIST,
                      get_planet_list, get_transit_aspects)
 from horoscope import get_horoscope, get_select_aspects
 from library import load_music_library, merge_into_library
-from score import build_target_vector, score_tracks, rescore as rescore_tracks
+from score import build_target_vector, score_tracks, rescore as rescore_tracks, aspect_audio_profile
 
 # optional Spotipy for album art — graceful fallback if not installed / no creds
 try:
@@ -241,6 +241,7 @@ def generate():
         # Cache library + target so /rescore can reuse them without rerunning pipeline
         cache_id = session.get('cache_id') or uuid.uuid4().hex
         session['cache_id'] = cache_id
+        session['target_vector'] = target_vector  # persist to cookie for cache-miss recovery
         _cache_set(cache_id, {'library_df': library_df, 'target_vector': target_vector})
 
         # 6. Batch-fetch album art via Spotify (300 px images)
@@ -262,11 +263,14 @@ def generate():
         template_aspects = []
         for a in select_aspects[:3]:
             key = f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}'
+            prof = aspect_audio_profile(a)
             template_aspects.append({
                 'planet1':     a.p1_name,
                 'planet2':     a.p2_name,
                 'aspect_type': a.aspect,
                 'meaning':     horoscope_meanings.get(key, ''),
+                'profile': {f: round(float(prof[f]), 2)
+                            for f in ['valence', 'energy', 'danceability', 'acousticness']},
             })
 
         # 8. Planet positions for transit wheel
@@ -307,10 +311,34 @@ def rescore_endpoint():
     data = request.get_json(force=True) or {}
 
     cache_id = session.get('cache_id')
-    if not cache_id or cache_id not in _RESULT_CACHE:
-        return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
+    cached   = _RESULT_CACHE.get(cache_id) if cache_id else None
 
-    cached       = _RESULT_CACHE[cache_id]
+    if cached is None:
+        # Server was restarted and in-memory cache was cleared.
+        # Recover target_vector from the session cookie and reload the library.
+        target_vector = session.get('target_vector')
+        if not target_vector:
+            return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
+        try:
+            uploaded_csv   = session.get('csv_path')
+            library_choice = session.get('library_choice', 'upload')
+            use_upload     = (library_choice == 'upload')
+            user_csv       = uploaded_csv if use_upload else None
+            library_df     = load_music_library(
+                user_playlist_path=user_csv,
+                local_library_path=LOCAL_LIBRARY_PATH,
+                genre_filters=session.get('genre_filters') or [],
+                decade_filters=session.get('decade_filters') or [],
+            )
+            cache_id = cache_id or uuid.uuid4().hex
+            session['cache_id'] = cache_id
+            _cache_set(cache_id, {'library_df': library_df, 'target_vector': target_vector})
+            cached = _RESULT_CACHE[cache_id]
+            app.logger.info('Rescore: recovered from session after cache miss')
+        except Exception as e:
+            app.logger.warning(f'Rescore recovery failed: {e}')
+            return jsonify({'error': 'Session expired — please regenerate your playlist.'}), 400
+
     library_df   = cached['library_df']
     base_target  = cached['target_vector']
 
