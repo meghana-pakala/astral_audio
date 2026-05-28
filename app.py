@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session
+from flask import Flask, jsonify, redirect, render_template, request, session, Response, stream_with_context
 
 # load local.env when running locally
 load_dotenv('local.env')
@@ -186,120 +186,149 @@ def start():
 
 @app.route('/loading')
 def loading_page():
-    """Show the animated loading page; JS will navigate to /generate."""
+    """Show the animated loading page; JS connects to /progress SSE stream."""
     if 'birth_data' not in session:
         return redirect('/')
     return render_template('loading.html')
 
 
-@app.route('/generate')
-def generate():
-    """Run the astrological pipeline using birth data stored in session."""
+@app.route('/progress')
+def progress():
+    """SSE stream: runs the pipeline, emits phase events, stores result in cache."""
     if 'birth_data' not in session:
-        return redirect('/')
+        return Response('data: {"event":"error","message":"Session expired"}\n\n',
+                        mimetype='text/event-stream')
 
     birth_data       = session['birth_data']
     current_location = session['current_location']
     uploaded_csv     = session.get('csv_path')
+    library_choice   = session.get('library_choice', 'upload')
+    genre_filters    = session.get('genre_filters') or []
+    decade_filters   = session.get('decade_filters') or []
 
-    try:
-        # 1. Astrological aspects (natal vs today's transits) + subject objects
-        daily_aspects, natal_subj, transit_subj = get_transit_aspects(
-            birth_data, transit_loc=current_location
-        )
+    # Snapshot session values — can't write to session inside a streaming response
+    cache_id = session.get('cache_id') or uuid.uuid4().hex
 
-        # 2. Horoscope from Gemini (reads GEMINI_API_KEY from env)
-        horoscope = get_horoscope(daily_aspects)
+    def run_pipeline():
+        import json
 
-        # 3. Music library
-        library_choice = session.get('library_choice', 'upload')
-        use_upload = (library_choice == 'upload')
-        user_csv   = uploaded_csv if use_upload else None
-        library_df = load_music_library(
-            user_playlist_path=user_csv,
-            local_library_path=LOCAL_LIBRARY_PATH,
-            genre_filters=session.get('genre_filters') or [],
-            decade_filters=session.get('decade_filters') or [],
-        )
-        library_source = (
-            'uploaded' if (use_upload and user_csv and Path(user_csv).exists())
-            else 'pool'
-        )
+        def event(name, message=None):
+            data = {'event': name}
+            if message:
+                data['message'] = message
+            return f'data: {json.dumps(data)}\n\n'
 
-        # 4. Select aspects → target audio vector
-        select_aspects = get_select_aspects(daily_aspects, horoscope)
-        target_vector  = build_target_vector(select_aspects)
+        try:
+            # Phase 1 — chart + horoscope (slow: Gemini API)
+            yield event('phase', 'reading your stars')
 
-        # 5. Score and rank tracks
-        matched_df = score_tracks(library_df, target_vector, top_n=20)
-        matched_df = matched_df.rename(columns={
-            'track_name':   'name',
-            'artist_names': 'artist',
-        })
-        top_tracks = matched_df.to_dict('records')
+            daily_aspects, natal_subj, transit_subj = get_transit_aspects(
+                birth_data, transit_loc=current_location
+            )
+            horoscope = get_horoscope(daily_aspects)
 
-        # Cache only target_vector so /rescore can reuse it without rerunning the pipeline.
-        # library_df is reloaded from disk in /rescore (fast CSV read, no memory overhead).
-        cache_id = session.get('cache_id') or uuid.uuid4().hex
-        session['cache_id'] = cache_id
-        session['target_vector'] = target_vector  # persist to cookie for cache-miss recovery
-        _cache_set(cache_id, {'target_vector': target_vector})
+            # Phase 2 — scoring (fast: local)
+            yield event('phase', 'finding your frequency')
 
-        # 6. Batch-fetch album art via Spotify (300 px images)
-        sp = get_spotify_client()
-        if sp:
-            track_ids = [t['spotify_id'] for t in top_tracks if t.get('spotify_id')]
-            art_map   = fetch_album_art(sp, track_ids)
-            for t in top_tracks:
-                t['album_art_url'] = art_map.get(t.get('spotify_id'), None)
-        else:
-            for t in top_tracks:
-                t['album_art_url'] = None
+            use_upload = (library_choice == 'upload')
+            user_csv   = uploaded_csv if use_upload else None
+            library_df = load_music_library(
+                user_playlist_path=user_csv,
+                local_library_path=LOCAL_LIBRARY_PATH,
+                genre_filters=genre_filters,
+                decade_filters=decade_filters,
+            )
+            library_source = (
+                'uploaded' if (use_upload and user_csv and Path(user_csv).exists())
+                else 'pool'
+            )
 
-        # 7. Build template-ready aspects list (planet1/planet2/aspect_type/meaning)
-        horoscope_meanings = {
-            a['aspect'].split(' (orb:')[0].strip(): a.get('meaning', '')
-            for a in horoscope.get('aspects', [])
-        }
-        template_aspects = []
-        for a in select_aspects[:3]:
-            key = f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}'
-            prof = aspect_audio_profile(a)
-            template_aspects.append({
-                'planet1':     a.p1_name,
-                'planet2':     a.p2_name,
-                'aspect_type': a.aspect,
-                'meaning':     horoscope_meanings.get(key, ''),
-                'profile': {f: round(float(prof[f]), 2)
-                            for f in ['valence', 'energy', 'danceability', 'acousticness']},
+            select_aspects = get_select_aspects(daily_aspects, horoscope)
+            target_vector  = build_target_vector(select_aspects)
+
+            matched_df = score_tracks(library_df, target_vector, top_n=20)
+            matched_df = matched_df.rename(columns={
+                'track_name':   'name',
+                'artist_names': 'artist',
+            })
+            top_tracks = matched_df.to_dict('records')
+
+            sp = get_spotify_client()
+            if sp:
+                track_ids = [t['spotify_id'] for t in top_tracks if t.get('spotify_id')]
+                art_map   = fetch_album_art(sp, track_ids)
+                for t in top_tracks:
+                    t['album_art_url'] = art_map.get(t.get('spotify_id'), None)
+            else:
+                for t in top_tracks:
+                    t['album_art_url'] = None
+
+            horoscope_meanings = {
+                a['aspect'].split(' (orb:')[0].strip(): a.get('meaning', '')
+                for a in horoscope.get('aspects', [])
+            }
+            template_aspects = []
+            for a in select_aspects[:3]:
+                key = f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}'
+                prof = aspect_audio_profile(a)
+                template_aspects.append({
+                    'planet1':     a.p1_name,
+                    'planet2':     a.p2_name,
+                    'aspect_type': a.aspect,
+                    'meaning':     horoscope_meanings.get(key, ''),
+                    'profile': {f: round(float(prof[f]), 2)
+                                for f in ['valence', 'energy', 'danceability', 'acousticness']},
+                })
+
+            natal_planets   = get_planet_list(natal_subj,   NATAL_PLANETS_LIST)
+            transit_planets = get_planet_list(transit_subj, TRANSIT_PLANETS_LIST)
+
+            today_str = datetime.now().strftime('%A, %B %-d · %Y')
+            day_name  = datetime.now().strftime('%A')
+
+            # Store rendered HTML in cache so /result can serve it
+            html = render_template(
+                'result.html',
+                horoscope=horoscope,
+                tracks=top_tracks,
+                aspects=template_aspects,
+                natal_planets=natal_planets,
+                transit_planets=transit_planets,
+                day_name=day_name,
+                today=today_str,
+                birth_data=birth_data,
+                library_source=library_source,
+                library_total=len(library_df),
+                matched_count=len(top_tracks),
+                target_vector=target_vector,
+            )
+            _cache_set(cache_id, {
+                'target_vector': target_vector,
+                'html':          html,
             })
 
-        # 8. Planet positions for transit wheel
-        natal_planets   = get_planet_list(natal_subj,   NATAL_PLANETS_LIST)
-        transit_planets = get_planet_list(transit_subj, TRANSIT_PLANETS_LIST)
+            yield event('done', cache_id)
 
-        today_str = datetime.now().strftime('%A, %B %-d · %Y')
-        day_name  = datetime.now().strftime('%A')
+        except Exception as e:
+            app.logger.exception('Pipeline error')
+            yield event('error', str(e))
 
-        return render_template(
-            'result.html',
-            horoscope=horoscope,
-            tracks=top_tracks,
-            aspects=template_aspects,
-            natal_planets=natal_planets,
-            transit_planets=transit_planets,
-            day_name=day_name,
-            today=today_str,
-            birth_data=birth_data,
-            library_source=library_source,
-            library_total=len(library_df),
-            matched_count=len(top_tracks),
-            target_vector=target_vector,
-        )
+    resp = Response(stream_with_context(run_pipeline()), mimetype='text/event-stream')
+    resp.headers['Cache-Control'] = 'no-cache'
+    resp.headers['X-Accel-Buffering'] = 'no'
+    # Write cache_id to session before streaming starts
+    session['cache_id'] = cache_id
+    return resp
 
-    except Exception as e:
-        app.logger.exception('Pipeline error')
-        return render_template('error.html', error=str(e))
+
+@app.route('/result')
+def result():
+    """Serve the pre-rendered result HTML from cache."""
+    cache_id = session.get('cache_id')
+    cached   = _RESULT_CACHE.get(cache_id) if cache_id else None
+    if not cached or 'html' not in cached:
+        return redirect('/')
+    return cached['html']
 
 
 # ---------------------------------------------------------------------------
