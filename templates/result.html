@@ -174,54 +174,129 @@ nav {
   white-space: nowrap; flex-shrink: 0;
 }
 
+/* ── Audio controls (sliders + radar) ── */
+.audio-controls {
+  margin-bottom: 0;
+}
+.controls-row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.sliders-col {
+  flex: 0 0 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 4px;
+}
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.slider-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.slider-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--gold);
+  min-width: 28px;
+  text-align: right;
+}
+.audio-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgba(212,175,106,0.18);
+  outline: none;
+  border-radius: 1px;
+  cursor: pointer;
+}
+.audio-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(212,175,106,0.4);
+}
+.audio-slider::-moz-range-thumb {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 4px rgba(212,175,106,0.4);
+}
+.radar-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+#audio-radar {
+  max-width: 260px;
+  max-height: 220px;
+  width: 100%;
+}
+
+/* ── Personalize bar ── */
+.personalize-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: rgba(212,175,106,0.03);
+}
+.personalize-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.63rem;
+  color: var(--text-dim);
+  flex: 1;
+  letter-spacing: 0.04em;
+}
+.remap-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid rgba(212,175,106,0.35);
+  border-radius: 3px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.remap-btn:hover { background: rgba(212,175,106,0.1); border-color: var(--gold); }
+.remap-btn:disabled { opacity: 0.45; cursor: default; }
+.remap-btn.loading { opacity: 0.6; }
+
 /* ── Playlist block ── */
 .playlist-block {
   margin-bottom: 44px;
   opacity: 0; animation: fadeUp .6s .2s ease forwards;
 }
-.audio-pills {
-  display: flex; justify-content: center;
-  margin-bottom: 18px; gap: 0;
-}
-.audio-pill {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 12px;
-  border-radius: 0;
-  border: 1px solid rgba(212,175,106,0.22);
-  border-left: none;
-  background: rgba(212,175,106,0.04);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  position: relative;
-}
-.audio-pill:first-child {
-  border-left: 1px solid rgba(212,175,106,0.22);
-  border-radius: 3px 0 0 3px;
-}
-.audio-pill:last-child {
-  border-radius: 0 3px 3px 0;
-}
-.audio-pill-label {
-  color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em;
-}
-.audio-pill-value { color: var(--gold); }
-.audio-pill::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + 7px);
-  left: 50%; transform: translateX(-50%);
-  background: var(--navy-card);
-  border: 1px solid var(--border-h);
-  border-radius: 3px;
-  padding: 5px 9px;
-  font-size: 0.58rem; line-height: 1.4;
-  color: var(--cream);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0; transition: opacity 0.15s;
-  z-index: 100;
-}
-.audio-pill:hover::after { opacity: 1; }
 
 /* ── Scrollable playlist ── */
 .playlist-scroll {
@@ -238,7 +313,7 @@ nav {
 /* ── Track rows ── */
 .track-row {
   display: grid;
-  grid-template-columns: 28px 44px 1fr 32px;
+  grid-template-columns: 28px 44px 1fr auto 28px;
   gap: 12px; align-items: center;
   padding: 9px 10px; border-radius: 3px;
   cursor: pointer; transition: background .15s;
@@ -287,6 +362,30 @@ nav {
   font-size: 0.67rem; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
+/* ── Thumbs ── */
+.thumb-wrap {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.thumb-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--text-dim);
+  padding: 0;
+  transition: color .15s, background .15s;
+  flex-shrink: 0;
+}
+.thumb-btn:hover { color: var(--cream); background: rgba(255,255,255,0.06); }
+.thumb-btn.liked  { color: var(--gold); }
+.thumb-btn.disliked { color: rgba(200,110,110,0.85); }
+.thumb-btn svg { pointer-events: none; }
+
 .track-open-btn {
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -347,6 +446,8 @@ nav {
   .wheel-wrap { display: none; }
   .horoscope-title { font-size: 1.8rem; }
   nav { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .controls-row { flex-direction: column; }
+  .sliders-col { flex: none; width: 100%; }
 }
 </style>
 </head>
@@ -368,37 +469,26 @@ nav {
   <!-- ── PLAYLIST ── -->
   <div class="playlist-block">
     <div class="section-divider"><span class="section-divider-title">Astral Audio</span></div>
-    <div class="audio-pills">
-      <span class="audio-pill" data-tip="Emotional positivity of the track"><span class="audio-pill-label">Valence</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.valence) }}</span></span>
-      <span class="audio-pill" data-tip="Overall intensity and activity level"><span class="audio-pill-label">Energy</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.energy) }}</span></span>
-      <span class="audio-pill" data-tip="How suitable the track is for dancing"><span class="audio-pill-label">Danceability</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.danceability) }}</span></span>
-      <span class="audio-pill" data-tip="Presence of acoustic (non-electronic) sound"><span class="audio-pill-label">Acousticness</span><span class="audio-pill-value">{{ '%.2f' | format(target_vector.acousticness) }}</span></span>
-      <span class="audio-pill" data-tip="Estimated beats per minute"><span class="audio-pill-label">Tempo</span><span class="audio-pill-value">{{ target_vector.tempo | int }} BPM</span></span>
+
+    <!-- Sliders + Radar -->
+    <div class="audio-controls">
+      <div class="controls-row">
+        <div class="sliders-col" id="sliders-col">
+          <!-- populated by JS -->
+        </div>
+        <div class="radar-col">
+          <canvas id="audio-radar"></canvas>
+        </div>
+      </div>
+      <div class="personalize-bar">
+        <span class="personalize-label">personalize by adjusting audio features and rating tracks</span>
+        <button id="remap-btn" class="remap-btn">remap</button>
+      </div>
     </div>
 
-    <div class="playlist-scroll">
-      {% for track in tracks %}
-      <div class="track-row"{% if track.spotify_url %} onclick="window.open('{{ track.spotify_url }}','_blank')"{% endif %}>
-        <div class="track-num">{{ loop.index }}</div>
-        <div class="track-play">▶</div>
-        {% if track.album_art_url %}
-        <img class="track-art" src="{{ track.album_art_url }}" alt="">
-        {% else %}
-        <div class="track-art-placeholder">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
-        </div>
-        {% endif %}
-        <div class="track-info">
-          <div class="track-name">{{ track.name }}</div>
-          <div class="track-artist">{{ track.artist }}</div>
-        </div>
-        {% if track.spotify_url %}
-        <button class="track-open-btn" onclick="event.stopPropagation(); window.open('{{ track.spotify_url }}','_blank')" title="Open in Spotify">▶</button>
-        {% else %}
-        <div></div>
-        {% endif %}
-      </div>
-      {% endfor %}
+    <!-- Tracks -->
+    <div class="playlist-scroll" id="playlist-scroll">
+      <!-- populated by JS -->
     </div>
   </div>
 
@@ -428,6 +518,301 @@ nav {
 const NATAL_PLANETS   = {{ natal_planets | tojson }};
 const TRANSIT_PLANETS = {{ transit_planets | tojson }};
 const ASPECT_DATA     = {{ aspects | tojson }};
+const TARGET_VECTOR   = {{ target_vector | tojson }};
+const INITIAL_TRACKS  = {{ tracks | tojson }};
+</script>
+
+<!-- Chart.js for radar -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// AUDIO FEATURES — sliders + radar chart
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FEATURES = [
+  { key: 'valence',      label: 'Valence',      tip: 'Emotional positivity' },
+  { key: 'energy',       label: 'Energy',        tip: 'Intensity & activity' },
+  { key: 'danceability', label: 'Danceability',  tip: 'Suitability for dancing' },
+  { key: 'acousticness', label: 'Acousticness',  tip: 'Acoustic presence' },
+];
+
+// ── Build sliders ──
+const slidersCol = document.getElementById('sliders-col');
+FEATURES.forEach(f => {
+  const val = TARGET_VECTOR[f.key] || 0;
+  const pct = val.toFixed(2);
+  slidersCol.insertAdjacentHTML('beforeend', `
+    <div class="slider-group">
+      <div class="slider-header">
+        <span class="slider-label">${f.label}</span>
+        <span class="slider-val" id="val-${f.key}">${pct}</span>
+      </div>
+      <input type="range" class="audio-slider" id="slider-${f.key}"
+             data-feat="${f.key}" min="0" max="1" step="0.01" value="${pct}">
+    </div>
+  `);
+});
+
+// ── Radar chart ──
+const radarCtx = document.getElementById('audio-radar').getContext('2d');
+const originalData = FEATURES.map(f => TARGET_VECTOR[f.key] || 0);
+
+const radarChart = new Chart(radarCtx, {
+  type: 'radar',
+  data: {
+    labels: FEATURES.map(f => f.label),
+    datasets: [
+      {
+        label: 'Original',
+        data: [...originalData],
+        backgroundColor: 'rgba(212,175,106,0.12)',
+        borderColor: 'rgba(212,175,106,0.65)',
+        borderWidth: 1.5,
+        pointRadius: 3,
+        pointBackgroundColor: 'rgba(212,175,106,0.65)',
+        pointBorderColor: 'transparent',
+      },
+      {
+        label: 'Current',
+        data: [...originalData],
+        backgroundColor: 'transparent',
+        borderColor: 'rgba(242,232,204,0.8)',
+        borderWidth: 1.5,
+        pointRadius: 3,
+        pointBackgroundColor: 'rgba(242,232,204,0.8)',
+        pointBorderColor: 'transparent',
+        borderDash: [4, 3],
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    animation: { duration: 200 },
+    scales: {
+      r: {
+        min: 0, max: 1,
+        ticks: { display: false, stepSize: 0.25 },
+        grid: { color: 'rgba(212,175,106,0.12)' },
+        angleLines: { color: 'rgba(212,175,106,0.12)' },
+        pointLabels: {
+          color: 'rgba(242,232,204,0.55)',
+          font: { family: 'Space Mono, monospace', size: 9 },
+        },
+      },
+    },
+    plugins: { legend: { display: false } },
+  },
+});
+
+// ── Wire sliders → update live radar trace + value display ──
+function getSliderValues() {
+  const vals = {};
+  FEATURES.forEach(f => {
+    vals[f.key] = parseFloat(document.getElementById('slider-' + f.key).value);
+  });
+  return vals;
+}
+
+function updateRadarLive() {
+  const vals = getSliderValues();
+  radarChart.data.datasets[1].data = FEATURES.map(f => vals[f.key]);
+  radarChart.update('none');
+}
+
+document.querySelectorAll('.audio-slider').forEach(slider => {
+  const feat = slider.dataset.feat;
+  slider.addEventListener('input', () => {
+    const v = parseFloat(slider.value);
+    document.getElementById('val-' + feat).textContent = v.toFixed(2);
+    updateRadarLive();
+  });
+});
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PLAYLIST — render + thumbs
+// ─────────────────────────────────────────────────────────────────────────────
+
+const likedSet    = new Set();
+const dislikedSet = new Set();
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function thumbUpSvg(filled) {
+  const fill = filled ? 'var(--gold)' : 'none';
+  return `<svg width="13" height="13" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>`;
+}
+
+function thumbDownSvg(filled) {
+  const fill = filled ? 'rgba(200,110,110,0.85)' : 'none';
+  return `<svg width="13" height="13" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>`;
+}
+
+function renderTrack(track, idx) {
+  const uri       = track.track_uri || '';
+  const isLiked   = likedSet.has(uri);
+  const isDis     = dislikedSet.has(uri);
+  const artHtml   = track.album_art_url
+    ? `<img class="track-art" src="${escHtml(track.album_art_url)}" alt="" loading="lazy">`
+    : `<div class="track-art-placeholder"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg></div>`;
+  const openBtn   = track.spotify_url
+    ? `<button class="track-open-btn" data-action="open" title="Open in Spotify">▶</button>`
+    : `<div></div>`;
+
+  return `
+    <div class="track-row"
+         data-track-uri="${escHtml(uri)}"
+         data-spotify-url="${escHtml(track.spotify_url || '')}">
+      <div class="track-num">${idx + 1}</div>
+      <div class="track-play">▶</div>
+      ${artHtml}
+      <div class="track-info">
+        <div class="track-name">${escHtml(track.name)}</div>
+        <div class="track-artist">${escHtml(track.artist)}</div>
+      </div>
+      <div class="thumb-wrap">
+        <button class="thumb-btn ${isLiked ? 'liked' : ''}" data-action="like" title="Like">
+          ${thumbUpSvg(isLiked)}
+        </button>
+        <button class="thumb-btn ${isDis ? 'disliked' : ''}" data-action="dislike" title="Dislike">
+          ${thumbDownSvg(isDis)}
+        </button>
+      </div>
+      ${openBtn}
+    </div>`;
+}
+
+function renderPlaylist(tracks) {
+  const scroll = document.getElementById('playlist-scroll');
+  scroll.innerHTML = tracks.map((t, i) => renderTrack(t, i)).join('');
+}
+
+// Initial render
+renderPlaylist(INITIAL_TRACKS);
+
+// ── Event delegation for playlist interactions ──
+document.getElementById('playlist-scroll').addEventListener('click', function(e) {
+  const row = e.target.closest('.track-row');
+  if (!row) return;
+
+  // Thumb buttons
+  const thumbBtn = e.target.closest('.thumb-btn');
+  if (thumbBtn) {
+    e.stopPropagation();
+    const uri    = row.dataset.trackUri;
+    const action = thumbBtn.dataset.action; // 'like' | 'dislike'
+    if (!uri) return;
+
+    if (action === 'like') {
+      if (likedSet.has(uri)) {
+        likedSet.delete(uri);
+      } else {
+        likedSet.add(uri);
+        dislikedSet.delete(uri);
+      }
+    } else {
+      if (dislikedSet.has(uri)) {
+        dislikedSet.delete(uri);
+      } else {
+        dislikedSet.add(uri);
+        likedSet.delete(uri);
+      }
+    }
+
+    // Re-render just this row in place
+    const isLiked = likedSet.has(uri);
+    const isDis   = dislikedSet.has(uri);
+    const likeBtn = row.querySelector('.thumb-btn[data-action="like"]');
+    const disBtn  = row.querySelector('.thumb-btn[data-action="dislike"]');
+    likeBtn.className  = 'thumb-btn' + (isLiked ? ' liked' : '');
+    likeBtn.innerHTML  = thumbUpSvg(isLiked);
+    disBtn.className   = 'thumb-btn' + (isDis ? ' disliked' : '');
+    disBtn.innerHTML   = thumbDownSvg(isDis);
+    return;
+  }
+
+  // Open-in-Spotify button
+  const openBtn = e.target.closest('.track-open-btn');
+  if (openBtn) {
+    e.stopPropagation();
+    const url = row.dataset.spotifyUrl;
+    if (url) window.open(url, '_blank');
+    return;
+  }
+
+  // Click on row → open Spotify
+  const url = row.dataset.spotifyUrl;
+  if (url) window.open(url, '_blank');
+});
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REMAP
+// ─────────────────────────────────────────────────────────────────────────────
+
+document.getElementById('remap-btn').addEventListener('click', async function() {
+  const btn = this;
+  btn.disabled = true;
+  btn.classList.add('loading');
+  const orig = btn.textContent;
+  btn.textContent = 'remapping…';
+
+  const sliders = getSliderValues();
+  const payload = {
+    sliders,
+    liked:    Array.from(likedSet),
+    disliked: Array.from(dislikedSet),
+  };
+
+  try {
+    const res  = await fetch('/rescore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Rescore failed. Please regenerate your playlist.');
+      return;
+    }
+
+    // Update playlist
+    renderPlaylist(data.tracks);
+
+    // Update radar outline trace to reflect adjusted target
+    const newTarget = data.target;
+    radarChart.data.datasets[1].data = FEATURES.map(f => newTarget[f.key] || 0);
+
+    // Also nudge sliders + value displays to match adjusted target
+    FEATURES.forEach(f => {
+      const v = newTarget[f.key] || 0;
+      const slider = document.getElementById('slider-' + f.key);
+      const valEl  = document.getElementById('val-' + f.key);
+      slider.value = v.toFixed(2);
+      valEl.textContent = v.toFixed(2);
+    });
+
+    radarChart.update();
+
+  } catch (err) {
+    console.error('Rescore error:', err);
+    alert('Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.textContent = orig;
+  }
+});
 </script>
 
 <script>
