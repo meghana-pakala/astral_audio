@@ -5,23 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Harmony of the Spheres</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:      #0d1128;
+  --navy:      #080A23;
   --navy-mid:  #111830;
   --navy-card: #141c35;
   --gold:      #d4af6a;
   --gold-dim:  #a88840;
   --gold-pale: #f0dfa0;
   --cream:     #f2e8cc;
+  --border-dim: rgba(212,175,106,0.1);
   --border:    rgba(212,175,106,0.18);
+  --border-mid: rgba(212,175,106,0.35);
   --border-h:  rgba(212,175,106,0.45);
   --text-dim:  rgba(242,232,204,0.5);
-  --display:   'Playfair Display', Georgia, serif;
   --cinzel:    'Cinzel Decorative', Georgia, serif;
   --mono:      'Space Mono', monospace;
-  --serif:     'IM Fell English', Georgia, serif;
+  --serif:     'Cormorant Garamond', Georgia, serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -148,7 +149,7 @@ body::before{
 .seg{position:relative;display:inline-flex;flex-direction:column;align-items:center}
 .seg-display{font-family:var(--mono);font-size:13px;color:var(--cream);min-width:2ch;text-align:center;cursor:pointer;padding:2px 3px;border-radius:2px;border:none;background:transparent;transition:background .15s,color .15s;user-select:none;outline:none}
 .seg-display.placeholder{color:var(--text-dim)}
-.seg-display:hover{background:rgba(212,175,106,0.10);color:var(--gold-pale)}
+.seg-display:hover{background:var(--border-dim);color:var(--gold-pale)}
 .seg-display.open,.seg-display:focus{background:rgba(212,175,106,0.15);color:var(--gold);outline:none}
 .ampm-btn{font-family:var(--mono);font-size:13px;border:1px solid var(--border);background:transparent;cursor:pointer;padding:2px 8px;border-radius:2px;outline:none;color:var(--text-dim);transition:color .15s,border-color .15s,background .15s}
 .ampm-btn.ampm-selected{color:var(--gold);border-color:var(--gold);background:rgba(212,175,106,.08)}
@@ -248,7 +249,7 @@ background-image:
 .sg1{top:10%;left:30%;animation:sf 4s ease-in-out infinite}
 .sg2{bottom:16%;right:26%;animation:sf 4s ease-in-out 2s infinite}
 @keyframes sf{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-10px);opacity:.55}}
-.load-text{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-style:italic;color:var(--gold-pale);letter-spacing:.1em;z-index:1;animation:pulse 2.4s ease-in-out infinite}
+.load-text{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;font-style:italic;color:var(--gold-pale);letter-spacing:.1em;z-index:1;animation:pulse 2.4s ease-in-out infinite}
 .load-dots span{animation:blink 1.4s ease-in-out infinite;opacity:0}
 .load-dots span:nth-child(2){animation-delay:.2s}
 .load-dots span:nth-child(3){animation-delay:.4s}
@@ -456,9 +457,9 @@ background-image:
 
       <h1 class="cinzel-title">Harmony of<br>the Spheres</h1>
 
-      <p style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(18px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
+      <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(18px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
 
-      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);"></div>
+      <div style="width:clamp(80px,8vw,120px);height:1px;background:var(--border-mid);"></div>
 
       <div style="font-family:var(--mono);font-size:clamp(11px,1vw,14px);line-height:1.9;color:var(--text-dim);max-width:38vw;">
         <p style="margin:0 0 1.2em 0;">
@@ -469,7 +470,7 @@ background-image:
         </p>
       </div>
 
-      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);"></div>
+      <div style="width:clamp(80px,8vw,120px);height:1px;background:var(--border-mid);"></div>
 
       <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.7;margin:0;max-width:38vw;">
         <span style="color:var(--cream);">Enter your details below</span><span style="color:var(--text-dim);"> to generate your astrological chart and derive its audio features.</span> <span style="color:var(--gold);font-style:italic;">Your songs, mapped to the stars.</span>
@@ -634,7 +635,7 @@ background-image:
           </div>
         </div>
 
-        <button type="submit" class="btn-gen" id="submitBtn">Generate</button>
+        <button type="submit" class="btn-gen" id="submitBtn">Tune in →</button>
 
       </form>
     </div>
@@ -655,18 +656,14 @@ function showLoading() {
 // ── Google Places autocomplete ──
 function initLocationAutocomplete() {
   var fields = [
-    { inputId:'birth_location',   listId:'birthList',   statusId:'birthStatus'   },
-    { inputId:'current_location', listId:'currentList', statusId:'currentStatus' }
+    { inputId:'birth_location',   latId:'birth_lat',    lngId:'birth_lng',    tzId:'birth_tz',    listId:'birthList',   statusId:'birthStatus'   },
+    { inputId:'current_location', latId:'current_lat',  lngId:'current_lng',  tzId:'current_tz',  listId:'currentList', statusId:'currentStatus' }
   ];
-  if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
-    fields.forEach(function(f) {
-      document.getElementById(f.inputId).addEventListener('blur', function() {
-        if (this.value.trim()) document.getElementById(f.statusId).textContent = '✓ ' + this.value.trim();
-      });
-    });
-    return;
-  }
-  var svc = new google.maps.places.AutocompleteService();
+  if (typeof google === 'undefined' || !google.maps || !google.maps.places) return;
+
+  var autoSvc   = new google.maps.places.AutocompleteService();
+  var placeSvc  = new google.maps.places.PlacesService(document.createElement('div'));
+
   fields.forEach(function(f) {
     var input  = document.getElementById(f.inputId);
     var list   = document.getElementById(f.listId);
@@ -676,7 +673,7 @@ function initLocationAutocomplete() {
     function showList(items) {
       predictions = items; activeIdx = -1; list.innerHTML = '';
       if (!items.length) { list.classList.remove('open'); return; }
-      items.forEach(function(p, i) {
+      items.forEach(function(p) {
         var item = document.createElement('div');
         item.className = 'autocomplete-item';
         var main = p.structured_formatting.main_text;
@@ -686,7 +683,7 @@ function initLocationAutocomplete() {
         if (mts.length) {
           var sorted = mts.slice().sort(function(a,b){return b.offset-a.offset;});
           sorted.forEach(function(m) {
-            hl = hl.slice(0,m.offset) + '<strong>' + hl.slice(m.offset,m.offset+m.length) + '</strong>' + hl.slice(m.offset+m.length);
+            hl = hl.slice(0,m.offset)+'<strong>'+hl.slice(m.offset,m.offset+m.length)+'</strong>'+hl.slice(m.offset+m.length);
           });
         }
         item.innerHTML = '<span class="autocomplete-pin">◉</span><span class="autocomplete-item-main">'+hl+'</span>'+(sec?'<span class="autocomplete-item-secondary">'+sec+'</span>':'');
@@ -695,22 +692,39 @@ function initLocationAutocomplete() {
       });
       list.classList.add('open');
     }
+
     function selectPrediction(p) {
-      input.value = p.description; list.classList.remove('open');
-      status.textContent = '✓ ' + p.description;
+      input.value = p.description;
+      list.classList.remove('open');
+      placeSvc.getDetails({placeId: p.place_id, fields: ['geometry']}, function(place, sc) {
+        if (sc === google.maps.places.PlacesServiceStatus.OK && place && place.geometry) {
+          var lat = place.geometry.location.lat();
+          var lng = place.geometry.location.lng();
+          document.getElementById(f.latId).value = lat;
+          document.getElementById(f.lngId).value = lng;
+          fetch('/api/timezone?lat='+lat+'&lng='+lng)
+            .then(function(r){ return r.json(); })
+            .then(function(d){ document.getElementById(f.tzId).value = d.timezone || 'UTC'; })
+            .catch(function(){});
+        }
+      });
     }
+
     function setActive(idx) {
       list.querySelectorAll('.autocomplete-item').forEach(function(el){ el.classList.remove('active'); });
       activeIdx = idx;
       var items = list.querySelectorAll('.autocomplete-item');
       if (idx >= 0 && idx < items.length) { items[idx].classList.add('active'); items[idx].scrollIntoView({block:'nearest'}); }
     }
+
     input.addEventListener('input', function() {
       status.textContent = ''; clearTimeout(debounceTimer);
+      document.getElementById(f.latId).value = '';
+      document.getElementById(f.lngId).value = '';
       var val = this.value.trim();
       if (val.length < 2) { list.classList.remove('open'); return; }
       debounceTimer = setTimeout(function() {
-        svc.getPlacePredictions({input:val,types:['(regions)']}, function(results, sc) {
+        autoSvc.getPlacePredictions({input:val, types:['(regions)']}, function(results, sc) {
           if (sc === google.maps.places.PlacesServiceStatus.OK && results) showList(results.slice(0,5));
           else list.classList.remove('open');
         });
@@ -724,10 +738,7 @@ function initLocationAutocomplete() {
       else if (e.key==='Escape') list.classList.remove('open');
     });
     input.addEventListener('blur', function() {
-      setTimeout(function() {
-        list.classList.remove('open');
-        if (input.value.trim() && !status.textContent) status.textContent = '✓ ' + input.value.trim();
-      }, 150);
+      setTimeout(function(){ list.classList.remove('open'); }, 150);
     });
     document.addEventListener('click', function(e) {
       if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
@@ -739,13 +750,6 @@ if (typeof google !== 'undefined' && google.maps && google.maps.places) {
   initLocationAutocomplete();
 } else {
   window.initLocationAutocomplete = initLocationAutocomplete;
-  ['birth_location','current_location'].forEach(function(id,i) {
-    var sid = i===0 ? 'birthStatus' : 'currentStatus';
-    document.getElementById(id).addEventListener('blur', function() {
-      if (this.value.trim() && !document.getElementById(sid).textContent)
-        document.getElementById(sid).textContent = '✓ ' + this.value.trim();
-    });
-  });
 }
 
 // ── Form submit ──
@@ -756,13 +760,13 @@ document.getElementById('birthForm').addEventListener('submit', async function(e
   var currentLat = document.getElementById('current_lat');
   if (!birthLat.value || !currentLat.value) {
     var btn = document.getElementById('submitBtn');
-    btn.disabled = true; btn.textContent = 'Resolving locations…';
+    btn.disabled = true; btn.textContent = 'Tuning…';
     try { await geocodeBothLocations(); } catch(_) {}
     if (document.getElementById('birth_lat').value && document.getElementById('current_lat').value) {
       showLoading();
       setTimeout(function(){ form.submit(); }, 50);
     } else {
-      btn.disabled = false; btn.textContent = 'Generate My Playlist →';
+      btn.disabled = false; btn.textContent = 'Tune in →';
       if (!document.getElementById('birthStatus').textContent.startsWith('✓'))
         document.getElementById('birthStatus').textContent = 'Could not resolve — try a more specific city name';
     }

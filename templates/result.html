@@ -3,21 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harmony of the Spheres — Your {{ day_name }} feels</title>
+<title>Harmony of the Spheres — Your Reading</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:      #0d1128;
+  --navy:      #080A23;
   --navy-mid:  #111830;
   --navy-card: #141c35;
   --gold:      #d4af6a;
   --gold-dim:  #a88840;
   --gold-pale: #f0dfa0;
   --cream:     #f2e8cc;
+  --border-dim: rgba(212,175,106,0.1);
   --border:    rgba(212,175,106,0.18);
+  --border-mid: rgba(212,175,106,0.35);
   --border-h:  rgba(212,175,106,0.45);
   --text-dim:  rgba(242,232,204,0.5);
+  --cinzel:    'Cinzel Decorative', Georgia, serif;
+  --mono:      'Space Mono', monospace;
+  --serif:     'Cormorant Garamond', Georgia, serif;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -140,7 +145,7 @@ nav {
   text-align: center;
 }
 .horoscope-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: normal;
   font-size: clamp(1.05rem, 2vw, 1.35rem);
   font-weight: 400; line-height: 1.4;
@@ -280,7 +285,7 @@ nav {
   text-transform: uppercase;
   color: var(--gold);
   background: transparent;
-  border: 1px solid rgba(212,175,106,0.35);
+  border: 1px solid var(--border-mid);
   border-radius: 3px;
   padding: 5px 14px;
   cursor: pointer;
@@ -288,7 +293,7 @@ nav {
   flex-shrink: 0;
   white-space: nowrap;
 }
-.remap-btn:hover { background: rgba(212,175,106,0.1); border-color: var(--gold); }
+.remap-btn:hover { background: var(--border-dim); border-color: var(--gold); }
 .remap-btn:disabled { opacity: 0.45; cursor: default; }
 .remap-btn.loading { opacity: 0.6; }
 
@@ -337,7 +342,7 @@ nav {
 .track-art {
   width: 44px; height: 44px; border-radius: 2px;
   background: rgba(212,175,106,0.06);
-  border: 1px solid rgba(212,175,106,0.1);
+  border: 1px solid var(--border-dim);
   flex-shrink: 0; object-fit: cover;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
@@ -345,7 +350,7 @@ nav {
 .track-art-placeholder {
   width: 44px; height: 44px; border-radius: 2px;
   background: rgba(212,175,106,0.06);
-  border: 1px solid rgba(212,175,106,0.1);
+  border: 1px solid var(--border-dim);
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
@@ -396,7 +401,7 @@ nav {
 }
 .track-open-btn:hover,
 .track-row:hover .track-open-btn {
-  opacity: 1; background: rgba(212,175,106,0.1); border-color: var(--gold);
+  opacity: 1; background: var(--border-dim); border-color: var(--gold);
 }
 
 /* ── Transits block ── */
@@ -429,7 +434,7 @@ nav {
 .aspect-pill-inner { flex: 1; }
 .aspect-name {
   color: var(--cream);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
 }
 .aspect-meaning {
@@ -441,7 +446,7 @@ nav {
   display: flex; gap: 10px; flex-wrap: wrap;
   margin-top: 10px;
   padding-top: 9px;
-  border-top: 1px solid rgba(212,175,106,0.1);
+  border-top: 1px solid var(--border-dim);
 }
 .aspect-feature {
   font-family: 'Space Mono', monospace;

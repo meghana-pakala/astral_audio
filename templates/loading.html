@@ -5,24 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Harmony of the Spheres — Reading Your Stars</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:      #0d1128;
+  --navy:      #080A23;
   --navy-mid:  #111830;
   --navy-card: #141c35;
   --gold:      #d4af6a;
   --gold-dim:  #a88840;
   --gold-pale: #f0dfa0;
   --cream:     #f2e8cc;
+  --border-dim: rgba(212,175,106,0.1);
   --border:    rgba(212,175,106,0.18);
+  --border-mid: rgba(212,175,106,0.35);
   --border-h:  rgba(212,175,106,0.45);
   --text-dim:  rgba(242,232,204,0.5);
 
-  --display: 'Playfair Display', Georgia, serif;
   --cinzel:  'Cinzel Decorative', Georgia, serif;
   --mono:    'Space Mono', monospace;
-  --serif:   'IM Fell English', Georgia, serif;
+  --serif:   'Cormorant Garamond', Georgia, serif;
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -132,7 +133,7 @@ body::before {
 
 /* Loading text */
 .load-text {
-  font-family: var(--display);
+  font-family: var(--serif);
   font-size:18px; font-style:italic;
   color: var(--gold-pale); letter-spacing:.1em;
   z-index:1;
@@ -218,17 +219,29 @@ body::before {
     <div class="star-glow sg2"></div>
   </div>
 
-  <p class="load-text">reading your stars<span class="load-dots"><span>.</span><span>.</span><span>.</span></span></p>
+  <p class="load-text" id="loadText">reading your stars<span class="load-dots"><span>.</span><span>.</span><span>.</span></span></p>
 
 </div>
 
 <script>
-// After animation settles, navigate to the pipeline route.
-// The browser will wait here while the server runs (10-30s),
-// then land on result.html when it's ready.
-setTimeout(function() {
-  window.location.href = '/generate';
-}, 900);
+var es = new EventSource('/progress');
+es.onmessage = function(e) {
+  var data = JSON.parse(e.data);
+  if (data.event === 'phase') {
+    var el = document.getElementById('loadText');
+    el.childNodes[0].nodeValue = data.message;
+  } else if (data.event === 'done') {
+    es.close();
+    window.location.href = '/result';
+  } else if (data.event === 'error') {
+    es.close();
+    window.location.href = '/?error=pipeline';
+  }
+};
+es.onerror = function() {
+  es.close();
+  window.location.href = '/?error=pipeline';
+};
 </script>
 
 </body>

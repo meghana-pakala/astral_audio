@@ -3,19 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Error — Harmony of the Spheres</title>
+<title>Harmony of the Spheres - Error</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:      #0d1128;
+  --navy:      #080A23;
+  --navy-mid:  #111830;
   --navy-card: #141c35;
   --gold:      #d4af6a;
   --gold-dim:  #a88840;
+  --gold-pale: #f0dfa0;
   --cream:     #f2e8cc;
+  --border-dim: rgba(212,175,106,0.1);
   --border:    rgba(212,175,106,0.18);
+  --border-mid: rgba(212,175,106,0.35);
   --border-h:  rgba(212,175,106,0.45);
   --text-dim:  rgba(242,232,204,0.5);
+  --cinzel:    'Cinzel Decorative', Georgia, serif;
+  --mono:      'Space Mono', monospace;
+  --serif:     'Cormorant Garamond', Georgia, serif;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -125,7 +132,7 @@ nav {
 .error-divider {
   width: 90px;
   height: 1px;
-  background: rgba(212,175,106,0.35);
+  background: var(--border-mid);
   margin: 0 auto;
 }
 
@@ -165,7 +172,7 @@ nav {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
-  border: 1px solid rgba(212,175,106,0.35);
+  border: 1px solid var(--border-mid);
   border-radius: 3px;
   padding: 10px 24px;
   transition: all .15s;
