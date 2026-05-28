@@ -24,8 +24,8 @@ Instructions:
    - "keywords": 2-3 single-word descriptors for the aspect energy
 
 3. Synthesize into:
-   - "daily_summary": 2-3 sentences. Capture the overall feeling of the day — what kind of inner weather it brings, and implicitly what it might sound like. Write for a general audience; keep it grounded and personal, not mystical or overwrought.
-   - "daily_keywords": exactly 3 single-word adjectives describing today's mood. Each must be one word only — no hyphens, no phrases. Choose words that work both emotionally and sonically (e.g. "tender", "electric", "grounded", "restless", "luminous", "raw", "浮遊" — but in English). Avoid abstract nouns like "growth" or "maturity".
+   - "daily_summary": 2-3 sentences. Capture the overall feeling of the day — what kind of inner weather it brings, and implicitly what it might sound like. Write for a general audience; keep it grounded and personal, but hint at the sonic character similar to the aspect descriptions. 
+   - "daily_keywords": exactly 3 single-word adjectives describing today's mood. Each must be one word only — no hyphens, no phrases. Choose words that work both emotionally and sonically (e.g. "tender", "electric", "grounded", "restless", "luminous", "raw"). Avoid abstract nouns like "growth" or "maturity".
 
 Return only valid JSON with no markdown fences:
 {"daily_summary": "...",
@@ -82,29 +82,38 @@ def _stub_horoscope(transit_aspects):
 
 
 # call Gemini to interpret aspects and generate horoscope
-def get_horoscope(transit_aspects):
-    if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
-        return _stub_horoscope(transit_aspects)
-
-    api_key = os.environ.get('GEMINI_API_KEY')
-    if not api_key:
-        raise ValueError('GEMINI_API_KEY not set')
-    
+def _call_gemini(api_key, prompt):
     client = genai.Client(api_key=api_key)
-    aspects_text = format_aspects(transit_aspects)
-
-    prompt = f"{SYSTEM_PROMPT}\n\nAspects:\n{aspects_text}"
-    
     response = client.models.generate_content(
         model='gemini-2.5-flash',
         contents=prompt
-        )
-    
-    # strip markdown code fences if Gemini wraps the response
+    )
     raw = response.text.strip()
     raw = re.sub(r'^```(?:json)?\s*', '', raw)
     raw = re.sub(r'\s*```$', '', raw)
     return json.loads(raw)
+
+def get_horoscope(transit_aspects):
+    if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
+        return _stub_horoscope(transit_aspects)
+
+    primary_key = os.environ.get('GEMINI_API_KEY')
+    backup_key = os.environ.get('GEMINI_API_KEY_2')
+    if not primary_key:
+        raise ValueError('GEMINI_API_KEY not set')
+
+    aspects_text = format_aspects(transit_aspects)
+    prompt = f"{SYSTEM_PROMPT}\n\nAspects:\n{aspects_text}"
+
+    try:
+        return _call_gemini(primary_key, prompt)
+    except Exception as e:
+        # retry with backup key on rate limit (429) or quota errors
+        err_str = str(e).lower()
+        if backup_key and any(x in err_str for x in ('429', 'quota', 'rate limit', 'resource exhausted')):
+            print(f"[horoscope] Primary key hit rate limit, falling back to backup key. Error: {e}")
+            return _call_gemini(backup_key, prompt)
+        raise
 
 # match selected aspects from horoscope back to transit aspect objects
 def get_select_aspects(transit_aspects: list, horoscope: dict) -> list:
