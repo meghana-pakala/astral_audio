@@ -131,7 +131,7 @@ body::before{
 .form-group{margin-bottom:36px}
 
 /* ── Labels ── */
-.lbl{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;font-family:var(--mono)}
+.lbl{display:block;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px;font-family:var(--mono)}
 
 /* ── Text inputs ── */
 .inp{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:10px 0;color:var(--cream);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s}
@@ -150,10 +150,9 @@ body::before{
 .seg-display.placeholder{color:var(--text-dim)}
 .seg-display:hover{background:rgba(212,175,106,0.10);color:var(--gold-pale)}
 .seg-display.open,.seg-display:focus{background:rgba(212,175,106,0.15);color:var(--gold);outline:none}
-.ampm-toggle{font-family:var(--mono);font-size:13px;border:none;background:transparent;cursor:pointer;padding:2px 3px;border-radius:2px;outline:none;display:flex;align-items:center}
-.ampm-part{color:var(--text-dim);transition:color .15s}
-.ampm-part.ampm-selected{color:var(--cream)}
-.ampm-sep{color:var(--text-dim);opacity:.5}
+.ampm-btn{font-family:var(--mono);font-size:13px;border:1px solid var(--border);background:transparent;cursor:pointer;padding:2px 8px;border-radius:2px;outline:none;color:var(--text-dim);transition:color .15s,border-color .15s,background .15s}
+.ampm-btn.ampm-selected{color:var(--gold);border-color:var(--gold);background:rgba(212,175,106,.08)}
+.ampm-sep{color:var(--text-dim);opacity:.5;padding:0 3px;font-family:var(--mono);font-size:13px;user-select:none}
 .seg-sep{font-family:var(--mono);font-size:13px;color:var(--text-dim);padding:0 3px;user-select:none}
 .seg-picker{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;background:var(--navy-card);border:1px solid var(--border-h);border-radius:4px;width:72px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.7)}
 .seg-picker.open{display:block}
@@ -178,7 +177,7 @@ body::before{
 
 /* ── Upload ── */
 .library-panel{padding-top:4px}
-.library-upload-hint{font-size:11px;color:var(--cream);margin-bottom:14px;line-height:1.6;text-align:center;font-family:var(--mono)}
+.library-upload-hint{font-size:16px;color:var(--cream);margin-bottom:14px;line-height:1.6;text-align:center;font-family:var(--mono)}
 .library-upload-hint a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(212,175,106,.3)}
 .upload-area{position:relative;border:1px dashed var(--border);border-radius:4px;padding:28px;text-align:center;transition:border-color .2s,background .2s;cursor:pointer}
 .upload-area:hover{border-color:var(--border-h);background:rgba(212,175,106,0.04)}
@@ -189,7 +188,7 @@ body::before{
 
 /* ── Filter pills ── */
 .filter-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:12px;font-family:var(--mono)}
-.pill-group{display:flex;flex-wrap:wrap;gap:8px}
+.pill-group{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .pill{display:inline-block;padding:7px 15px;border:1px solid var(--border);border-radius:20px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--cream);cursor:pointer;transition:all .2s;font-family:var(--mono)}
 .pill:hover,.pill.on{border-color:var(--gold);color:var(--gold);background:rgba(212,175,106,.07)}
 .check-pill{cursor:pointer}
@@ -457,7 +456,7 @@ background-image:
 
       <h1 class="cinzel-title">Harmony of<br>the Spheres</h1>
 
-      <p style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(15px,1.4vw,20px);font-style:italic;color:var(--text-dim);margin:0 0 clamp(14px,1.5vw,22px) 0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
+      <p style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(17px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0 0 clamp(14px,1.5vw,22px) 0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
 
       <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);margin-bottom:clamp(16px,1.8vw,26px);"></div>
 
@@ -468,10 +467,13 @@ background-image:
         <p style="margin:0 0 1.2em 0;">
           Music theory gives us the overtone series: <span style="color:var(--cream);opacity:0.9;">the natural harmonic ratios produced by any vibrating object.</span> These ratios are the mathematical bridge between the geometry of the solar system and the structure of sound.
         </p>
-        <p style="margin:0;color:rgba(242,232,204,0.45);font-size:0.95em;">
-          Enter your details below to generate a reading of your key planetary transits and a playlist matched to their audio features. <span style="color:var(--gold);font-style:italic;">Your music, mapped to the sky.</span>
-        </p>
       </div>
+
+      <div style="width:clamp(80px,8vw,120px);height:1px;background:rgba(212,175,106,0.35);margin:clamp(16px,1.8vw,26px) 0;"></div>
+
+      <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,16px);line-height:1.7;color:var(--cream);margin:0;max-width:38vw;">
+        Enter your details below to generate a reading of your key planetary transits and a playlist matched to their audio features. <span style="color:var(--gold);font-style:italic;">Your music, mapped to the sky.</span>
+      </p>
 
     </div>
   </div>
@@ -536,11 +538,9 @@ background-image:
                 <div class="seg-picker" id="pickerMin"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollMin"></div></div></div>
               </div>
               <span class="seg-sep" style="padding:0 8px"></span>
-              <button class="ampm-toggle" id="ampmBtn" tabindex="-1" type="button">
-                <span id="ampmAM" class="ampm-part">AM</span>
-                <span class="ampm-sep"> / </span>
-                <span id="ampmPM" class="ampm-part">PM</span>
-              </button>
+              <button class="ampm-btn" id="ampmAM" tabindex="-1" type="button">AM</button>
+              <span class="ampm-sep">/</span>
+              <button class="ampm-btn" id="ampmPM" tabindex="-1" type="button">PM</button>
             </div>
             <input type="hidden" id="birth_time" name="birth_time">
           </div>
@@ -550,7 +550,7 @@ background-image:
         <div class="form-group">
           <label class="lbl">Birthplace</label>
           <div class="location-wrap">
-            <input class="inp" type="text" id="birth_location" tabindex="7" placeholder="City, Country" autocomplete="off">
+            <input class="inp" type="text" id="birth_location" tabindex="7" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="birthList"></div>
           </div>
           <span class="location-status" id="birthStatus"></span>
@@ -563,7 +563,7 @@ background-image:
         <div class="form-group">
           <label class="lbl">Current Location</label>
           <div class="location-wrap">
-            <input class="inp" type="text" id="current_location" tabindex="8" placeholder="City, Country" autocomplete="off">
+            <input class="inp" type="text" id="current_location" tabindex="8" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="currentList"></div>
           </div>
           <span class="location-status" id="currentStatus"></span>
@@ -624,7 +624,7 @@ background-image:
 
         <!-- Upload panel (hidden by default) -->
         <div class="library-panel" id="panelUpload" style="display:none">
-          <p class="library-upload-hint">Export your Liked Songs at <a href="https://exportify.net" target="_blank" rel="noopener">exportify.net</a></p>
+          <p class="library-upload-hint">For a personalized playlist, export your Liked Songs at <a href="https://exportify.net" target="_blank" rel="noopener">exportify.net</a></p>
           <div class="upload-area" id="uploadArea">
             <input class="upload-input" type="file" id="csvFile" name="liked_songs_csv" accept=".csv">
             <label class="upload-label" for="csvFile">
@@ -634,7 +634,7 @@ background-image:
           </div>
         </div>
 
-        <button type="submit" class="btn-gen" id="submitBtn">Generate My Playlist →</button>
+        <button type="submit" class="btn-gen" id="submitBtn">Generate</button>
 
       </form>
     </div>
@@ -899,10 +899,16 @@ pickerConfigs.forEach(function(cfg){
   disp.addEventListener('click',function(e){e.stopPropagation();if(justFocused)return;if(openPicker===cfg.id){closePicker();return;}openPickerFor(cfg);});
   disp.addEventListener('blur',function(){setTimeout(function(){if(openPicker===cfg.id)closePicker();},150);});
 });
-document.getElementById('ampmBtn').addEventListener('click',function(){
-  timeState.ampm=(timeState.ampm==='AM')?'PM':'AM';
-  document.getElementById('ampmAM').classList.toggle('ampm-selected',timeState.ampm==='AM');
-  document.getElementById('ampmPM').classList.toggle('ampm-selected',timeState.ampm==='PM');
+document.getElementById('ampmAM').addEventListener('click',function(){
+  timeState.ampm='AM';
+  document.getElementById('ampmAM').classList.add('ampm-selected');
+  document.getElementById('ampmPM').classList.remove('ampm-selected');
+  syncTime();
+});
+document.getElementById('ampmPM').addEventListener('click',function(){
+  timeState.ampm='PM';
+  document.getElementById('ampmPM').classList.add('ampm-selected');
+  document.getElementById('ampmAM').classList.remove('ampm-selected');
   syncTime();
 });
 var keyBuffer='',keyTimer=null;
