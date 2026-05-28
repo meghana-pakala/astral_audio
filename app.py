@@ -2,14 +2,16 @@
 Astral Audio — Flask app
 Routes: / → form, /generate → run pipeline, /api/timezone → lat/lng → tz
 """
+import logging
 import os
+import shutil
 import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
 
-from flask import Flask, render_template, request, redirect, session, jsonify
 from dotenv import load_dotenv
+from flask import Flask, jsonify, redirect, render_template, request, session
 
 # load local.env when running locally
 load_dotenv('local.env')
@@ -18,8 +20,8 @@ load_dotenv('local.env')
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(BASE_PATH, 'src'))
 
-from aspects import (get_transit_aspects, get_planet_list,
-                     NATAL_PLANETS_LIST, TRANSIT_PLANETS_LIST)
+from aspects import (NATAL_PLANETS_LIST, TRANSIT_PLANETS_LIST,
+                     get_planet_list, get_transit_aspects)
 from horoscope import get_horoscope, get_select_aspects
 from library import load_music_library, merge_into_library
 from score import build_target_vector, score_tracks
@@ -40,21 +42,21 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-please-change')
 #      e.g. /var/data/local_library.csv  (mount the disk at /var/data in Render settings)
 #   2. /data/local_library.csv — Railway persistent volume (legacy)
 #   3. local_library.csv in the repo root — ephemeral fallback (changes lost on restart)
-import shutil as _shutil
 _BASE_LIBRARY = os.path.join(BASE_PATH, 'local_library.csv')
 
-def _resolve_library_path():
+def _resolve_library_path() -> str:
     env_path = os.environ.get('LIBRARY_PATH')
     if env_path:
         os.makedirs(os.path.dirname(os.path.abspath(env_path)), exist_ok=True)
         if not os.path.exists(env_path) and os.path.exists(_BASE_LIBRARY):
-            _shutil.copy2(_BASE_LIBRARY, env_path)
+            shutil.copy2(_BASE_LIBRARY, env_path)
         return env_path
     if os.path.isdir('/data'):
         vol = '/data/local_library.csv'
         if not os.path.exists(vol) and os.path.exists(_BASE_LIBRARY):
-            _shutil.copy2(_BASE_LIBRARY, vol)
+            shutil.copy2(_BASE_LIBRARY, vol)
         return vol
+    logging.warning('No persistent disk configured — library changes will be lost on restart.')
     return _BASE_LIBRARY
 
 LOCAL_LIBRARY_PATH = _resolve_library_path()
