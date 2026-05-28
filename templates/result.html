@@ -169,7 +169,7 @@ nav {
 }
 .section-divider-title {
   font-family: 'Space Mono', monospace;
-  font-size: 0.72rem; letter-spacing: 0.38em;
+  font-size: 14px; letter-spacing: 0.38em;
   text-transform: uppercase; color: var(--gold);
   white-space: nowrap; flex-shrink: 0;
 }
@@ -181,7 +181,7 @@ nav {
 .controls-row {
   display: flex;
   gap: 32px;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 16px;
 }
 .sliders-col {
@@ -250,8 +250,8 @@ nav {
   min-width: 0;
 }
 #audio-radar {
-  max-width: 260px;
-  max-height: 220px;
+  max-width: 340px;
+  max-height: 300px;
   width: 100%;
 }
 
@@ -268,14 +268,14 @@ nav {
 }
 .personalize-label {
   font-family: 'Space Mono', monospace;
-  font-size: 0.63rem;
+  font-size: 12px;
   color: var(--text-dim);
   flex: 1;
   letter-spacing: 0.04em;
 }
 .remap-btn {
   font-family: 'Space Mono', monospace;
-  font-size: 0.63rem;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
@@ -481,8 +481,8 @@ nav {
         </div>
       </div>
       <div class="personalize-bar">
-        <span class="personalize-label">personalize by adjusting audio features and rating tracks</span>
-        <button id="remap-btn" class="remap-btn">remap</button>
+        <span class="personalize-label">Personalize further by adjusting audio features above and rating tracks below.</span>
+        <button id="remap-btn" class="remap-btn">RESCORE</button>
       </div>
     </div>
 
@@ -530,11 +530,13 @@ const INITIAL_TRACKS  = {{ tracks | tojson }};
 // AUDIO FEATURES — sliders + radar chart
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Radar order (Chart.js starts at top, goes clockwise):
+// index 0 = top, 1 = right, 2 = bottom, 3 = left
 const FEATURES = [
-  { key: 'valence',      label: 'Valence',      tip: 'Emotional positivity' },
-  { key: 'energy',       label: 'Energy',        tip: 'Intensity & activity' },
-  { key: 'danceability', label: 'Danceability',  tip: 'Suitability for dancing' },
-  { key: 'acousticness', label: 'Acousticness',  tip: 'Acoustic presence' },
+  { key: 'acousticness', label: 'Acousticness',  tip: 'Acoustic presence' },       // top
+  { key: 'energy',       label: 'Energy',         tip: 'Intensity & activity' },    // right
+  { key: 'danceability', label: 'Danceability',   tip: 'Suitability for dancing' }, // bottom
+  { key: 'valence',      label: 'Valence',        tip: 'Emotional positivity' },    // left
 ];
 
 // ── Build sliders ──
