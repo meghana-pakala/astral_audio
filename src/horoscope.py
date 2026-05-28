@@ -96,7 +96,7 @@ def get_horoscope(transit_aspects):
     prompt = f"{SYSTEM_PROMPT}\n\nAspects:\n{aspects_text}"
     
     response = client.models.generate_content(
-        model='gemini-2.0-flash',
+        model='gemini-2.5-flash',
         contents=prompt
         )
     
