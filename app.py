@@ -35,18 +35,29 @@ except ImportError:
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-please-change')
 
-# Use a persistent volume at /data if available (Railway), otherwise fall back to repo file
-_VOLUME_LIBRARY = '/data/local_library.csv'
-_BASE_LIBRARY   = os.path.join(BASE_PATH, 'local_library.csv')
+# Resolve the local library path. Priority:
+#   1. LIBRARY_PATH env var — set this in Render to your persistent disk path,
+#      e.g. /var/data/local_library.csv  (mount the disk at /var/data in Render settings)
+#   2. /data/local_library.csv — Railway persistent volume (legacy)
+#   3. local_library.csv in the repo root — ephemeral fallback (changes lost on restart)
+import shutil as _shutil
+_BASE_LIBRARY = os.path.join(BASE_PATH, 'local_library.csv')
 
-if os.path.isdir('/data'):
-    # First boot: seed the volume with the bundled library if it doesn't exist yet
-    if not os.path.exists(_VOLUME_LIBRARY) and os.path.exists(_BASE_LIBRARY):
-        import shutil
-        shutil.copy2(_BASE_LIBRARY, _VOLUME_LIBRARY)
-    LOCAL_LIBRARY_PATH = _VOLUME_LIBRARY
-else:
-    LOCAL_LIBRARY_PATH = _BASE_LIBRARY
+def _resolve_library_path():
+    env_path = os.environ.get('LIBRARY_PATH')
+    if env_path:
+        os.makedirs(os.path.dirname(os.path.abspath(env_path)), exist_ok=True)
+        if not os.path.exists(env_path) and os.path.exists(_BASE_LIBRARY):
+            _shutil.copy2(_BASE_LIBRARY, env_path)
+        return env_path
+    if os.path.isdir('/data'):
+        vol = '/data/local_library.csv'
+        if not os.path.exists(vol) and os.path.exists(_BASE_LIBRARY):
+            _shutil.copy2(_BASE_LIBRARY, vol)
+        return vol
+    return _BASE_LIBRARY
+
+LOCAL_LIBRARY_PATH = _resolve_library_path()
 
 UPLOAD_DIR = os.path.join('/tmp', 'astral_audio_uploads')
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -143,10 +154,13 @@ def start():
         try:
             csv_file.save(csv_path)
             session['csv_path'] = csv_path
+            # Merge into the shared pool so local-pool users benefit from this upload.
+            # The uploader's own session still uses their raw CSV directly (see /generate).
             try:
-                merge_into_library(csv_path, LOCAL_LIBRARY_PATH)
-            except Exception:
-                pass
+                added = merge_into_library(csv_path, LOCAL_LIBRARY_PATH)
+                app.logger.info(f'Library merge: +{added} new tracks (pool now {_pool_count()})')
+            except Exception as merge_err:
+                app.logger.warning(f'Library merge failed: {merge_err}')
         except Exception:
             session.pop('csv_path', None)
 
