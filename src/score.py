@@ -121,3 +121,40 @@ def score_tracks(library_df, target: dict, top_n: int = 20):
         df['score'] += (df['mode'] != target['mode']).astype(float) * 0.3
 
     return df.sort_values('score').head(top_n).reset_index(drop=True)
+
+# rescore based on user feedback
+def rescore(library_df, base_target, slider_values,
+            liked_uris=None, disliked_uris=None, top_n=20):
+    """
+    Compute adjusted target from slider positions + thumbs feedback,
+    then re-run score_tracks.
+    
+    slider_values: dict of {feature: value} from UI sliders
+    liked_uris / disliked_uris: lists of Spotify track URIs from thumbs
+    """
+    # start from slider positions (user's explicit adjustments)
+    adjusted = dict(base_target)
+    for feat in CONTINUOUS_FEATURES:
+        if feat in slider_values:
+            adjusted[feat] = slider_values[feat]
+
+    # shift toward liked songs, away from disliked
+    if liked_uris:
+        liked_df = library_df[library_df['track_uri'].isin(liked_uris)]
+        if not liked_df.empty:
+            liked_mean = liked_df[CONTINUOUS_FEATURES].mean()
+            for feat in CONTINUOUS_FEATURES:
+                adjusted[feat] += 0.3 * (liked_mean[feat] - adjusted[feat])
+
+    if disliked_uris:
+        disliked_df = library_df[library_df['track_uri'].isin(disliked_uris)]
+        if not disliked_df.empty:
+            disliked_mean = disliked_df[CONTINUOUS_FEATURES].mean()
+            for feat in CONTINUOUS_FEATURES:
+                adjusted[feat] -= 0.2 * (disliked_mean[feat] - adjusted[feat])
+
+    # clamp to valid range
+    for feat in CONTINUOUS_FEATURES:
+        adjusted[feat] = float(np.clip(adjusted[feat], 0.0, 1.0))
+
+    return score_tracks(library_df, adjusted, top_n), adjusted
