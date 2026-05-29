@@ -1,6 +1,8 @@
 """
 Astral Audio — Flask app
-Routes: / → form, /generate → run pipeline, /api/timezone → lat/lng → tz
+Routes: / → form, /start → session setup, /loading → loading page,
+        /progress → SSE pipeline stream, /result → serve cached result,
+        /rescore → adjust playlist, /api/timezone → lat/lng → tz
 """
 import logging
 import os
@@ -98,16 +100,42 @@ def get_spotify_client():
         return None
 
 
-def fetch_album_art(sp, track_ids):
+def fetch_track_meta(sp, track_ids):
     """Batch fetch album art from Spotify (max 50 per request)."""
     art = {}
     for i in range(0, len(track_ids), 50):
         batch = track_ids[i:i + 50]
         results = sp.tracks(batch)
         for t in results['tracks']:
-            if t and t.get('album', {}).get('images'):
+            if not t:
+                continue
+            if t.get('album', {}).get('images'):
                 art[t['id']] = t['album']['images'][1]['url']  # 300 px
     return art
+
+
+def fetch_deezer_previews(tracks):
+    """Fetch 30s preview URLs from Deezer public API (no auth required).
+    tracks: list of dicts with 'name' and 'artist' keys.
+    Returns dict keyed by spotify_id → preview_url."""
+    import urllib.request, urllib.parse, json, time
+    previews = {}
+    for t in tracks:
+        sid = t.get('spotify_id')
+        if not sid:
+            continue
+        query = urllib.parse.urlencode({'q': f'track:"{t["name"]}" artist:"{t["artist"]}"', 'limit': 1})
+        url = f'https://api.deezer.com/search?{query}'
+        try:
+            with urllib.request.urlopen(url, timeout=4) as resp:
+                data = json.loads(resp.read())
+            items = data.get('data', [])
+            if items and items[0].get('preview'):
+                previews[sid] = items[0]['preview']
+        except Exception:
+            pass
+        time.sleep(0.05)  # stay well under Deezer rate limits
+    return previews
 
 
 # ---------------------------------------------------------------------------
@@ -256,12 +284,16 @@ def progress():
             sp = get_spotify_client()
             if sp:
                 track_ids = [t['spotify_id'] for t in top_tracks if t.get('spotify_id')]
-                art_map   = fetch_album_art(sp, track_ids)
+                art_map   = fetch_track_meta(sp, track_ids)
                 for t in top_tracks:
                     t['album_art_url'] = art_map.get(t.get('spotify_id'), None)
             else:
                 for t in top_tracks:
                     t['album_art_url'] = None
+
+            preview_map = fetch_deezer_previews(top_tracks)
+            for t in top_tracks:
+                t['preview_url'] = preview_map.get(t.get('spotify_id'), None)
 
             horoscope_meanings = {
                 a['aspect'].split(' (orb:')[0].strip(): a.get('meaning', '')
@@ -387,14 +419,19 @@ def rescore_endpoint():
             'spotify_id':    t.get('spotify_id', ''),
             'spotify_url':   t.get('spotify_url', ''),
             'album_art_url': None,
+            'preview_url':   None,
         })
 
     sp = get_spotify_client()
     if sp:
         ids     = [t['spotify_id'] for t in tracks if t.get('spotify_id')]
-        art_map = fetch_album_art(sp, ids)
+        art_map = fetch_track_meta(sp, ids)
         for t in tracks:
             t['album_art_url'] = art_map.get(t.get('spotify_id'))
+
+    preview_map = fetch_deezer_previews(tracks)
+    for t in tracks:
+        t['preview_url'] = preview_map.get(t.get('spotify_id'), None)
 
     return jsonify({
         'tracks': tracks,
