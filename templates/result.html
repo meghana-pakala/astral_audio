@@ -120,7 +120,7 @@ body::before {
 /* ── Header nav ── */
 nav {
   display: flex; justify-content: flex-start; align-items: center;
-  margin-bottom: 44px;
+  margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -139,7 +139,7 @@ nav {
   background: rgba(13,17,40,0.75);
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 22px 36px;
+  padding: 14px 28px;
   backdrop-filter: blur(12px);
   opacity: 0; animation: fadeUp .7s .05s ease forwards;
   text-align: center;
@@ -147,7 +147,7 @@ nav {
 .horoscope-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: normal;
-  font-size: clamp(1.2rem, 2vw, 1.35rem);
+  font-size: clamp(1.4rem, 2.5vw, 1.7rem);
   font-weight: 400; line-height: 1.4;
   color: var(--cream); margin: 0;
 }
@@ -159,7 +159,7 @@ nav {
   font-family: 'Space Mono', monospace;
   font-size: 0.8rem; line-height: 1.9;
   color: rgba(242,232,204,0.80);
-  margin-bottom: 44px;
+  margin-bottom: 24px;
   text-align: center;
   opacity: 0; animation: fadeUp .7s .1s ease forwards;
 }
@@ -191,12 +191,12 @@ nav {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-right: 44px;
+  padding-right: 28px;
   border-right: 1px solid var(--border);
 }
 .playlist-right {
   min-width: 0;
-  padding-left: 24px;
+  padding-left: 16px;
 }
 
 /* ── Audio controls (sliders + radar) ── */
@@ -230,7 +230,28 @@ nav {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
+  position: relative;
+  cursor: default;
 }
+.slider-label[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 0; top: calc(100% + 6px);
+  background: #141c35;
+  border: 1px solid rgba(212,175,106,0.35);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--cream);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+}
+.slider-label[data-tip]:hover::after { opacity: 1; }
 .slider-val {
   font-family: 'Space Mono', monospace;
   font-size: 0.62rem;
@@ -329,7 +350,6 @@ nav {
 }
 .playlist-scroll {
   overflow-y: auto;
-  overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(212,175,106,0.15) transparent;
 }
@@ -341,7 +361,7 @@ nav {
 /* ── Track rows ── */
 .track-row {
   display: grid;
-  grid-template-columns: 24px 44px 1fr auto 28px;
+  grid-template-columns: 24px 44px 1fr auto 38px;
   gap: 12px; align-items: center;
   padding: 9px 4px; border-radius: 3px;
   cursor: pointer; transition: background .15s;
@@ -415,8 +435,8 @@ nav {
   color: var(--gold); font-size: 0.5rem;
   cursor: pointer; transition: all .15s;
   opacity: 0.45; flex-shrink: 0; padding: 0;
-  line-height: 1;
 }
+.track-open-btn svg { display: block; }
 .track-open-btn:hover,
 .track-row:hover .track-open-btn {
   opacity: 1; background: var(--border-dim); border-color: var(--gold);
@@ -493,6 +513,7 @@ nav {
   nav { flex-direction: column; align-items: flex-start; gap: 6px; }
   .playlist-layout { grid-template-columns: 1fr; }
   .controls-col { border-right: none; padding-right: 0; margin-right: 0; }
+  .remap-btn { margin-bottom: 28px; }
   .playlist-right { padding-left: 0; }
   #audio-radar { max-width: 200px; max-height: 180px; }
 }
@@ -612,7 +633,7 @@ FEATURES.forEach(f => {
   slidersCol.insertAdjacentHTML('beforeend', `
     <div class="slider-group">
       <div class="slider-header">
-        <span class="slider-label">${f.label}</span>
+        <span class="slider-label" data-tip="${f.tip}">${f.label}</span>
         <span class="slider-val" id="val-${f.key}">${pct}</span>
       </div>
       <input type="range" class="audio-slider" id="slider-${f.key}"
@@ -704,6 +725,9 @@ document.querySelectorAll('.audio-slider').forEach(slider => {
 const likedSet    = new Set();
 const dislikedSet = new Set();
 
+const PLAY_SVG  = `<svg width="8" height="9" viewBox="0 0 8 9" fill="currentColor"><polygon points="0,0 8,4.5 0,9"/></svg>`;
+const PAUSE_SVG = `<svg width="8" height="9" viewBox="0 0 8 9" fill="currentColor"><rect x="0" y="0" width="3" height="9"/><rect x="5" y="0" width="3" height="9"/></svg>`;
+
 function escHtml(s) {
   if (s == null) return '';
   return String(s)
@@ -732,7 +756,7 @@ function renderTrack(track, idx) {
     ? `<img class="track-art" src="${escHtml(track.album_art_url)}" alt="" loading="lazy">`
     : `<div class="track-art-placeholder"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg></div>`;
   const actionBtn = track.preview_url || track.spotify_url
-    ? `<button class="track-open-btn" data-action="play" title="${track.preview_url ? 'Play preview' : 'Open in Spotify'}">▶</button>`
+    ? `<button class="track-open-btn" data-action="play" title="${track.preview_url ? 'Play preview' : 'Open in Spotify'}">${PLAY_SVG}</button>`
     : `<div></div>`;
 
   return `
@@ -830,7 +854,7 @@ document.getElementById('playlist-scroll').addEventListener('click', function(e)
 
       document.querySelectorAll('.track-row.playing').forEach(r => {
         r.classList.remove('playing');
-        r.querySelector('.track-open-btn').textContent = '▶';
+        r.querySelector('.track-open-btn').innerHTML = PLAY_SVG;
       });
 
       if (isPlaying) {
@@ -839,10 +863,10 @@ document.getElementById('playlist-scroll').addEventListener('click', function(e)
         player.src = previewUrl;
         player.play();
         row.classList.add('playing');
-        actionBtn.textContent = '▐▐';
+        actionBtn.innerHTML = PAUSE_SVG;
         player.onended = () => {
           row.classList.remove('playing');
-          actionBtn.textContent = '▶';
+          actionBtn.innerHTML = PLAY_SVG;
         };
       }
     } else {
@@ -924,11 +948,11 @@ const svg = document.getElementById('transit-wheel');
 const ns  = 'http://www.w3.org/2000/svg';
 const cx = 130, cy = 130;
 
-const R_OUTER   = 122;
-const R_ZODIAC  = 106;
-const R_TRANSIT = 90;
+const R_OUTER   = 130;
+const R_ZODIAC  = 112;
+const R_TRANSIT = 94;
 const R_DIVIDER = 72;
-const R_NATAL   = 52;
+const R_NATAL   = 54;   // 18px inside R_DIVIDER, matching transit planets' offset from their ring edge
 const R_CENTER  = 22;
 
 // Custom HTML tooltip
@@ -970,6 +994,14 @@ function addTip(elem, html) {
   elem.addEventListener('mouseenter', e => showTip(e, html));
   elem.addEventListener('mousemove',  e => moveTip(e));
   elem.addEventListener('mouseleave', hideTip);
+}
+
+const HOVER_FILL = 'rgba(212,175,106,0.09)';
+function addRingTip(elem, html) {
+  elem.style.cursor = 'default';
+  elem.addEventListener('mouseenter', e => { elem.setAttribute('fill', HOVER_FILL); showTip(e, html); });
+  elem.addEventListener('mousemove',  e => moveTip(e));
+  elem.addEventListener('mouseleave', () => { elem.setAttribute('fill', 'transparent'); hideTip(); });
 }
 
 // ── Background ──
@@ -1014,12 +1046,12 @@ for (let i = 0; i < 12; i++) {
     d: `M${ox1},${oy1} A${R_OUTER},${R_OUTER} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_ZODIAC},${R_ZODIAC} 0 0,0 ${ix1},${iy1} Z`,
     fill: 'transparent', stroke: 'none'
   });
-  addTip(wedge, `<strong style="color:#d4af6a">${SIGNS[i].sym} ${SIGNS[i].name}</strong>`);
+  addRingTip(wedge, `<strong style="color:#d4af6a">${SIGNS[i].sym} ${SIGNS[i].name}</strong>`);
   svg.appendChild(wedge);
 
   const [lx,ly] = polar(deg + 15, (R_OUTER + R_ZODIAC) / 2);
   const txt = el('text', {x:lx, y:ly, 'text-anchor':'middle', 'dominant-baseline':'middle',
-    fill:'rgba(255,255,255,0.55)', 'font-size':'8', 'font-family':'sans-serif',
+    fill:'rgba(255,255,255,0.55)', 'font-size':'11', 'font-family':'sans-serif',
     'font-variant':'normal', style:'font-variant-emoji:text'});
   txt.textContent = SIGNS[i].sym;
   svg.appendChild(txt);
@@ -1029,63 +1061,38 @@ for (let i = 0; i < 12; i++) {
 const TRANSIT_TIP = '<strong style="color:#d4af6a">Transit Chart</strong><br>Today\'s planet positions in the sky';
 const NATAL_TIP   = '<strong style="color:#d4af6a">Natal Chart</strong><br>Planet positions at the moment of your birth';
 
-for (let i = 0; i < 12; i++) {
-  const s = (i * 30 - 90) * Math.PI / 180;
-  const e = ((i + 1) * 30 - 90) * Math.PI / 180;
-  const ox1 = cx + (R_ZODIAC-1)  * Math.cos(s), oy1 = cy + (R_ZODIAC-1)  * Math.sin(s);
-  const ox2 = cx + (R_ZODIAC-1)  * Math.cos(e), oy2 = cy + (R_ZODIAC-1)  * Math.sin(e);
-  const ix1 = cx + (R_DIVIDER+1) * Math.cos(s), iy1 = cy + (R_DIVIDER+1) * Math.sin(s);
-  const ix2 = cx + (R_DIVIDER+1) * Math.cos(e), iy2 = cy + (R_DIVIDER+1) * Math.sin(e);
-  const tw = el('path', {
-    d:`M${ox1},${oy1} A${R_ZODIAC-1},${R_ZODIAC-1} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_DIVIDER+1},${R_DIVIDER+1} 0 0,0 ${ix1},${iy1} Z`,
-    fill:'transparent', stroke:'none'
-  });
-  addTip(tw, TRANSIT_TIP);
-  svg.appendChild(tw);
-}
+// Single annulus for transit ring hover (fill-rule evenodd = donut shape)
+const tRing = el('path', {
+  d: `M${cx},${cy - (R_ZODIAC-1)} A${R_ZODIAC-1},${R_ZODIAC-1} 0 1,1 ${cx - 0.001},${cy - (R_ZODIAC-1)} Z ` +
+     `M${cx},${cy - (R_DIVIDER+1)} A${R_DIVIDER+1},${R_DIVIDER+1} 0 1,1 ${cx - 0.001},${cy - (R_DIVIDER+1)} Z`,
+  fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd'
+});
+addRingTip(tRing, TRANSIT_TIP);
+svg.appendChild(tRing);
 
-// TRANSITS label
-const tRingLabel = el('text', {x:cx, y:cy - R_DIVIDER - 10, 'text-anchor':'middle',
-  fill:'rgba(212,175,106,0.45)', 'font-size':'6.5',
-  'font-family':'Space Mono, monospace', 'letter-spacing':'1.5'});
-tRingLabel.textContent = 'TRANSITS';
-svg.appendChild(tRingLabel);
 
-// ── Natal ring hit areas ──
-for (let i = 0; i < 12; i++) {
-  const s = (i * 30 - 90) * Math.PI / 180;
-  const e = ((i + 1) * 30 - 90) * Math.PI / 180;
-  const ox1 = cx + (R_DIVIDER-1) * Math.cos(s), oy1 = cy + (R_DIVIDER-1) * Math.sin(s);
-  const ox2 = cx + (R_DIVIDER-1) * Math.cos(e), oy2 = cy + (R_DIVIDER-1) * Math.sin(e);
-  const ix1 = cx + (R_CENTER+1)  * Math.cos(s), iy1 = cy + (R_CENTER+1)  * Math.sin(s);
-  const ix2 = cx + (R_CENTER+1)  * Math.cos(e), iy2 = cy + (R_CENTER+1)  * Math.sin(e);
-  const nw = el('path', {
-    d:`M${ox1},${oy1} A${R_DIVIDER-1},${R_DIVIDER-1} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_CENTER+1},${R_CENTER+1} 0 0,0 ${ix1},${iy1} Z`,
-    fill:'transparent', stroke:'none'
-  });
-  addTip(nw, NATAL_TIP);
-  svg.appendChild(nw);
-}
+// Single annulus for natal ring hover
+const nRing = el('path', {
+  d: `M${cx},${cy - (R_DIVIDER-1)} A${R_DIVIDER-1},${R_DIVIDER-1} 0 1,1 ${cx - 0.001},${cy - (R_DIVIDER-1)} Z ` +
+     `M${cx},${cy - (R_CENTER+1)} A${R_CENTER+1},${R_CENTER+1} 0 1,1 ${cx - 0.001},${cy - (R_CENTER+1)} Z`,
+  fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd'
+});
+addRingTip(nRing, NATAL_TIP);
+svg.appendChild(nRing);
 
-// NATAL label
-const nRingLabel = el('text', {x:cx, y:cy - R_CENTER - 12, 'text-anchor':'middle',
-  fill:'rgba(212,175,106,0.35)', 'font-size':'6.5',
-  'font-family':'Space Mono, monospace', 'letter-spacing':'1.5'});
-nRingLabel.textContent = 'NATAL';
-svg.appendChild(nRingLabel);
 
 // ── Planet descriptions & symbols ──
 const PLANET_DESC = {
-  'Sun':     'Core identity and life force — vitality, ego, conscious self.',
-  'Moon':    'Your emotional world, instincts, and inner needs.',
-  'Mercury': 'How you think, communicate, and process information.',
-  'Venus':   'How you love, what you value, and your sense of beauty.',
-  'Mars':    'Your drive, ambition, and how you take action.',
-  'Jupiter': 'Expansion, luck, and where life feels abundant.',
-  'Saturn':  'Discipline, structure, and the lessons life asks you to learn.',
-  'Uranus':  'Disruption, innovation, and sudden change.',
-  'Neptune': 'Dreams, intuition, spirituality, and dissolving boundaries.',
-  'Pluto':   'Deep transformation, power, and what cannot stay hidden.',
+  'Sun':     'Core identity and conscious self — vitality, ego, purpose.',
+  'Moon':    'Emotional world and inner life — instincts, needs, memory.',
+  'Mercury': 'Mind and communication — thought, language, perception.',
+  'Venus':   'Love and values — beauty, desire, connection.',
+  'Mars':    'Drive and action — ambition, will, assertion.',
+  'Jupiter': 'Expansion and fortune — growth, abundance, belief.',
+  'Saturn':  'Structure and discipline — limits, responsibility, mastery.',
+  'Uranus':  'Change and innovation — disruption, freedom, awakening.',
+  'Neptune': 'Imagination and spirit — dreams, intuition, dissolution.',
+  'Pluto':   'Transformation and power — depth, renewal, the hidden.',
 };
 
 const PLANET_SYMBOLS = {
@@ -1095,11 +1102,11 @@ const PLANET_SYMBOLS = {
 };
 
 const ASPECT_DESC = {
-  trine:       'Trine (120°) — harmonious, easy energy flow between planets',
-  opposition:  'Opposition (180°) — tension between planets calling for balance',
-  conjunction: "Conjunction (0°) — planets merged, intensifying each other's energy",
-  square:      'Square (90°) — friction and challenge that drives growth',
-  sextile:     'Sextile (60°) — opportunity and cooperative energy between planets',
+  conjunction: 'Conjunction (0°) — planets merged — intensity, focus, fusion.',
+  opposition:  'Opposition (180°) — planets in tension — polarity, awareness, balance.',
+  trine:       'Trine (120°) — planets in flow — ease, harmony, creative support.',
+  square:      'Square (90°) — planets in friction — challenge, pressure, growth.',
+  sextile:     'Sextile (60°) — planets in dialogue — opportunity, cooperation, potential.',
 };
 
 const ASPECT_COLORS = ['#d4af6a', '#c47a8a', '#7ab3c8'];
@@ -1114,12 +1121,27 @@ const activaTransit = TRANSIT_PLANETS.filter(p => _transitNames.has(p.name));
 const aspectWheelGroups = ASPECT_DATA.map(() => ({ line: null, natal: null, transit: null }));
 
 // ── Aspect lines ──
+const PLANET_R = 11; // matches the hit-circle radius on each glyph
 ASPECT_DATA.forEach((a, idx) => {
   const np = activaNatal.find(p => p.name === a.planet1);
   const tp = activaTransit.find(p => p.name === a.planet2);
   if (!np || !tp) return;
-  const [x1,y1] = polar(np.deg, R_NATAL + 10);
-  const [x2,y2] = polar(tp.deg, R_TRANSIT - 10);
+
+  // Planet centres
+  const [ncx, ncy] = polar(np.deg, R_NATAL);
+  const [tcx, tcy] = polar(tp.deg, R_TRANSIT);
+
+  // Unit vector along the line
+  const dx = tcx - ncx, dy = tcy - ncy;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const ux = dx / len, uy = dy / len;
+
+  // Offset each endpoint by the planet circle radius so the line
+  // starts/ends at the circle edge regardless of angle
+  const x1 = ncx + ux * PLANET_R;
+  const y1 = ncy + uy * PLANET_R;
+  const x2 = tcx - ux * PLANET_R;
+  const y2 = tcy - uy * PLANET_R;
   const line = el('line', {
     x1, y1, x2, y2,
     stroke: 'rgba(212,175,106,0.25)',
@@ -1134,10 +1156,11 @@ ASPECT_DATA.forEach((a, idx) => {
 });
 
 // ── Planet glyph helper ──
-function makePlanetGlyph(x, y, planet, isNatal) {
+function makePlanetGlyph(x, y, planet, isNatal, opacity = 1) {
   const sym = PLANET_SYMBOLS[planet.name] || planet.name[0];
   const g   = document.createElementNS(ns, 'g');
   g.style.cursor = 'default';
+  g.setAttribute('opacity', opacity);
   const hlCircle = el('circle', {
     cx: x, cy: y, r: '11', fill: 'none', stroke: '#d4af6a',
     'stroke-width': '1.5', opacity: '0',
@@ -1149,48 +1172,55 @@ function makePlanetGlyph(x, y, planet, isNatal) {
   t.setAttribute('text-anchor', 'middle');
   t.setAttribute('dominant-baseline', 'middle');
   t.setAttribute('fill', planet.color);
-  t.setAttribute('font-size', '10');
+  t.setAttribute('font-size', '13');
   t.setAttribute('font-family', 'serif');
-  t.setAttribute('opacity', isNatal ? '0.8' : '1');
   t.textContent = sym;
   g.appendChild(t);
   g.appendChild(el('circle', { cx: x, cy: y, r: '11', fill: 'transparent', stroke: 'none' }));
   return g;
 }
 
-// ── Transit planets ──
-activaTransit.forEach(p => {
+// ── All transit planets (inactive first so active render on top) ──
+[...TRANSIT_PLANETS].sort((a,b) => _transitNames.has(a.name) - _transitNames.has(b.name)).forEach(p => {
+  const active = _transitNames.has(p.name);
   const [x, y] = polar(p.deg, R_TRANSIT);
   const [tx1, ty1] = polar(p.deg, R_ZODIAC - 1);
   const [tx2, ty2] = polar(p.deg, R_ZODIAC - 7);
-  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.7', opacity:'0.35' }));
-  const g = makePlanetGlyph(x, y, p, false);
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color,
+    'stroke-width': active ? '0.7' : '0.5', opacity: active ? '0.35' : '0.2' }));
+  const g = makePlanetGlyph(x, y, p, false, active ? 1 : 0.35);
   const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet2 === p.name ? [...acc, i] : acc), []);
   g._tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(transit)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
   addTip(g, g._tipHtml);
-  g.addEventListener('mouseenter', (e) => { showTip(e, g._tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
-  g.addEventListener('mousemove',  moveTip);
-  g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+  if (active) {
+    g.addEventListener('mouseenter', (e) => { showTip(e, g._tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
+    g.addEventListener('mousemove',  moveTip);
+    g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+    idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].transit = g; });
+  }
   svg.appendChild(g);
-  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].transit = g; });
 });
 
-// ── Natal planets ──
-activaNatal.forEach(p => {
+// ── All natal planets (inactive first so active render on top) ──
+[...NATAL_PLANETS].sort((a,b) => _natalNames.has(a.name) - _natalNames.has(b.name)).forEach(p => {
+  const active = _natalNames.has(p.name);
   const [x, y] = polar(p.deg, R_NATAL);
   const [tx1, ty1] = polar(p.deg, R_DIVIDER - 1);
   const [tx2, ty2] = polar(p.deg, R_DIVIDER - 6);
-  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.7', opacity:'0.4' }));
-  const g = makePlanetGlyph(x, y, p, true);
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color,
+    'stroke-width': active ? '0.7' : '0.5', opacity: active ? '0.4' : '0.2' }));
+  const g = makePlanetGlyph(x, y, p, true, active ? 0.9 : 0.35);
   const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet1 === p.name ? [...acc, i] : acc), []);
   const tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(natal)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
   g._tipHtml = tipHtml;
   addTip(g, tipHtml);
-  g.addEventListener('mouseenter', (e) => { showTip(e, tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
-  g.addEventListener('mousemove',  moveTip);
-  g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+  if (active) {
+    g.addEventListener('mouseenter', (e) => { showTip(e, tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
+    g.addEventListener('mousemove',  moveTip);
+    g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+    idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].natal = g; });
+  }
   svg.appendChild(g);
-  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].natal = g; });
 });
 
 // ── Bidirectional highlight ──
