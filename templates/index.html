@@ -142,19 +142,20 @@ body::before{
 /* ── Location ── */
 .location-status{display:block;font-size:10px;color:var(--gold);margin-top:6px;font-family:var(--mono);letter-spacing:.04em}
 .location-wrap{position:relative}
+.loc-check{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:14px;display:none;pointer-events:none;line-height:1}
 
 /* ── Segmented pickers ── */
 .seg-wrap{display:flex;align-items:center;border-bottom:1px solid var(--border);padding:10px 0;transition:border-color .2s;cursor:text}
 .seg-wrap:focus-within{border-bottom-color:var(--gold)}
 .seg{position:relative;display:inline-flex;flex-direction:column;align-items:center}
-.seg-display{font-family:var(--mono);font-size:13px;color:var(--cream);min-width:2ch;text-align:center;cursor:pointer;padding:2px 3px;border-radius:2px;border:none;background:transparent;transition:background .15s,color .15s;user-select:none;outline:none}
-.seg-display.placeholder{color:var(--text-dim)}
+.seg-display{font-family:var(--mono);font-size:13px;color:var(--cream);text-align:center;cursor:text;padding:2px 6px;border-radius:2px;border:none;background:transparent;transition:background .15s,color .15s;outline:none;caret-color:var(--gold);-webkit-appearance:none}
+.seg-display::placeholder{color:var(--text-dim)}
 .seg-display:hover{background:var(--border-dim);color:var(--gold-pale)}
 .seg-display.open,.seg-display:focus{background:rgba(212,175,106,0.15);color:var(--gold);outline:none}
 .ampm-btn{font-family:var(--mono);font-size:13px;border:1px solid var(--border);background:transparent;cursor:pointer;padding:2px 8px;border-radius:2px;outline:none;color:var(--text-dim);transition:color .15s,border-color .15s,background .15s}
-.ampm-btn.ampm-selected{color:var(--gold);border-color:var(--gold);background:rgba(212,175,106,.08)}
+.ampm-btn.ampm-selected{color:var(--cream);border-color:var(--cream);background:rgba(255,248,230,.06)}
 .ampm-sep{color:var(--text-dim);opacity:.5;padding:0 3px;font-family:var(--mono);font-size:13px;user-select:none}
-.seg-sep{font-family:var(--mono);font-size:13px;color:var(--text-dim);padding:0 3px;user-select:none}
+.seg-sep{font-family:var(--mono);font-size:13px;color:var(--text-dim);padding:0 5px;user-select:none}
 .seg-picker{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;background:var(--navy-card);border:1px solid var(--border-h);border-radius:4px;width:72px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.7)}
 .seg-picker.open{display:block}
 .picker-scroll{height:144px;overflow-y:auto;scrollbar-width:none}
@@ -166,9 +167,10 @@ body::before{
 .picker-item{display:flex;align-items:center;justify-content:center;height:36px;font-family:var(--mono);font-size:11px;color:var(--text-dim);cursor:pointer;transition:color .1s,background .1s;border-radius:2px}
 .picker-item:hover{color:var(--gold-pale);background:rgba(212,175,106,0.06)}
 .picker-item.selected{color:var(--gold);font-size:13px}
+.picker-item.picker-highlight{color:var(--gold-pale);background:rgba(212,175,106,0.12)}
 
 /* ── Library toggle ── */
-.lib-toggle{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.lib-toggle{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:10px}
 .lib-opt{border:1px solid var(--border);border-radius:4px;padding:18px 20px;cursor:pointer;text-align:center;transition:all .25s}
 .lib-opt.on{border-color:var(--gold);background:rgba(212,175,106,.06)}
 .lib-opt:hover{border-color:var(--border-h)}
@@ -177,11 +179,11 @@ body::before{
 .lib-badge{display:inline-block;margin-top:8px;padding:3px 10px;border:1px solid var(--gold-dim);border-radius:20px;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim)}
 
 /* ── Upload ── */
-.library-panel{padding-top:4px}
+.library-panel{padding-top:0;margin-bottom:36px}
 .library-upload-hint{font-size:13px;color:var(--cream);margin-bottom:14px;line-height:1.6;text-align:center;font-family:var(--mono)}
 .library-upload-hint a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(212,175,106,.3)}
 .upload-area{position:relative;border:1px dashed var(--border);border-radius:4px;padding:28px;text-align:center;transition:border-color .2s,background .2s;cursor:pointer}
-.upload-area:hover{border-color:var(--border-h);background:rgba(212,175,106,0.04)}
+.upload-area:hover,.upload-area.drag-over{border-color:var(--border-h);background:rgba(212,175,106,0.04)}
 .upload-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .upload-label{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
 .upload-icon{font-size:1.4rem;color:var(--gold);opacity:.6}
@@ -194,7 +196,7 @@ body::before{
 .pill:hover,.pill.on{border-color:var(--gold);color:var(--gold);background:rgba(212,175,106,.07)}
 .check-pill{cursor:pointer}
 .check-pill input{display:none}
-.check-pill span{display:inline-block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px;border:1px solid var(--border);border-radius:20px;color:var(--cream);transition:all .2s;font-family:var(--mono)}
+.check-pill span{display:inline-block;font-size:10px;letter-spacing:.12em;padding:7px 15px;border:1px solid var(--border);border-radius:20px;color:var(--cream);transition:all .2s;font-family:var(--mono)}
 .check-pill:hover span,.check-pill input:checked + span{border-color:var(--gold);color:var(--gold);background:rgba(212,175,106,.07)}
 .row-break{width:100%;height:0}
 
@@ -256,10 +258,45 @@ background-image:
 @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-@media(max-width:768px){
+@media(max-width:960px){
   .form-card{padding:32px 24px}
   .form-row2{grid-template-columns:1fr;gap:0}
   .lib-toggle{grid-template-columns:1fr}
+  .birth-time-col{padding-top:28px}
+
+  /* Hero: stack chart above text on narrow screens */
+  .hero-wrap{
+    display:flex !important;
+    flex-direction:column;
+    overflow:hidden !important;
+  }
+  .hero-chart{
+    position:relative !important;
+    right:auto !important;
+    top:auto !important;
+    width:100% !important;
+    height:min(220px,55vw) !important;
+    overflow:hidden;
+    margin:0;
+    pointer-events:none;
+  }
+  .hero-chart svg{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(440px,110vw) !important;
+    height:min(440px,110vw) !important;
+  }
+  .hero-text{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    padding:28px 4vw 32px !important;
+    margin-left:0 !important;
+    box-sizing:border-box !important;
+    grid-column:1 / -1 !important;
+  }
 }
 </style>
 {% if maps_key %}
@@ -369,10 +406,10 @@ background-image:
 <div class="screen">
 
   <!-- ── HERO: full-width grid with chart bleeding off top-right ── -->
-  <div style="position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:start;padding-bottom:0;">
+  <div class="hero-wrap" style="position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:start;padding-bottom:0;">
 
     <!-- Chart: absolute, bleeds off top and right -->
-    <div style="position:absolute;right:clamp(-160px,-10vw,-60px);top:clamp(-80px,-6vw,-30px);width:clamp(520px,60vw,820px);height:clamp(520px,60vw,820px);pointer-events:none;">
+    <div class="hero-chart" style="position:absolute;right:clamp(-160px,-10vw,-60px);top:clamp(-80px,-6vw,-30px);width:clamp(520px,60vw,820px);height:clamp(520px,60vw,820px);pointer-events:none;">
 <svg id="natal-chart" viewBox="0 0 600 600" style="width:100%;height:100%;display:block;">
   <defs>
     <filter id="planetGlow" x="-80%" y="-80%" width="260%" height="260%">
@@ -453,15 +490,15 @@ background-image:
     </div>
 
     <!-- Text column -->
-    <div style="position:relative;z-index:2;padding:clamp(28px,4vw,52px) 0 clamp(28px,4vw,52px) clamp(7vw,10vw,12vw);display:flex;flex-direction:column;gap:clamp(16px,1.9vw,28px);grid-column:1;margin-left:auto;max-width:42vw;">
+    <div class="hero-text" style="position:relative;z-index:2;padding:clamp(28px,4vw,52px) 0 clamp(28px,4vw,52px) max(4vw,calc((100vw - 960px) / 2));display:flex;flex-direction:column;gap:clamp(16px,1.9vw,28px);grid-column:1;margin-left:0;">
 
       <h1 class="cinzel-title">Harmony of<br>the Spheres</h1>
 
-      <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(18px,1.6vw,23px);font-style:italic;color:var(--cream);margin:0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
+      <p style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(20px,1.9vw,26px);font-style:italic;color:var(--cream);margin:0;letter-spacing:0.02em;">The sky is singing — tune in.</p>
 
       <div style="width:clamp(80px,8vw,120px);height:1px;background:var(--border-mid);"></div>
 
-      <div style="font-family:var(--mono);font-size:clamp(11px,1vw,14px);line-height:1.9;color:var(--text-dim);max-width:38vw;">
+      <div style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.9;color:var(--text-dim);max-width:38vw;">
         <p style="margin:0 0 1.2em 0;">
           <em style="color:var(--gold);font-style:italic;">Musica Universalis</em> — Harmony of the Spheres — is the ancient idea that <span style="color:var(--cream);opacity:0.9;">planetary motion has a frequency.</span>
         </p>
@@ -509,33 +546,33 @@ background-image:
             <label class="lbl">Birth Date</label>
             <div class="seg-wrap" id="dateWrap">
               <div class="seg" id="segMonth">
-                <button class="seg-display placeholder" id="dispMonth" tabindex="2" type="button">MM</button>
+                <input class="seg-display" id="dispMonth" tabindex="2" type="text" maxlength="2" size="2" placeholder="MM" inputmode="numeric" autocomplete="off">
                 <div class="seg-picker" id="pickerMonth"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollMonth"></div></div></div>
               </div>
               <span class="seg-sep">/</span>
               <div class="seg" id="segDay">
-                <button class="seg-display placeholder" id="dispDay" tabindex="3" type="button">DD</button>
+                <input class="seg-display" id="dispDay" tabindex="3" type="text" maxlength="2" size="2" placeholder="DD" inputmode="numeric" autocomplete="off">
                 <div class="seg-picker" id="pickerDay"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollDay"></div></div></div>
               </div>
               <span class="seg-sep">/</span>
               <div class="seg" id="segYear">
-                <button class="seg-display placeholder" id="dispYear" tabindex="4" type="button" style="min-width:4ch">YYYY</button>
+                <input class="seg-display" id="dispYear" tabindex="4" type="text" maxlength="4" size="4" placeholder="YYYY" inputmode="numeric" autocomplete="off" style="min-width:3ch">
                 <div class="seg-picker" id="pickerYear" style="width:88px"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollYear"></div></div></div>
               </div>
             </div>
             <input type="hidden" id="birth_date" name="birth_date">
           </div>
 
-          <div>
+          <div class="birth-time-col">
             <label class="lbl">Birth Time</label>
             <div class="seg-wrap" id="timeWrap">
               <div class="seg" id="segHour">
-                <button class="seg-display placeholder" id="dispHour" tabindex="5" type="button">HH</button>
+                <input class="seg-display" id="dispHour" tabindex="5" type="text" maxlength="2" size="2" placeholder="HH" inputmode="numeric" autocomplete="off">
                 <div class="seg-picker" id="pickerHour"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollHour"></div></div></div>
               </div>
               <span class="seg-sep">:</span>
               <div class="seg" id="segMin">
-                <button class="seg-display placeholder" id="dispMin" tabindex="6" type="button">MM</button>
+                <input class="seg-display" id="dispMin" tabindex="6" type="text" maxlength="2" size="2" placeholder="MM" inputmode="numeric" autocomplete="off">
                 <div class="seg-picker" id="pickerMin"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollMin"></div></div></div>
               </div>
               <span class="seg-sep" style="padding:0 8px"></span>
@@ -553,6 +590,7 @@ background-image:
           <div class="location-wrap">
             <input class="inp" type="text" id="birth_location" tabindex="7" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="birthList"></div>
+            <span class="loc-check" id="birthCheck">✓</span>
           </div>
           <span class="location-status" id="birthStatus"></span>
           <input type="hidden" id="birth_lat" name="birth_lat">
@@ -566,6 +604,7 @@ background-image:
           <div class="location-wrap">
             <input class="inp" type="text" id="current_location" tabindex="8" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="currentList"></div>
+            <span class="loc-check" id="currentCheck">✓</span>
           </div>
           <span class="location-status" id="currentStatus"></span>
           <input type="hidden" id="current_lat" name="current_lat">
@@ -574,7 +613,7 @@ background-image:
         </div>
 
         <!-- Music Library -->
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:18px">
           <label class="lbl">Music Library</label>
           <div class="lib-toggle">
             <div class="lib-opt on" id="optUpload">
@@ -583,7 +622,7 @@ background-image:
             </div>
             <div class="lib-opt" id="optPool">
               <div class="lib-t">Local Library</div>
-              <div class="lib-s">{% if pool_count %}~{{ (pool_count // 1000) }}K Track Database{% else %}~12K Track Database{% endif %}</div>
+              <div class="lib-s">{% if pool_count %}~{{ ((pool_count + 500) // 1000) }}K Song Database{% endif %}</div>
             </div>
           </div>
           <input type="hidden" id="library_choice" name="library_choice" value="upload">
@@ -610,15 +649,15 @@ background-image:
           <div class="form-group" style="margin-bottom:0">
             <div class="filter-label">Decade</div>
             <div class="pill-group">
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="pre1960"><span>Pre-1960s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1960"><span>1960s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1970"><span>1970s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1980"><span>1980s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1990"><span>1990s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="pre1960"><span style="text-transform:none">Pre-1960s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1960"><span style="text-transform:none">1960s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1970"><span style="text-transform:none">1970s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1980"><span style="text-transform:none">1980s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1990"><span style="text-transform:none">1990s</span></label>
               <div class="row-break"></div>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2000"><span>2000s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2010"><span>2010s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2020"><span>2020s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2000"><span style="text-transform:none">2000s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2010"><span style="text-transform:none">2010s</span></label>
+              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2020"><span style="text-transform:none">2020s</span></label>
             </div>
           </div>
         </div>
@@ -632,6 +671,7 @@ background-image:
               <span class="upload-icon">↑</span>
               <span class="upload-primary" id="uploadPrimary">Drop CSV Here</span>
             </label>
+            <button type="button" id="clearUploadBtn" onclick="clearUpload(event)" style="display:none;position:absolute;top:8px;right:10px;background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.1rem;line-height:1;opacity:0.7;padding:4px;z-index:2" title="Remove file">&times;</button>
           </div>
         </div>
 
@@ -656,8 +696,8 @@ function showLoading() {
 // ── Google Places autocomplete ──
 function initLocationAutocomplete() {
   var fields = [
-    { inputId:'birth_location',   latId:'birth_lat',    lngId:'birth_lng',    tzId:'birth_tz',    listId:'birthList',   statusId:'birthStatus'   },
-    { inputId:'current_location', latId:'current_lat',  lngId:'current_lng',  tzId:'current_tz',  listId:'currentList', statusId:'currentStatus' }
+    { inputId:'birth_location',   latId:'birth_lat',    lngId:'birth_lng',    tzId:'birth_tz',    listId:'birthList',   statusId:'birthStatus',   checkId:'birthCheck'   },
+    { inputId:'current_location', latId:'current_lat',  lngId:'current_lng',  tzId:'current_tz',  listId:'currentList', statusId:'currentStatus', checkId:'currentCheck' }
   ];
   if (typeof google === 'undefined' || !google.maps || !google.maps.places) return;
 
@@ -693,9 +733,12 @@ function initLocationAutocomplete() {
       list.classList.add('open');
     }
 
+    var checkEl = f.checkId ? document.getElementById(f.checkId) : null;
+
     function selectPrediction(p) {
       input.value = p.description;
       list.classList.remove('open');
+      if (checkEl) checkEl.style.display = 'block';
       placeSvc.getDetails({placeId: p.place_id, fields: ['geometry']}, function(place, sc) {
         if (sc === google.maps.places.PlacesServiceStatus.OK && place && place.geometry) {
           var lat = place.geometry.location.lat();
@@ -721,6 +764,7 @@ function initLocationAutocomplete() {
       status.textContent = ''; clearTimeout(debounceTimer);
       document.getElementById(f.latId).value = '';
       document.getElementById(f.lngId).value = '';
+      if (checkEl) checkEl.style.display = 'none';
       var val = this.value.trim();
       if (val.length < 2) { list.classList.remove('open'); return; }
       debounceTimer = setTimeout(function() {
@@ -806,130 +850,341 @@ document.getElementById('optUpload').addEventListener('click', function() {
   document.getElementById('panelUpload').style.display='block'; document.getElementById('panelPool').style.display='none';
   document.getElementById('library_choice').value='upload';
 });
-document.getElementById('csvFile').addEventListener('change', function() {
-  document.getElementById('uploadPrimary').textContent = this.files.length ? this.files[0].name : 'Drop CSV Here';
-  if (this.files.length) document.getElementById('uploadArea').style.borderColor='rgba(212,175,106,0.5)';
-});
+(function() {
+  var area  = document.getElementById('uploadArea');
+  var input = document.getElementById('csvFile');
+  var label = document.getElementById('uploadPrimary');
+
+  var clearBtn = document.getElementById('clearUploadBtn');
+
+  var uploadIcon = document.querySelector('#uploadArea .upload-icon');
+
+  function setFile(name) {
+    if (uploadIcon) uploadIcon.style.display = 'none';
+    label.textContent = name;
+    label.style.fontSize = '14px';
+    label.style.color = 'var(--cream)';
+    label.style.letterSpacing = '0';
+    area.style.borderColor = 'rgba(212,175,106,0.5)';
+    clearBtn.style.display = 'block';
+  }
+
+  function clearFile() {
+    input.value = '';
+    if (uploadIcon) uploadIcon.style.display = '';
+    label.textContent = 'Drop CSV Here';
+    label.style.fontSize = '';
+    label.style.color = '';
+    label.style.letterSpacing = '';
+    area.style.borderColor = '';
+    clearBtn.style.display = 'none';
+  }
+
+  window.clearUpload = function(e) {
+    e.preventDefault(); e.stopPropagation();
+    clearFile();
+  };
+
+  input.addEventListener('change', function() {
+    if (this.files.length) setFile(this.files[0].name);
+    else clearFile();
+  });
+
+  area.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    area.classList.add('drag-over');
+  });
+  area.addEventListener('dragleave', function(e) {
+    if (!area.contains(e.relatedTarget)) area.classList.remove('drag-over');
+  });
+  area.addEventListener('drop', function() {
+    area.classList.remove('drag-over');
+  });
+})();
 
 // ── Picker engine ──
-var dateState={month:null,day:null,year:null}, timeState={hour:null,min:null,ampm:null};
-var openPicker=null;
-function buildItems(arr){return arr.map(function(v){return{value:v,label:String(v).padStart(2,'0')};})}
-var currentYear=new Date().getFullYear(), yearRange=[];
-for(var y=currentYear;y>=1920;y--) yearRange.push(y);
-var pickerConfigs=[
-  {id:'Month',scrollId:'scrollMonth',dispId:'dispMonth',pickerId:'pickerMonth',
-   items:Array.from({length:12},function(_,i){return{value:i+1,label:String(i+1).padStart(2,'0')}}),
-   format:function(v){return String(v).padStart(2,'0')},
-   onSelect:function(v){dateState.month=v;updateDayPicker();syncDate()},nextId:'dispDay'},
-  {id:'Day',scrollId:'scrollDay',dispId:'dispDay',pickerId:'pickerDay',
-   items:buildItems(Array.from({length:31},function(_,i){return i+1})),
-   format:function(v){return String(v).padStart(2,'0')},
-   onSelect:function(v){dateState.day=v;syncDate()},nextId:'dispYear'},
-  {id:'Year',scrollId:'scrollYear',dispId:'dispYear',pickerId:'pickerYear',
-   items:yearRange.map(function(y){return{value:y,label:String(y)}}),
-   format:function(v){return String(v)},
-   onSelect:function(v){dateState.year=v;syncDate()},nextId:'dispHour'},
-  {id:'Hour',scrollId:'scrollHour',dispId:'dispHour',pickerId:'pickerHour',
-   items:buildItems(Array.from({length:12},function(_,i){return i+1})),
-   format:function(v){return String(v).padStart(2,'0')},
-   onSelect:function(v){timeState.hour=v;syncTime()},nextId:'dispMin'},
-  {id:'Min',scrollId:'scrollMin',dispId:'dispMin',pickerId:'pickerMin',
-   items:buildItems(Array.from({length:60},function(_,i){return i})),
-   format:function(v){return String(v).padStart(2,'0')},
-   onSelect:function(v){timeState.min=v;syncTime()},nextId:null}
+var dateState = {month:null, day:null, year:null};
+var timeState = {hour:null, min:null, ampm:null};
+var openPicker = null;
+
+// ── Scroll list builder ──
+var currentYear = new Date().getFullYear(), yearRange = [];
+for (var y = currentYear; y >= 1920; y--) yearRange.push(y);
+
+var pickerConfigs = [
+  {id:'Month', scrollId:'scrollMonth', dispId:'dispMonth', pickerId:'pickerMonth',
+   min:1, max:12, pad:2, placeholder:'MM',
+   items: Array.from({length:12}, function(_,i){return {value:i+1, label:String(i+1).padStart(2,'0')}}),
+   onSelect: function(v){dateState.month=v; updateDayPicker(); syncDate();}, nextId:'dispDay'},
+  {id:'Day', scrollId:'scrollDay', dispId:'dispDay', pickerId:'pickerDay',
+   min:1, max:31, pad:2, placeholder:'DD',
+   items: Array.from({length:31}, function(_,i){return {value:i+1, label:String(i+1).padStart(2,'0')}}),
+   onSelect: function(v){dateState.day=v; syncDate();}, nextId:'dispYear'},
+  {id:'Year', scrollId:'scrollYear', dispId:'dispYear', pickerId:'pickerYear',
+   min:1920, max:currentYear, pad:4, placeholder:'YYYY',
+   items: yearRange.map(function(y){return {value:y, label:String(y)}}),
+   onSelect: function(v){dateState.year=v; syncDate();}, nextId:'dispHour'},
+  {id:'Hour', scrollId:'scrollHour', dispId:'dispHour', pickerId:'pickerHour',
+   min:1, max:12, pad:2, placeholder:'HH',
+   items: Array.from({length:12}, function(_,i){return {value:i+1, label:String(i+1).padStart(2,'0')}}),
+   onSelect: function(v){timeState.hour=v; syncTime();}, nextId:'dispMin'},
+  {id:'Min', scrollId:'scrollMin', dispId:'dispMin', pickerId:'pickerMin',
+   min:0, max:59, pad:2, placeholder:'MM',
+   items: Array.from({length:60}, function(_,i){return {value:i, label:String(i).padStart(2,'0')}}),
+   onSelect: function(v){timeState.min=v; syncTime();}, nextId:null},
 ];
-function rebuildScrollList(cfg,scroll){
-  scroll.innerHTML='';
-  cfg.items.forEach(function(item){
-    var el=document.createElement('div'); el.className='picker-item';
-    el.dataset.value=String(item.value); el.textContent=item.label;
-    el.addEventListener('mousedown',function(e){e.preventDefault();selectItem(cfg,item.value);});
+
+function getCfg(dispId) { return pickerConfigs.find(function(c){return c.dispId===dispId;}); }
+
+function buildScrollList(cfg) {
+  var scroll = document.getElementById(cfg.scrollId);
+  scroll.innerHTML = '';
+  cfg.items.forEach(function(item) {
+    var el = document.createElement('div');
+    el.className = 'picker-item';
+    el.dataset.value = String(item.value);
+    el.textContent = item.label;
+    el.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      var inp = document.getElementById(cfg.dispId);
+      inp.value = item.label;
+      cfg.onSelect(item.value);
+      markSelected(cfg, item.value);
+      closePicker();
+      if (cfg.nextId) {
+        var next = document.getElementById(cfg.nextId);
+        if (next) { next.focus(); next.select(); openPickerFor(getCfg(cfg.nextId)); }
+      }
+    });
     scroll.appendChild(el);
   });
 }
-function buildPicker(cfg){rebuildScrollList(cfg,document.getElementById(cfg.scrollId));}
-function updateDayPicker(){
-  var m=dateState.month||1,yy=dateState.year||2000,maxDay=new Date(yy,m,0).getDate();
-  var cfg=pickerConfigs.find(function(c){return c.id==='Day';});
-  cfg.items=buildItems(Array.from({length:maxDay},function(_,i){return i+1;}));
-  rebuildScrollList(cfg,document.getElementById('scrollDay'));
-  if(dateState.day&&dateState.day>maxDay){
-    dateState.day=null; var d=document.getElementById('dispDay'); d.textContent='DD'; d.classList.add('placeholder');
-  } else if(dateState.day) markSelected(cfg,dateState.day);
+
+function updateDayPicker() {
+  var m = dateState.month || 1, yy = dateState.year || 2000;
+  var maxDay = new Date(yy, m, 0).getDate();
+  var cfg = getCfg('dispDay');
+  cfg.items = Array.from({length:maxDay}, function(_,i){return {value:i+1, label:String(i+1).padStart(2,'0')}});
+  cfg.max = maxDay;
+  buildScrollList(cfg);
+  if (dateState.day && dateState.day > maxDay) {
+    dateState.day = null;
+    document.getElementById('dispDay').value = '';
+  } else if (dateState.day) markSelected(cfg, dateState.day);
 }
-function markSelected(cfg,value){
-  document.getElementById(cfg.scrollId).querySelectorAll('.picker-item').forEach(function(el){
-    el.classList.toggle('selected',el.dataset.value===String(value));
+
+function markSelected(cfg, value) {
+  var scroll = document.getElementById(cfg.scrollId);
+  scroll.querySelectorAll('.picker-item').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.value === String(value));
   });
 }
-function scrollToValue(cfg,value){
-  var scroll=document.getElementById(cfg.scrollId);
-  var target=scroll.querySelector('.picker-item[data-value="'+String(value)+'"]');
-  if(target) scroll.scrollTop=target.offsetTop;
+
+function scrollToValue(cfg, value) {
+  var scroll = document.getElementById(cfg.scrollId);
+  var target = scroll.querySelector('.picker-item[data-value="' + String(value) + '"]');
+  if (target) scroll.scrollTop = target.offsetTop - scroll.offsetHeight / 2 + target.offsetHeight / 2;
 }
-function selectItem(cfg,value){
-  var disp=document.getElementById(cfg.dispId);
-  disp.textContent=cfg.format(value); disp.classList.remove('placeholder');
-  cfg.onSelect(value); markSelected(cfg,value); scrollToValue(cfg,value); closePicker();
-  if(cfg.nextId){var next=document.getElementById(cfg.nextId);if(next){next.focus();openPickerFor(pickerConfigs.find(function(c){return c.dispId===cfg.nextId;}));}}
-}
-function openPickerFor(cfg){
-  if(!cfg)return;
-  if(openPicker&&openPicker!==cfg.id)closePickerById(openPicker);
+
+function openPickerFor(cfg) {
+  if (!cfg) return;
+  if (openPicker && openPicker !== cfg.id) closePickerById(openPicker);
   document.getElementById(cfg.pickerId).classList.add('open');
-  document.getElementById(cfg.dispId).classList.add('open');
-  openPicker=cfg.id;
-  var v=getCurrentVal(cfg.id);
-  if(v!==null)requestAnimationFrame(function(){scrollToValue(cfg,v);});
+  openPicker = cfg.id;
+  var v = getStateVal(cfg.id);
+  if (v !== null) requestAnimationFrame(function(){ scrollToValue(cfg, v); markSelected(cfg, v); });
 }
-function getCurrentVal(id){
-  if(id==='Month')return dateState.month; if(id==='Day')return dateState.day;
-  if(id==='Year')return dateState.year;   if(id==='Hour')return timeState.hour;
-  if(id==='Min')return timeState.min;     return null;
-}
-function closePicker(){if(openPicker)closePickerById(openPicker);}
-function closePickerById(id){
-  var cfg=pickerConfigs.find(function(c){return c.id===id;});
-  if(!cfg)return;
+
+function closePicker() { if (openPicker) closePickerById(openPicker); }
+
+function closePickerById(id) {
+  var cfg = pickerConfigs.find(function(c){return c.id===id;});
+  if (!cfg) return;
   document.getElementById(cfg.pickerId).classList.remove('open');
-  document.getElementById(cfg.dispId).classList.remove('open');
-  openPicker=null;
+  document.getElementById(cfg.scrollId).querySelectorAll('.picker-highlight').forEach(function(el){ el.classList.remove('picker-highlight'); });
+  openPicker = null;
 }
-pickerConfigs.forEach(function(cfg){
-  buildPicker(cfg);
-  var disp=document.getElementById(cfg.dispId), justFocused=false;
-  disp.addEventListener('focus',function(){justFocused=true;openPickerFor(cfg);setTimeout(function(){justFocused=false;},200);});
-  disp.addEventListener('click',function(e){e.stopPropagation();if(justFocused)return;if(openPicker===cfg.id){closePicker();return;}openPickerFor(cfg);});
-  disp.addEventListener('blur',function(){setTimeout(function(){if(openPicker===cfg.id)closePicker();},150);});
-});
-document.getElementById('ampmAM').addEventListener('click',function(){
-  timeState.ampm='AM';
+
+function getStateVal(id) {
+  if (id==='Month') return dateState.month;
+  if (id==='Day')   return dateState.day;
+  if (id==='Year')  return dateState.year;
+  if (id==='Hour')  return timeState.hour;
+  if (id==='Min')   return timeState.min;
+  return null;
+}
+
+// ── Auto-advance threshold: if first digit makes a 2-digit value impossible ──
+var advanceThreshold = {Month:2, Day:4, Hour:2, Min:6};
+
+function bindInput(cfg) {
+  buildScrollList(cfg);
+  var inp = document.getElementById(cfg.dispId);
+
+  var _focusOpened = false;
+  inp.addEventListener('focus', function() {
+    _focusOpened = true;
+    setTimeout(function() { openPickerFor(cfg); _focusOpened = false; }, 0);
+  });
+
+  inp.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (_focusOpened) return; // focus already opened it
+    if (openPicker === cfg.id) { closePicker(); return; }
+    openPickerFor(cfg);
+  });
+
+  inp.addEventListener('input', function() {
+    // Strip non-digits
+    var raw = inp.value.replace(/\D/g, '');
+    inp.value = raw;
+
+    if (raw.length === 0) return;
+
+    // Highlight best matching item in picker as user types
+    (function() {
+      var scroll = document.getElementById(cfg.scrollId);
+      var items = Array.from(scroll.querySelectorAll('.picker-item'));
+      items.forEach(function(el){ el.classList.remove('picker-highlight'); });
+      // Find first item whose label starts with the typed digits
+      var typed = raw;
+      var match = items.find(function(el){ return el.dataset.value && String(parseInt(el.dataset.value)).padStart(cfg.pad,'0').startsWith(typed); })
+                  || items.find(function(el){ return el.dataset.value && el.dataset.value.startsWith(typed); });
+      if (match) {
+        match.classList.add('picker-highlight');
+        match.scrollIntoView({block:'nearest'});
+      }
+    })();
+
+    // Smart auto-advance for 2-digit fields: if first digit exceeds threshold
+    var thresh = advanceThreshold[cfg.id];
+    if (thresh && raw.length === 1 && parseInt(raw) >= thresh) {
+      // Commit as single-digit value, pad and advance
+      var val = parseInt(raw);
+      val = Math.max(cfg.min, Math.min(cfg.max, val));
+      inp.value = String(val).padStart(cfg.pad, '0');
+      cfg.onSelect(val);
+      markSelected(cfg, val);
+      scrollToValue(cfg, val);
+      closePicker();
+      if (cfg.nextId) {
+        var next = document.getElementById(cfg.nextId);
+        if (next) { next.focus(); next.select(); openPickerFor(getCfg(cfg.nextId)); }
+      }
+      return;
+    }
+
+    // Auto-advance when field is full
+    if (raw.length >= cfg.pad) {
+      var val = parseInt(raw.slice(0, cfg.pad));
+      val = Math.max(cfg.min, Math.min(cfg.max, val));
+      inp.value = String(val).padStart(cfg.pad, '0');
+      cfg.onSelect(val);
+      markSelected(cfg, val);
+      scrollToValue(cfg, val);
+      closePicker();
+      if (cfg.nextId) {
+        var next = document.getElementById(cfg.nextId);
+        if (next) { next.focus(); next.select(); openPickerFor(getCfg(cfg.nextId)); }
+      }
+    }
+  });
+
+  inp.addEventListener('blur', function() {
+    var raw = inp.value.replace(/\D/g, '');
+    if (raw.length > 0 && raw.length < cfg.pad) {
+      var val = parseInt(raw);
+      val = Math.max(cfg.min, Math.min(cfg.max, val));
+      inp.value = String(val).padStart(cfg.pad, '0');
+      cfg.onSelect(val);
+      markSelected(cfg, val);
+    } else if (raw.length === 0) {
+      // clear state
+      if (cfg.id==='Month') dateState.month=null;
+      else if (cfg.id==='Day') dateState.day=null;
+      else if (cfg.id==='Year') dateState.year=null;
+      else if (cfg.id==='Hour') timeState.hour=null;
+      else if (cfg.id==='Min') timeState.min=null;
+    }
+    setTimeout(function(){ if (openPicker===cfg.id) closePicker(); }, 150);
+  });
+
+  inp.addEventListener('focus', function() {
+    // Open picker on focus (covers tab navigation and programmatic focus)
+    setTimeout(function() { openPickerFor(cfg); }, 0);
+  });
+
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closePicker(); inp.blur(); return; }
+    if (e.key === 'Tab')    { closePicker(); return; }
+
+    var isOpen = document.getElementById(cfg.pickerId).classList.contains('open');
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!isOpen) openPickerFor(cfg);
+      var scroll = document.getElementById(cfg.scrollId);
+      var items = Array.from(scroll.querySelectorAll('.picker-item'));
+      if (!items.length) return;
+      var curIdx = items.findIndex(function(el){ return el.classList.contains('picker-highlight'); });
+      if (curIdx < 0) {
+        // start from selected or first
+        curIdx = items.findIndex(function(el){ return el.classList.contains('selected'); });
+        if (curIdx < 0) curIdx = 0;
+      } else {
+        curIdx = e.key === 'ArrowDown' ? Math.min(curIdx + 1, items.length - 1)
+                                       : Math.max(curIdx - 1, 0);
+      }
+      items.forEach(function(el){ el.classList.remove('picker-highlight'); });
+      items[curIdx].classList.add('picker-highlight');
+      items[curIdx].scrollIntoView({block:'nearest'});
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      var scroll = document.getElementById(cfg.scrollId);
+      var highlighted = scroll.querySelector('.picker-item.picker-highlight');
+      if (highlighted) {
+        e.preventDefault();
+        var val = parseInt(highlighted.dataset.value);
+        inp.value = String(val).padStart(cfg.pad, '0');
+        cfg.onSelect(val);
+        markSelected(cfg, val);
+        scrollToValue(cfg, val);
+        scroll.querySelectorAll('.picker-item').forEach(function(el){ el.classList.remove('picker-highlight'); });
+        closePicker();
+        if (cfg.nextId) {
+          var next = document.getElementById(cfg.nextId);
+          if (next) { next.focus(); next.select(); }
+        }
+      } else {
+        closePicker();
+      }
+    }
+  });
+}
+
+pickerConfigs.forEach(bindInput);
+
+// AM/PM
+document.getElementById('ampmAM').addEventListener('click', function(){
+  timeState.ampm = 'AM';
   document.getElementById('ampmAM').classList.add('ampm-selected');
   document.getElementById('ampmPM').classList.remove('ampm-selected');
   syncTime();
 });
-document.getElementById('ampmPM').addEventListener('click',function(){
-  timeState.ampm='PM';
+document.getElementById('ampmPM').addEventListener('click', function(){
+  timeState.ampm = 'PM';
   document.getElementById('ampmPM').classList.add('ampm-selected');
   document.getElementById('ampmAM').classList.remove('ampm-selected');
   syncTime();
 });
-var keyBuffer='',keyTimer=null;
-document.addEventListener('keydown',function(e){
-  if(e.key==='Tab'){closePicker();return;} if(!openPicker)return;
-  if(e.key==='Escape'||e.key==='Enter'){closePicker();return;}
-  if(e.key.length!==1)return; e.preventDefault();
-  clearTimeout(keyTimer); keyBuffer+=e.key;
-  keyTimer=setTimeout(function(){keyBuffer='';},800);
-  var cfg=pickerConfigs.find(function(c){return c.id===openPicker;});
-  if(!cfg)return;
-  var padded=keyBuffer.padStart(cfg.id==='Year'?keyBuffer.length:2,'0');
-  var match=cfg.items.find(function(i){return i.label.startsWith(padded);})||cfg.items.find(function(i){return i.label.startsWith(keyBuffer);});
-  if(match){markSelected(cfg,match.value);scrollToValue(cfg,match.value);var d=document.getElementById(cfg.dispId);d.textContent=cfg.format(match.value);d.classList.remove('placeholder');cfg.onSelect(match.value);}
+
+document.addEventListener('click', function(){ closePicker(); });
+document.querySelectorAll('.seg-picker').forEach(function(p){
+  p.addEventListener('click', function(e){ e.stopPropagation(); });
 });
-document.addEventListener('click',function(){closePicker();});
-document.querySelectorAll('.seg-picker').forEach(function(p){p.addEventListener('click',function(e){e.stopPropagation();});});
+
 function syncDate(){var m=dateState.month,d=dateState.day,y=dateState.year;if(m&&d&&y)document.getElementById('birth_date').value=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
 function syncTime(){var h=timeState.hour,m=timeState.min,a=timeState.ampm;if(h!==null&&m!==null){var h24=h;if(a==='AM'&&h===12)h24=0;if(a==='PM'&&h!==12)h24=h+12;document.getElementById('birth_time').value=String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');}}
 </script>
