@@ -31,10 +31,11 @@ _PLANET_ATTRS = {
     'Pluto': 'pluto',
 }
 
-# which planets to show in each ring of the wheel
-NATAL_PLANETS_LIST   = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Saturn']
+# which planets to pull for each ring of the wheel (all planets, no Chiron)
+NATAL_PLANETS_LIST   = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
+                         'Saturn', 'Uranus', 'Neptune', 'Pluto']
 TRANSIT_PLANETS_LIST = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
-                         'Saturn', 'Uranus', 'Neptune']
+                         'Saturn', 'Uranus', 'Neptune', 'Pluto']
 
 
 def get_planet_list(subject, planet_names):

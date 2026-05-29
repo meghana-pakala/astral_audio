@@ -3,6 +3,7 @@ Load music library from:
 - user upload  — Exportify CSV with audio features (used directly for that session)
 - local library — persistent pool CSV; supports genre and decade filtering
 """
+import logging
 import pandas as pd
 from pathlib import Path
 from typing import Optional
@@ -31,7 +32,7 @@ def load_user_playlist(path: str) -> pd.DataFrame:
     df = df.dropna(subset=AUDIO_FEATURES)
     df['spotify_id']  = df['track_uri'].str.split(':').str[-1]
     df['spotify_url'] = 'https://open.spotify.com/track/' + df['spotify_id']
-    print(f'Loaded {len(df)} tracks from {Path(path).name}')
+    logging.info(f'Loaded {len(df)} tracks from {Path(path).name}')
     return df
 
 
@@ -102,10 +103,10 @@ def load_music_library(user_playlist_path: Optional[str] = None,
     if user_playlist_path and Path(user_playlist_path).exists():
         try:
             df = load_user_playlist(user_playlist_path)
-            print('Using personal library.')
+            logging.info('Using personal library.')
             return df
         except Exception as e:
-            print(f'Could not load Exportify CSV ({e}), falling back to local library.')
+            logging.warning(f'Could not load Exportify CSV ({e}), falling back to local library.')
 
     if not local_library_path or not Path(local_library_path).exists():
         raise FileNotFoundError(
@@ -115,5 +116,5 @@ def load_music_library(user_playlist_path: Optional[str] = None,
 
     df = load_user_playlist(local_library_path)
     df = apply_library_filters(df, genre_filters, decade_filters)
-    print('Using local music library.')
+    logging.info('Using local music library.')
     return df

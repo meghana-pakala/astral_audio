@@ -3,6 +3,7 @@ LLM horoscope generation via Gemini
 Takes daily aspect text and returns structured horoscope dict
 """
 import json
+import logging
 import os
 import re
 from google import genai
@@ -111,7 +112,7 @@ def get_horoscope(transit_aspects):
         # retry with backup key on rate limit (429) or quota errors
         err_str = str(e).lower()
         if backup_key and any(x in err_str for x in ('429', 'quota', 'rate limit', 'resource exhausted')):
-            print(f"[horoscope] Primary key hit rate limit, falling back to backup key. Error: {e}")
+            logging.warning(f'[horoscope] Primary key hit rate limit, falling back to backup key. Error: {e}')
             return _call_gemini(backup_key, prompt)
         raise
 
