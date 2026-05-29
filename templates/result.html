@@ -147,7 +147,7 @@ nav {
 .horoscope-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: normal;
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-size: clamp(1.2rem, 2vw, 1.35rem);
   font-weight: 400; line-height: 1.4;
   color: var(--cream); margin: 0;
 }
@@ -157,9 +157,10 @@ nav {
 }
 .horoscope-text {
   font-family: 'Space Mono', monospace;
-  font-size: 0.76rem; line-height: 1.9;
+  font-size: 0.8rem; line-height: 1.9;
   color: rgba(242,232,204,0.80);
   margin-bottom: 44px;
+  text-align: center;
   opacity: 0; animation: fadeUp .7s .1s ease forwards;
 }
 
@@ -173,10 +174,29 @@ nav {
   content: ''; flex: 1; height: 1px; background: var(--border);
 }
 .section-divider-title {
-  font-family: 'Space Mono', monospace;
-  font-size: 14px; letter-spacing: 0.38em;
+  font-family: var(--cinzel);
+  font-size: 16px; font-weight: 400; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--gold);
   white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── Playlist layout: left col (controls) + right col (tracks) ── */
+.playlist-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  align-items: start;
+}
+.controls-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 44px;
+  border-right: 1px solid var(--border);
+}
+.playlist-right {
+  min-width: 0;
+  padding-left: 24px;
 }
 
 /* ── Audio controls (sliders + radar) ── */
@@ -185,31 +205,29 @@ nav {
 }
 .controls-row {
   display: flex;
-  gap: 32px;
-  align-items: stretch;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 16px;
 }
 .sliders-col {
-  flex: 0 0 260px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 6px 0;
+  gap: 20px;
+  padding-top: 12px;
 }
 .slider-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 .slider-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
 }
 .slider-label {
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
@@ -217,8 +235,12 @@ nav {
   font-family: 'Space Mono', monospace;
   font-size: 0.62rem;
   color: var(--gold);
-  min-width: 28px;
-  text-align: right;
+  background: rgba(212,175,106,0.1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+  min-width: 42px;
+  text-align: center;
 }
 .audio-slider {
   -webkit-appearance: none;
@@ -248,35 +270,32 @@ nav {
   box-shadow: 0 0 4px rgba(212,175,106,0.4);
 }
 .radar-col {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
+  padding: 12px 0;
 }
 #audio-radar {
-  max-width: 290px;
-  max-height: 255px;
   width: 100%;
+  max-width: 220px;
+  max-height: 200px;
 }
 
-/* ── Personalize bar ── */
+/* ── Personalize bar (full-width row under section title) ── */
 .personalize-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-  padding: 10px 14px;
+  margin-bottom: 20px;
+  padding: 10px 10px;
   border: 1px solid var(--border);
   border-radius: 4px;
   background: rgba(212,175,106,0.03);
+  text-align: center;
 }
 .personalize-label {
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   color: var(--text-dim);
-  flex: 1;
   letter-spacing: 0.04em;
+  line-height: 1.5;
 }
 .remap-btn {
   font-family: 'Space Mono', monospace;
@@ -287,7 +306,7 @@ nav {
   background: transparent;
   border: 1px solid var(--border-mid);
   border-radius: 3px;
-  padding: 5px 14px;
+  padding: 5px 10px;
   cursor: pointer;
   transition: all .15s;
   flex-shrink: 0;
@@ -304,8 +323,12 @@ nav {
 }
 
 /* ── Scrollable playlist ── */
+.playlist-right {
+  display: flex;
+  flex-direction: column;
+}
 .playlist-scroll {
-  max-height: 508px;
+  overflow-y: auto;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(212,175,106,0.15) transparent;
@@ -318,26 +341,20 @@ nav {
 /* ── Track rows ── */
 .track-row {
   display: grid;
-  grid-template-columns: 28px 44px 1fr auto 28px;
+  grid-template-columns: 24px 44px 1fr auto 28px;
   gap: 12px; align-items: center;
-  padding: 9px 10px; border-radius: 3px;
+  padding: 9px 4px; border-radius: 3px;
   cursor: pointer; transition: background .15s;
   position: relative;
 }
 .track-row:hover { background: rgba(255,255,255,0.04); }
-.track-row:hover .track-play  { opacity: 1; }
-.track-row:hover .track-num   { opacity: 0; }
+.track-row.playing { background: rgba(212,175,106,0.06); }
+.track-row.playing .track-open-btn { border-color: var(--gold); opacity: 1; background: var(--border-dim); }
 
 .track-num {
   font-family: 'Space Mono', monospace;
   font-size: 0.67rem; color: var(--text-dim);
-  text-align: right; transition: opacity .15s;
-}
-.track-play {
-  position: absolute; left: 10px; width: 28px;
-  font-size: 0.75rem; opacity: 0;
-  transition: opacity .15s; text-align: right;
-  color: var(--gold);
+  text-align: right;
 }
 .track-art {
   width: 44px; height: 44px; border-radius: 2px;
@@ -395,9 +412,10 @@ nav {
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   background: transparent; border: 1px solid rgba(212,175,106,0.18);
-  color: var(--gold); font-size: 0.55rem;
+  color: var(--gold); font-size: 0.5rem;
   cursor: pointer; transition: all .15s;
-  opacity: 0.45; flex-shrink: 0; padding-left: 2px;
+  opacity: 0.45; flex-shrink: 0; padding: 0;
+  line-height: 1;
 }
 .track-open-btn:hover,
 .track-row:hover .track-open-btn {
@@ -434,11 +452,11 @@ nav {
 .aspect-pill-inner { flex: 1; }
 .aspect-name {
   color: var(--cream);
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Space Mono', monospace;
   font-style: italic;
 }
 .aspect-meaning {
-  font-size: 0.63rem; color: var(--text-dim);
+  font-size: 0.68rem; color: var(--text-dim);
   margin-top: 5px; line-height: 1.5; display: block;
   font-family: 'Space Mono', monospace;
 }
@@ -473,8 +491,10 @@ nav {
   .wheel-wrap { display: none; }
   .horoscope-title { font-size: 1.8rem; }
   nav { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .controls-row { flex-direction: column; }
-  .sliders-col { flex: none; width: 100%; }
+  .playlist-layout { grid-template-columns: 1fr; }
+  .controls-col { border-right: none; padding-right: 0; margin-right: 0; }
+  .playlist-right { padding-left: 0; }
+  #audio-radar { max-width: 200px; max-height: 180px; }
 }
 </style>
 </head>
@@ -495,27 +515,34 @@ nav {
 
   <!-- ── PLAYLIST ── -->
   <div class="playlist-block">
-    <div class="section-divider"><span class="section-divider-title">Astral Audio</span></div>
+    <div class="section-divider"><span class="section-divider-title">Astral  Audio</span></div>
 
-    <!-- Sliders + Radar -->
-    <div class="audio-controls">
-      <div class="controls-row">
-        <div class="sliders-col" id="sliders-col">
-          <!-- populated by JS -->
-        </div>
-        <div class="radar-col">
-          <canvas id="audio-radar"></canvas>
-        </div>
-      </div>
-      <div class="personalize-bar">
-        <span class="personalize-label">Personalize further by adjusting audio features above and rating tracks below.</span>
-        <button id="remap-btn" class="remap-btn">RESCORE</button>
-      </div>
+    <div class="personalize-bar">
+      <span class="personalize-label">Adjust the audio features and rate tracks to personalize your playlist.</span>
     </div>
 
-    <!-- Tracks -->
-    <div class="playlist-scroll" id="playlist-scroll">
-      <!-- populated by JS -->
+    <div class="playlist-layout">
+      <!-- Left col: sliders, chart, rescore -->
+      <div class="controls-col">
+        <div class="audio-controls">
+          <div class="controls-row">
+            <div class="sliders-col" id="sliders-col">
+              <!-- populated by JS -->
+            </div>
+            <div class="radar-col">
+              <canvas id="audio-radar"></canvas>
+            </div>
+          </div>
+        </div>
+        <button id="remap-btn" class="remap-btn">RESCORE</button>
+      </div>
+
+      <!-- Right col: tracks -->
+      <div class="playlist-right">
+        <div class="playlist-scroll" id="playlist-scroll">
+          <!-- populated by JS -->
+        </div>
+      </div>
     </div>
   </div>
 
@@ -548,6 +575,9 @@ nav {
 
 </div><!-- end .page -->
 
+<!-- Hidden audio player for 30s previews -->
+<audio id="preview-player" preload="none"></audio>
+
 <!-- Planet + aspect data injected by Flask for the transit wheel -->
 <script>
 const NATAL_PLANETS   = {{ natal_planets | tojson }};
@@ -568,10 +598,10 @@ const INITIAL_TRACKS  = {{ tracks | tojson }};
 // Radar order (Chart.js starts at top, goes clockwise):
 // index 0 = top, 1 = right, 2 = bottom, 3 = left
 const FEATURES = [
-  { key: 'acousticness', label: 'Acousticness',  tip: 'Acoustic presence' },       // top
-  { key: 'energy',       label: 'Energy',         tip: 'Intensity & activity' },    // right
-  { key: 'danceability', label: 'Danceability',   tip: 'Suitability for dancing' }, // bottom
-  { key: 'valence',      label: 'Valence',        tip: 'Emotional positivity' },    // left
+  { key: 'valence',      label: 'Valence',      abbr: 'VAL',  tip: 'Emotional Positivity' },
+  { key: 'energy',       label: 'Energy',       abbr: 'NRG',  tip: 'Range of Intensity & Activity' },
+  { key: 'danceability', label: 'Danceability', abbr: 'DNC',  tip: 'Consistency of Rhythm & Beat' },
+  { key: 'acousticness', label: 'Acousticness', abbr: 'ACOU', tip: 'Electronic vs. Acoustic Production' },
 ];
 
 // ── Build sliders ──
@@ -598,7 +628,7 @@ const originalData = FEATURES.map(f => TARGET_VECTOR[f.key] || 0);
 const radarChart = new Chart(radarCtx, {
   type: 'radar',
   data: {
-    labels: FEATURES.map(f => f.label),
+    labels: FEATURES.map(f => f.abbr),
     datasets: [
       {
         label: 'Original',
@@ -695,22 +725,22 @@ function thumbDownSvg(filled) {
 }
 
 function renderTrack(track, idx) {
-  const uri       = track.track_uri || '';
-  const isLiked   = likedSet.has(uri);
-  const isDis     = dislikedSet.has(uri);
-  const artHtml   = track.album_art_url
+  const uri     = track.track_uri || '';
+  const isLiked = likedSet.has(uri);
+  const isDis   = dislikedSet.has(uri);
+  const artHtml = track.album_art_url
     ? `<img class="track-art" src="${escHtml(track.album_art_url)}" alt="" loading="lazy">`
     : `<div class="track-art-placeholder"><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg></div>`;
-  const openBtn   = track.spotify_url
-    ? `<button class="track-open-btn" data-action="open" title="Open in Spotify">▶</button>`
+  const actionBtn = track.preview_url || track.spotify_url
+    ? `<button class="track-open-btn" data-action="play" title="${track.preview_url ? 'Play preview' : 'Open in Spotify'}">▶</button>`
     : `<div></div>`;
 
   return `
     <div class="track-row"
          data-track-uri="${escHtml(uri)}"
-         data-spotify-url="${escHtml(track.spotify_url || '')}">
+         data-spotify-url="${escHtml(track.spotify_url || '')}"
+         data-preview-url="${escHtml(track.preview_url || '')}">
       <div class="track-num">${idx + 1}</div>
-      <div class="track-play">▶</div>
       ${artHtml}
       <div class="track-info">
         <div class="track-name">${escHtml(track.name)}</div>
@@ -724,7 +754,7 @@ function renderTrack(track, idx) {
           ${thumbDownSvg(isDis)}
         </button>
       </div>
-      ${openBtn}
+      ${actionBtn}
     </div>`;
 }
 
@@ -735,6 +765,17 @@ function renderPlaylist(tracks) {
 
 // Initial render
 renderPlaylist(INITIAL_TRACKS);
+
+// ── Match playlist scroll height to controls column ──
+function matchPlaylistHeight() {
+  const controls = document.querySelector('.controls-col');
+  const scroll   = document.querySelector('.playlist-scroll');
+  if (controls && scroll) {
+    scroll.style.maxHeight = controls.offsetHeight + 'px';
+  }
+}
+matchPlaylistHeight();
+window.addEventListener('resize', matchPlaylistHeight);
 
 // ── Event delegation for playlist interactions ──
 document.getElementById('playlist-scroll').addEventListener('click', function(e) {
@@ -777,16 +818,41 @@ document.getElementById('playlist-scroll').addEventListener('click', function(e)
     return;
   }
 
-  // Open-in-Spotify button
-  const openBtn = e.target.closest('.track-open-btn');
-  if (openBtn) {
+  // Circle button → play preview if available, otherwise open Spotify
+  const actionBtn = e.target.closest('.track-open-btn');
+  if (actionBtn) {
     e.stopPropagation();
-    const url = row.dataset.spotifyUrl;
-    if (url) window.open(url, '_blank');
+    const previewUrl = row.dataset.previewUrl;
+
+    if (previewUrl) {
+      const player    = document.getElementById('preview-player');
+      const isPlaying = row.classList.contains('playing');
+
+      document.querySelectorAll('.track-row.playing').forEach(r => {
+        r.classList.remove('playing');
+        r.querySelector('.track-open-btn').textContent = '▶';
+      });
+
+      if (isPlaying) {
+        player.pause();
+      } else {
+        player.src = previewUrl;
+        player.play();
+        row.classList.add('playing');
+        actionBtn.textContent = '▐▐';
+        player.onended = () => {
+          row.classList.remove('playing');
+          actionBtn.textContent = '▶';
+        };
+      }
+    } else {
+      const url = row.dataset.spotifyUrl;
+      if (url) window.open(url, '_blank');
+    }
     return;
   }
 
-  // Click on row → open Spotify
+  // Click anywhere else on row → open Spotify
   const url = row.dataset.spotifyUrl;
   if (url) window.open(url, '_blank');
 });
@@ -906,6 +972,9 @@ function addTip(elem, html) {
   elem.addEventListener('mouseleave', hideTip);
 }
 
+// ── Background ──
+svg.appendChild(el('circle', {cx,cy,r:R_OUTER, fill:'#0d1128', stroke:'none'}));
+
 // ── Rings ──
 const ringStroke = 'rgba(212,175,106,0.25)';
 svg.appendChild(el('circle', {cx,cy,r:R_OUTER, fill:'none', stroke:ringStroke, 'stroke-width':'1'}));
@@ -1007,7 +1076,7 @@ svg.appendChild(nRingLabel);
 
 // ── Planet descriptions & symbols ──
 const PLANET_DESC = {
-  'Sun':     'Your core identity and life force — vitality, ego, conscious self.',
+  'Sun':     'Core identity and life force — vitality, ego, conscious self.',
   'Moon':    'Your emotional world, instincts, and inner needs.',
   'Mercury': 'How you think, communicate, and process information.',
   'Venus':   'How you love, what you value, and your sense of beauty.',
@@ -1017,7 +1086,6 @@ const PLANET_DESC = {
   'Uranus':  'Disruption, innovation, and sudden change.',
   'Neptune': 'Dreams, intuition, spirituality, and dissolving boundaries.',
   'Pluto':   'Deep transformation, power, and what cannot stay hidden.',
-  'Chiron':  'The "wounded healer" — your deepest wound and greatest gift.',
 };
 
 const PLANET_SYMBOLS = {
@@ -1027,8 +1095,8 @@ const PLANET_SYMBOLS = {
 };
 
 const ASPECT_DESC = {
-  trine:       'Trine (120°) — harmonious, easy energy flow between the two planets',
-  opposition:  'Opposition (180°) — tension between two planets calling for balance',
+  trine:       'Trine (120°) — harmonious, easy energy flow between planets',
+  opposition:  'Opposition (180°) — tension between planets calling for balance',
   conjunction: "Conjunction (0°) — planets merged, intensifying each other's energy",
   square:      'Square (90°) — friction and challenge that drives growth',
   sextile:     'Sextile (60°) — opportunity and cooperative energy between planets',
