@@ -4,13 +4,18 @@ Routes: / → form, /start → session setup, /loading → loading page,
         /progress → SSE pipeline stream, /result → serve cached result,
         /rescore → adjust playlist, /api/timezone → lat/lng → tz
 """
+import json
 import logging
 import os
 import shutil
 import sys
+import time
+import urllib.parse
+import urllib.request
 import uuid
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, redirect, render_template, request, session, Response, stream_with_context
@@ -45,7 +50,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-please-change')
 # Stores library_df and target_vector so /rescore never reruns the pipeline.
 # ---------------------------------------------------------------------------
 _RESULT_CACHE: dict = {}
-_MAX_CACHE_ENTRIES = 50
+_MAX_CACHE_ENTRIES = 10
 
 
 def _cache_set(cache_id: str, data: dict):
@@ -118,7 +123,6 @@ def fetch_deezer_previews(tracks):
     """Fetch 30s preview URLs from Deezer public API (no auth required).
     tracks: list of dicts with 'name' and 'artist' keys.
     Returns dict keyed by spotify_id → preview_url."""
-    import urllib.request, urllib.parse, json, time
     previews = {}
     for t in tracks:
         sid = t.get('spotify_id')
@@ -238,8 +242,6 @@ def progress():
     cache_id = session.get('cache_id') or uuid.uuid4().hex
 
     def run_pipeline():
-        import json
-
         def event(name, message=None):
             data = {'event': name}
             if message:
@@ -315,8 +317,10 @@ def progress():
             natal_planets   = get_planet_list(natal_subj,   NATAL_PLANETS_LIST)
             transit_planets = get_planet_list(transit_subj, TRANSIT_PLANETS_LIST)
 
-            today_str = datetime.now().strftime('%A, %B %-d · %Y')
-            day_name  = datetime.now().strftime('%A')
+            user_tz   = ZoneInfo(current_location.get('tz', 'UTC'))
+            now_local = datetime.now(tz=user_tz)
+            today_str = now_local.strftime('%A, %B %-d · %Y')
+            day_name  = now_local.strftime('%A')
 
             # Store rendered HTML in cache so /result can serve it
             html = render_template(
@@ -443,6 +447,13 @@ def rescore_endpoint():
 # API helpers
 # ---------------------------------------------------------------------------
 
+try:
+    from timezonefinder import TimezoneFinder as _TF
+    _timezone_finder = _TF()
+except Exception:
+    _timezone_finder = None
+
+
 @app.route('/api/timezone')
 def api_timezone():
     """Resolve lat/lng to timezone string using timezonefinder."""
@@ -453,9 +464,9 @@ def api_timezone():
         return jsonify({'error': 'lat and lng required'}), 400
 
     try:
-        from timezonefinder import TimezoneFinder
-        tf = TimezoneFinder()
-        tz = tf.timezone_at(lat=lat, lng=lng) or 'UTC'
+        if _timezone_finder is None:
+            raise RuntimeError('timezonefinder not available')
+        tz = _timezone_finder.timezone_at(lat=lat, lng=lng) or 'UTC'
         return jsonify({'timezone': tz})
     except Exception:
         return jsonify({'timezone': 'UTC'})
