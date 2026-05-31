@@ -6,7 +6,7 @@ from datetime import datetime
 from kerykeion import AstrologicalSubject, SynastryAspects
 
 # suppress kerykeion geonames warning
-os.environ.setdefault('KERYKEION_GEONAMES_USERNAME', 'test')
+os.environ.setdefault('KERYKEION_GEONAMES_USERNAME', 'astral_audio')
 
 # limit to key planets
 PLANET_LIST = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
@@ -16,8 +16,8 @@ PLANET_LIST = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
 SIGN_ABBR_TO_FULL = {
     'Ari': 'Aries', 'Tau': 'Taurus', 'Gem': 'Gemini',  'Can': 'Cancer',
     'Leo': 'Leo',   'Vir': 'Virgo',  'Lib': 'Libra',   'Sco': 'Scorpio',
-    'Sag': 'Sagittarius', 'Cap': 'Capricorn', 'Aqu': 'Aquarius', 'Pis': 'Pisces',
-}
+    'Sag': 'Sagittarius', 'Cap': 'Capricorn', 'Aqu': 'Aquarius', 'Pis': 'Pisces'
+    }
 
 # limit to key aspects
 ASPECT_LIST = {'conjunction', 'opposition', 'trine', 'square', 'sextile'}
@@ -36,14 +36,17 @@ ASPECT_ORBS = {
     'Pluto':   {'conjunction': 2, 'opposition': 1, 'trine': 1, 'square': 1, 'sextile': 1}
     }
 
-# function to get filtered aspects given birth data and transit time/location
-def get_transit_aspects(birth_info: dict, transit_dt: datetime = None, transit_loc: dict = None):
+# get filtered aspects given birth data and transit time/location
+def get_transit_aspects(birth_info: dict, transit_dt=None, transit_loc: dict = None):
     """
     birth_info (dict): {date (YYYY-MM-DD), time (HH:MM), lat, lng, tz}
-    transit_dt (datetime): defaults to now
-    transit_loc (dict): {lat, lng, tz} defaults to birth location
+    transit_dt (datetime or 'YYYY-MM-DD HH:MM' string) - defaults to now
+    transit_loc (dict): {lat, lng, tz} - defaults to birth location
     """
     birth_dt = datetime.strptime(f"{birth_info['date']} {birth_info['time']}", '%Y-%m-%d %H:%M')
+
+    if isinstance(transit_dt, str):
+        transit_dt = datetime.strptime(transit_dt, '%Y-%m-%d %H:%M')
 
     natal = AstrologicalSubject(
         name='Natal',
