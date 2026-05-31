@@ -56,9 +56,7 @@ Planets are rarely at exactly 90° or 120°. An orb is the allowable margin of d
 
 Rather than using a flat cutoff, each planet gets its own orb allowance based on orbital speed and astrological significance. Faster planets get wider orbs because their aspects are temporally specific and personally immediate, creating genuine day-to-day variation. Slower planets get tighter orbs because their influence is more diffuse and long-lasting, creating meaningful aspects only when nearly exact.
 
-Once an aspect is identified, its moiety determines how strongly it influences the audio target. Both physics and astrology treat proximity as a nonlinear influence - gravitational and electromagnetic forces both follow the inverse square law (double the distance, quarter the influence). Applied to orbs:
-
-$$\text{signal\_strength} = \frac{1}{\text{orb}^2 + 1}$$
+Once an aspect is identified, its moiety determines how strongly it influences the audio target. Both physics and astrology treat proximity as a nonlinear influence - gravitational and electromagnetic forces both follow the inverse square law (double the distance, quarter the influence). Applied to orbs: `signal_strength = 1 / (orb² + 1)`
 
 A Venus trine Saturn at 0.06° carries near-full weight. The same aspect at 3° carries about 10%. Influence fades continuously rather than cutting off at a hard threshold.
 
