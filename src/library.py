@@ -33,6 +33,41 @@ def load_user_playlist(path: str) -> pd.DataFrame:
     logging.info(f'Loaded {len(df)} tracks from {Path(path).name}')
     return df
 
+# map spotify + mb genres to broad category labels used for filtering
+def _categorize_genres(genre_str, mb_genre_str='') -> str:
+    def _clean(s):
+        if s is None or (isinstance(s, float)):
+            return ''
+        return str(s).replace('-', ' ')
+
+    combined = ' '.join(filter(None, [_clean(genre_str), _clean(mb_genre_str)]))
+    if not combined.strip():
+        return ''
+    g = combined.lower()
+    categories = set()
+    if 'pop' in g:
+        categories.add('pop')
+    if any(k in g for k in ['rock', 'punk', 'grunge', 'metal']):
+        categories.add('rock')
+    if any(k in g for k in ['alternative', 'punk', 'emo', 'indie']):
+        categories.add('alternative')
+    if any(k in g for k in ['hip hop', 'rap', 'trap', 'afrobeats']):
+        categories.add('hip_hop')
+    if any(k in g for k in ['r&b', 'soul', 'doo wop', 'new jack swing', 'quiet storm']):
+        categories.add('r&b_soul')
+    if any(k in g for k in ['electronic', 'edm', 'electro', 'synth', 'house', 'techno', 'trance', 'dubstep']):
+        categories.add('electronic')
+    if 'country' in g:
+        categories.add('country')
+    if any(k in g for k in ['folk', 'americana', 'singer songwriter', 'acoustic']):
+        categories.add('folk_acoustic')
+    if any(k in g for k in ['funk', 'disco']):
+        categories.add('funk_disco')
+    if any(k in g for k in ['jazz', 'blues']):
+        categories.add('jazz_blues')
+    return ','.join(sorted(categories))
+
+
 # append tracks from user playlist to local library
 # deduplicate on track_uri and track_name + artist_names, keeping oldest release_date
 def merge_into_library(user_csv_path: str, local_library_path: str) -> int:
@@ -91,6 +126,27 @@ def merge_into_library(user_csv_path: str, local_library_path: str) -> int:
     if new_tracks.empty:
         return 0
 
+    new_tracks = new_tracks.copy()
+
+    # copy mb_genres from existing library entries for matching artists
+    existing_mb = (
+        local_df[local_df['mb_genres'].notna() &
+                 (local_df['mb_genres'].astype(str).str.strip() != '') &
+                 (local_df['mb_genres'].astype(str).str.strip() != 'none')]
+        .drop_duplicates('artist_names')
+        .set_index('artist_names')['mb_genres']
+        .to_dict()
+        )
+    if 'mb_genres' not in new_tracks.columns:
+        new_tracks['mb_genres'] = ''
+    missing_mb = new_tracks['mb_genres'].isna() | (new_tracks['mb_genres'].astype(str).str.strip() == '')
+    new_tracks.loc[missing_mb, 'mb_genres'] = new_tracks.loc[missing_mb, 'artist_names'].map(existing_mb)
+
+    # populate genre_categories from spotify + mb genres
+    new_tracks['genre_categories'] = new_tracks.apply(
+        lambda r: _categorize_genres(r.get('genres', ''), r.get('mb_genres', '')), axis=1
+        )
+
     pd.concat([local_df, new_tracks], ignore_index=True).to_csv(local_library_path, index=False)
     return len(new_tracks)
 
@@ -117,26 +173,17 @@ def apply_library_filters(df: pd.DataFrame,
 
     return filtered
 
-# return preferred library for track scoring
-def load_music_library(user_playlist_path: Optional[str] = None,
-                       local_library_path: str = '',
+# load full music library for track scoring (user uploads merged into local library)
+def load_music_library(local_library_path: str = '',
                        genre_filters: Optional[list] = None,
                        decade_filters: Optional[list] = None) -> pd.DataFrame:
-    if user_playlist_path and Path(user_playlist_path).exists():
-        try:
-            df = load_user_playlist(user_playlist_path)
-            logging.info('Using personal library.')
-            return df
-        except Exception as e:
-            logging.warning(f'Could not load Exportify CSV ({e}), falling back to local library.')
-
     if not local_library_path or not Path(local_library_path).exists():
         raise FileNotFoundError(
             'No local music library found. '
-            'Please upload your Exportify CSV or ensure the local library file exists.'
+            'Please ensure the local library file exists.'
             )
 
     df = load_user_playlist(local_library_path)
     df = apply_library_filters(df, genre_filters, decade_filters)
-    logging.info('Using local music library.')
+    logging.info(f'Library loaded: {len(df)} tracks')
     return df
