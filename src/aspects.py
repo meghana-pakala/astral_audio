@@ -12,6 +12,13 @@ os.environ.setdefault('KERYKEION_GEONAMES_USERNAME', 'test')
 PLANET_LIST = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
                'Saturn', 'Uranus', 'Neptune', 'Pluto']
 
+# kerykeion returns 3-letter sign abbreviations; normalize to full names
+SIGN_ABBR_TO_FULL = {
+    'Ari': 'Aries', 'Tau': 'Taurus', 'Gem': 'Gemini',  'Can': 'Cancer',
+    'Leo': 'Leo',   'Vir': 'Virgo',  'Lib': 'Libra',   'Sco': 'Scorpio',
+    'Sag': 'Sagittarius', 'Cap': 'Capricorn', 'Aqu': 'Aquarius', 'Pis': 'Pisces',
+}
+
 # limit to key aspects
 ASPECT_LIST = {'conjunction', 'opposition', 'trine', 'square', 'sextile'}
 
@@ -124,7 +131,7 @@ def get_planet_list(subject, planet_names):
             planets.append({
                 'name':  name,
                 'deg':   round(float(p.abs_pos), 1),
-                'sign':  p.sign,
+                'sign':  SIGN_ABBR_TO_FULL.get(p.sign, p.sign),
                 'color': PLANET_COLORS.get(name, '#aaaaaa'),
             })
         except AttributeError:
