@@ -82,7 +82,9 @@ def build_training_data(liked_df: pd.DataFrame, birth_info: dict, max_samples: i
             logging.debug(f'Skipping row {i}: {e}')
             continue
 
-        if (i + 1) % 50 == 0:
+        if progress_cb:
+            progress_cb(i + 1, len(df))
+        elif (i + 1) % 50 == 0:
             logging.info(f'  Processed {i + 1}/{len(df)} songs...')
         if progress_cb:
             progress_cb(i + 1, len(df))
