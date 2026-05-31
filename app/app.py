@@ -7,8 +7,10 @@ Routes: / → form, /start → session setup, /loading → loading page,
 import json
 import logging
 import os
+import queue
 import shutil
 import sys
+import threading
 import time
 import urllib.parse
 import urllib.request
@@ -17,6 +19,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import pandas as pd
 from dotenv import load_dotenv
 from flask import Flask, jsonify, redirect, render_template, request, session, Response, stream_with_context
 
@@ -25,13 +28,15 @@ load_dotenv('local.env')
 
 # add src/ to path so pipeline modules resolve correctly
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(BASE_PATH, 'src'))
+sys.path.insert(0, os.path.join(BASE_PATH, '..', 'src'))
 
-from aspects import (NATAL_PLANETS_LIST, TRANSIT_PLANETS_LIST,
-                     get_planet_list, get_transit_aspects)
+from aspects import (PLANET_LIST,
+                     get_planet_list, get_transit_aspects,
+                     PLANET_DESCRIPTIONS, NATAL_MEANINGS, TRANSIT_MEANINGS)
 from horoscope import get_horoscope, get_select_aspects
 from library import load_music_library, merge_into_library
 from score import build_target_vector, score_tracks, rescore as rescore_tracks, aspect_audio_profile
+from model import train_model, predict_target_vector, blend_target_vectors
 
 # optional Spotipy for album art — graceful fallback if not installed / no creds
 try:
@@ -61,10 +66,10 @@ def _cache_set(cache_id: str, data: dict):
 
 # Resolve the local library path. Priority:
 #   1. LIBRARY_PATH env var — set this in Render to your persistent disk path,
-#      e.g. /var/data/local_library.csv  (mount the disk at /var/data in Render settings)
-#   2. /data/local_library.csv — Railway persistent volume (legacy)
-#   3. local_library.csv in the repo root — ephemeral fallback (changes lost on restart)
-_BASE_LIBRARY = os.path.join(BASE_PATH, 'local_library.csv')
+#      e.g. /var/data/music_library.csv  (mount the disk at /var/data in Render settings)
+#   2. /data/music_library.csv — Railway persistent volume (legacy)
+#   3. music_library.csv in the repo root — ephemeral fallback (changes lost on restart)
+_BASE_LIBRARY = os.path.join(BASE_PATH, '..', 'music_library.csv')
 
 def _resolve_library_path() -> str:
     env_path = os.environ.get('LIBRARY_PATH')
@@ -74,7 +79,7 @@ def _resolve_library_path() -> str:
             shutil.copy2(_BASE_LIBRARY, env_path)
         return env_path
     if os.path.isdir('/data'):
-        vol = '/data/local_library.csv'
+        vol = '/data/music_library.csv'
         if not os.path.exists(vol) and os.path.exists(_BASE_LIBRARY):
             shutil.copy2(_BASE_LIBRARY, vol)
         return vol
@@ -250,14 +255,14 @@ def progress():
 
         try:
             # Phase 1 — chart + horoscope (slow: Gemini API)
-            yield event('phase', 'reading your stars')
+            yield event('phase', 'reading the cosmos')
 
             daily_aspects, natal_subj, transit_subj = get_transit_aspects(
                 birth_data, transit_loc=current_location
             )
             horoscope = get_horoscope(daily_aspects)
 
-            # Phase 2 — scoring (fast: local)
+            # Phase 2 — scoring + model (fast: local, or slower with model training)
             yield event('phase', 'finding your frequency')
 
             use_upload = (library_choice == 'upload')
@@ -273,8 +278,57 @@ def progress():
                 else 'pool'
             )
 
-            select_aspects = get_select_aspects(daily_aspects, horoscope)
-            target_vector  = build_target_vector(select_aspects)
+            select_aspects  = get_select_aspects(daily_aspects, horoscope)
+            handcoded_vector = build_target_vector(select_aspects)
+
+            # attempt to train personal Lasso model if upload has added_at dates
+            model_bundle = None
+            if uploaded_csv and Path(uploaded_csv).exists():
+                try:
+                    raw_df = pd.read_csv(uploaded_csv)
+                    raw_df.columns = [c.lower().replace(' ', '_').replace('(s)', 's')
+                                      for c in raw_df.columns]
+                    if 'added_at' in raw_df.columns:
+                        n_songs = len(raw_df.dropna(subset=['added_at']))
+                        yield event('phase', f'finding your frequency · 0 / {n_songs} songs')
+
+                        progress_q = queue.Queue()
+                        result_box = [None]
+                        err_box    = [None]
+
+                        def _progress_cb(current, total):
+                            progress_q.put((current, total))
+
+                        def _do_train():
+                            try:
+                                result_box[0] = train_model(raw_df, birth_data, progress_cb=_progress_cb)
+                            except Exception as e:
+                                err_box[0] = e
+                            finally:
+                                progress_q.put(None)  # sentinel
+
+                        t = threading.Thread(target=_do_train, daemon=True)
+                        t.start()
+
+                        while True:
+                            msg = progress_q.get()
+                            if msg is None:
+                                break
+                            cur, tot = msg
+                            yield event('phase', f'finding your frequency · {cur} / {tot} songs')
+
+                        t.join()
+                        if err_box[0]:
+                            raise err_box[0]
+                        model_bundle = result_box[0]
+                except Exception as model_err:
+                    app.logger.warning(f'Model training skipped: {model_err}')
+
+            if model_bundle is not None:
+                model_vector  = predict_target_vector(daily_aspects, model_bundle)
+                target_vector = blend_target_vectors(model_vector, handcoded_vector, model_weight=0.3)
+            else:
+                target_vector = handcoded_vector
 
             matched_df = score_tracks(library_df, target_vector, top_n=20)
             matched_df = matched_df.rename(columns={
@@ -292,6 +346,9 @@ def progress():
             else:
                 for t in top_tracks:
                     t['album_art_url'] = None
+
+            # Phase 3 — song previews
+            yield event('phase', 'scoring your stars')
 
             preview_map = fetch_deezer_previews(top_tracks)
             for t in top_tracks:
@@ -314,8 +371,9 @@ def progress():
                                 for f in ['valence', 'energy', 'danceability', 'acousticness']},
                 })
 
-            natal_planets   = get_planet_list(natal_subj,   NATAL_PLANETS_LIST)
-            transit_planets = get_planet_list(transit_subj, TRANSIT_PLANETS_LIST)
+            natal_planets   = get_planet_list(natal_subj,   PLANET_LIST)
+            transit_planets = get_planet_list(transit_subj, PLANET_LIST)
+            natal_rising    = natal_subj.first_house.sign
 
             user_tz   = ZoneInfo(current_location.get('tz', 'UTC'))
             now_local = datetime.now(tz=user_tz)
@@ -330,6 +388,7 @@ def progress():
                 aspects=template_aspects,
                 natal_planets=natal_planets,
                 transit_planets=transit_planets,
+                natal_rising=natal_rising,
                 day_name=day_name,
                 today=today_str,
                 birth_data=birth_data,
@@ -337,6 +396,9 @@ def progress():
                 library_total=len(library_df),
                 matched_count=len(top_tracks),
                 target_vector=target_vector,
+                planet_descriptions=PLANET_DESCRIPTIONS,
+                natal_meanings=NATAL_MEANINGS,
+                transit_meanings=TRANSIT_MEANINGS,
             )
             _cache_set(cache_id, {
                 'target_vector': target_vector,
