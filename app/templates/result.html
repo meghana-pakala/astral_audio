@@ -1116,18 +1116,18 @@ const ringStroke = 'rgba(212,175,106,0.25)';
 const signWedgeMap = {};
 const signGlyphMap = {};
 const SIGNS = [
-  { sym:'♈︎', name:'Aries',       element:'Fire',  modality:'Cardinal', dates:'4/14-5/14' },
-  { sym:'♉︎', name:'Taurus',      element:'Earth', modality:'Fixed',    dates:'5/15-6/14' },
-  { sym:'♊︎', name:'Gemini',      element:'Air',   modality:'Mutable',  dates:'6/15-7/16' },
-  { sym:'♋︎', name:'Cancer',      element:'Water', modality:'Cardinal', dates:'7/17-8/16' },
-  { sym:'♌︎', name:'Leo',         element:'Fire',  modality:'Fixed',    dates:'8/17-9/16' },
-  { sym:'♍︎', name:'Virgo',       element:'Earth', modality:'Mutable',  dates:'9/17-10/17' },
-  { sym:'♎︎', name:'Libra',       element:'Air',   modality:'Cardinal', dates:'10/18-11/16' },
-  { sym:'♏︎', name:'Scorpio',     element:'Water', modality:'Fixed',    dates:'11/17-12/15' },
-  { sym:'♐︎', name:'Sagittarius', element:'Fire',  modality:'Mutable',  dates:'12/16-1/14' },
-  { sym:'♑︎', name:'Capricorn',   element:'Earth', modality:'Cardinal', dates:'1/15-2/12' },
-  { sym:'♒︎', name:'Aquarius',    element:'Air',   modality:'Fixed',    dates:'2/13-3/14' },
-  { sym:'♓︎', name:'Pisces',      element:'Water', modality:'Mutable',  dates:'3/15-4/13' },
+  { sym:'♈︎', name:'Aries',       abbr:'Ari', element:'Fire',  modality:'Cardinal', dates:'4/14-5/14' },
+  { sym:'♉︎', name:'Taurus',      abbr:'Tau', element:'Earth', modality:'Fixed',    dates:'5/15-6/14' },
+  { sym:'♊︎', name:'Gemini',      abbr:'Gem', element:'Air',   modality:'Mutable',  dates:'6/15-7/16' },
+  { sym:'♋︎', name:'Cancer',      abbr:'Can', element:'Water', modality:'Cardinal', dates:'7/17-8/16' },
+  { sym:'♌︎', name:'Leo',         abbr:'Leo', element:'Fire',  modality:'Fixed',    dates:'8/17-9/16' },
+  { sym:'♍︎', name:'Virgo',       abbr:'Vir', element:'Earth', modality:'Mutable',  dates:'9/17-10/17' },
+  { sym:'♎︎', name:'Libra',       abbr:'Lib', element:'Air',   modality:'Cardinal', dates:'10/18-11/16' },
+  { sym:'♏︎', name:'Scorpio',     abbr:'Sco', element:'Water', modality:'Fixed',    dates:'11/17-12/15' },
+  { sym:'♐︎', name:'Sagittarius', abbr:'Sag', element:'Fire',  modality:'Mutable',  dates:'12/16-1/14' },
+  { sym:'♑︎', name:'Capricorn',   abbr:'Cap', element:'Earth', modality:'Cardinal', dates:'1/15-2/12' },
+  { sym:'♒︎', name:'Aquarius',    abbr:'Aqu', element:'Air',   modality:'Fixed',    dates:'2/13-3/14' },
+  { sym:'♓︎', name:'Pisces',      abbr:'Pis', element:'Water', modality:'Mutable',  dates:'3/15-4/13' },
 ];
 
 const signTipHtml = s =>
@@ -1523,7 +1523,7 @@ document.querySelectorAll('.aspect-pill[data-aspect-idx]').forEach(pill => {
 <script>
 // ── Natal positions table ──
 (function () {
-  const SIGN_SYM      = Object.fromEntries(SIGNS.map(s => [s.name, s.sym]));
+  const SIGN_SYM      = Object.fromEntries(SIGNS.flatMap(s => [[s.name, s.sym], [s.abbr, s.sym]]));
   const transitSignMap = Object.fromEntries(TRANSIT_PLANETS.map(p => [p.name, p.sign || '']));
 
   const planetOrder = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
