@@ -8,47 +8,6 @@ import re
 from google import genai
 from aspects import format_aspects
 
-# hardcoded example to run full pipeline without Gemini API
-# enable with BYPASS_GEMINI=1 in the environment
-
-from types import SimpleNamespace
-
-_stub_aspects = [
-    SimpleNamespace(p1_name='Moon',   aspect='conjunction', p2_name='Moon',    orbit=0.5),
-    SimpleNamespace(p1_name='Mars',   aspect='opposition',  p2_name='Mercury', orbit=1.2),
-    SimpleNamespace(p1_name='Saturn', aspect='trine',       p2_name='Moon',    orbit=2.1),
-]
-
-_stub_horoscope = {
-    'daily_summary': (
-        'Today marks a profound emotional reset, guiding you to reconnect with your inner self '
-        'with a quiet, introspective quality. Beneath this sensitive new beginning, a mature '
-        'groundedness anchors your feelings, providing a steady, comforting rhythm. However, '
-        "don't be surprised if your thoughts are sharp and assertive, bringing a dynamic, even "
-        'percussive energy to your communications and mental processes.'
-    ),
-    'daily_keywords': ['introspective', 'grounded', 'sharp'],
-    'aspects': [
-        {'aspect':  'Natal Moon in conjunction with transiting Moon',
-         'meaning': (
-             'Today marks a personal emotional reset, a tender new beginning where your inner world '
-             "feels fresh and perhaps a little sensitive. It's a moment to reconnect with your core "
-             'feelings and intuition, setting the tone with a quiet, introspective hum.'
-             ),},
-        {'aspect':  'Natal Mars in opposition with transiting Mercury',
-         'meaning': (
-             'Your mind is sharp and quick, potentially leading to spirited debates or a restless '
-             "mental energy that demands expression. There's a dynamic, percussive edge to your "
-             'thoughts and words, driving you to articulate your will or defend your ideas.'
-             ),},
-        {'aspect':  'Natal Saturn in trine with transiting Moon',
-         'meaning': (
-             'A deep sense of emotional groundedness and maturity permeates your feelings, allowing '
-             'you to approach any sensitivities with calm wisdom. This aspect provides a comforting, '
-             'steadying influence, like a low, resonant drone that supports your inner landscape.'
-             ),},],
-        }
-
 # define LLM prompt
 SYSTEM_PROMPT = """You are an astrology interpreter. Given today's planetary aspects, generate a daily horoscope and select the aspects that will shape a personalized music playlist.
 
@@ -76,6 +35,36 @@ Return only valid JSON with no markdown fences:
              {"aspect": "...", "meaning": "..."}
              ]}"""
 
+# stub horoscope for running without API call
+STUB_HOROSCOPE = {
+    'daily_summary': (
+        'Today brings a dynamic blend of mental clarity and emotional intensity, urging you to assert '
+        'your authentic self. You might find yourself communicating with precision and purpose, while '
+        'also navigating potent urges for freedom in relationships and personal values. Expect a charged '
+        'atmosphere where inner feelings seek direct expression, creating a day that feels both urgent '
+        'and unexpectedly liberating.'
+        ),
+    'daily_keywords': ['dynamic', 'assertive', 'unconventional'],
+    'aspects': [
+        {'aspect': 'Natal Mars in trine with transiting Mercury',
+         'meaning': ('Your thoughts are sharp and decisive, making it easy to cut through mental clutter and '
+                     'communicate with directness. This energy feels purposeful and quick, like a focused, '
+                     'rhythmic beat driving a clear melody forward.'
+                     )},
+        {'aspect': 'Natal Venus in opposition with transiting Uranus',
+         'meaning': ('A potent urge for freedom and authenticity in your connections and values may surface, '
+                     'leading to unexpected shifts or a desire to break free from old patterns. This creates '
+                     'a sparky, unpredictable atmosphere, like sudden, electrifying guitar riffs disrupting '
+                     'a smooth rhythm.'
+                     )},
+        {'aspect': 'Natal Moon in opposition with transiting Mars',
+         'meaning': ('Emotions run high, perhaps manifesting as an urgent need to assert yourself or feeling '
+                     'easily provoked if your boundaries are challenged. There\'s an underlying tension, a '
+                     'driving pulse that can feel both stimulating and a little restless, like a powerful, '
+                     'insistent bassline.'
+                     )}]
+                }
+
 # call Gemini to interpret aspects and generate horoscope
 def _call_gemini(api_key, prompt):
     client = genai.Client(api_key=api_key)
@@ -90,7 +79,7 @@ def _call_gemini(api_key, prompt):
 
 def get_horoscope(transit_aspects):
     if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
-        return _stub_horoscope
+        return STUB_HOROSCOPE
 
     primary_key = os.environ.get('GEMINI_API_KEY')
     backup_key = os.environ.get('GEMINI_API_KEY_2')
@@ -112,9 +101,6 @@ def get_horoscope(transit_aspects):
 
 # match selected aspects from horoscope back to transit aspect objects
 def get_select_aspects(transit_aspects: list, horoscope: dict) -> list:
-    if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
-        return _stub_aspects
-
     selected = {a['aspect'].split(' (orb:')[0].strip() for a in horoscope.get('aspects', [])}
     return [
         a for a in transit_aspects
