@@ -19,6 +19,7 @@
   --border:    rgba(212,175,106,0.18);
   --border-mid: rgba(212,175,106,0.35);
   --border-h:  rgba(212,175,106,0.45);
+  --hover-fill: rgba(212,175,106,0.22);
   --text-dim:  rgba(242,232,204,0.5);
   --cinzel:    'Cinzel Decorative', Georgia, serif;
   --mono:      'Space Mono', monospace;
@@ -27,7 +28,7 @@
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: #080A23; font-family: 'Space Mono', monospace; color: var(--cream); min-height: 100vh; overflow-x: hidden; }
+body { background: #080A23; font-family: var(--mono); color: var(--cream); min-height: 100vh; overflow-x: hidden; }
 a { color: var(--gold); text-decoration: none; }
 
 /* ── CSS Starfield ── */
@@ -125,7 +126,7 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Cinzel Decorative', Georgia, serif;
+  font-family: var(--cinzel);
   font-size: clamp(14px, 1.8vw, 22px);
   font-weight: 700;
   letter-spacing: -0.5px;
@@ -145,7 +146,7 @@ nav {
   text-align: center;
 }
 .horoscope-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--serif);
   font-style: normal;
   font-size: clamp(1.4rem, 2.5vw, 1.7rem);
   font-weight: 400; line-height: 1.4;
@@ -156,7 +157,7 @@ nav {
   color: var(--gold);
 }
 .horoscope-text {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.8rem; line-height: 1.9;
   color: rgba(242,232,204,0.80);
   margin-bottom: 24px;
@@ -197,6 +198,8 @@ nav {
 .playlist-right {
   min-width: 0;
   padding-left: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Audio controls (sliders + radar) ── */
@@ -225,7 +228,7 @@ nav {
   align-items: center;
 }
 .slider-label {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -237,8 +240,8 @@ nav {
   content: attr(data-tip);
   position: absolute;
   left: 0; top: calc(100% + 6px);
-  background: #141c35;
-  border: 1px solid rgba(212,175,106,0.35);
+  background: var(--navy-card);
+  border: 1px solid var(--border-mid);
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 0.65rem;
@@ -253,7 +256,7 @@ nav {
 }
 .slider-label[data-tip]:hover::after { opacity: 1; }
 .slider-val {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   color: var(--gold);
   background: rgba(212,175,106,0.1);
@@ -312,14 +315,14 @@ nav {
   text-align: center;
 }
 .personalize-label {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   color: var(--text-dim);
   letter-spacing: 0.04em;
   line-height: 1.5;
 }
 .remap-btn {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -344,10 +347,6 @@ nav {
 }
 
 /* ── Scrollable playlist ── */
-.playlist-right {
-  display: flex;
-  flex-direction: column;
-}
 .playlist-scroll {
   overflow-y: auto;
   scrollbar-width: thin;
@@ -372,7 +371,7 @@ nav {
 .track-row.playing .track-open-btn { border-color: var(--gold); opacity: 1; background: var(--border-dim); }
 
 .track-num {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.67rem; color: var(--text-dim);
   text-align: right;
 }
@@ -394,13 +393,13 @@ nav {
 .track-art-placeholder svg { opacity: 0.2; }
 .track-info { min-width: 0; }
 .track-name {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.82rem; color: var(--cream);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   margin-bottom: 2px;
 }
 .track-artist {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.67rem; color: var(--text-dim);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -449,7 +448,7 @@ nav {
 
 .transits-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 240px;
   gap: 28px; align-items: center;
 }
 .aspects-list {
@@ -459,7 +458,7 @@ nav {
 .aspect-pill {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 14px 16px; border-radius: 4px;
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.7rem; letter-spacing: 0.05em;
   position: relative; cursor: default;
   transition: transform .15s;
@@ -472,13 +471,13 @@ nav {
 .aspect-pill-inner { flex: 1; }
 .aspect-name {
   color: var(--cream);
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-style: italic;
 }
 .aspect-meaning {
   font-size: 0.68rem; color: var(--text-dim);
   margin-top: 5px; line-height: 1.5; display: block;
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
 }
 .aspect-features {
   display: flex; gap: 10px; flex-wrap: wrap;
@@ -487,7 +486,7 @@ nav {
   border-top: 1px solid var(--border-dim);
 }
 .aspect-feature {
-  font-family: 'Space Mono', monospace;
+  font-family: var(--mono);
   font-size: 0.56rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -498,17 +497,54 @@ nav {
   margin-left: 3px;
 }
 
+/* ── Natal positions table ── */
+.natal-table {
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  margin-top: 14px;
+}
+.natal-table th, .natal-table td {
+  width: 33.33%;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.natal-table th {
+  text-align: center; padding: 0; height: 28px;
+  color: var(--text-dim); font-weight: normal;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  font-size: 0.5rem; vertical-align: middle;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.natal-table td {
+  padding: 0; height: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--cream); vertical-align: middle;
+  text-align: center; cursor: default;
+}
+.natal-table tr:last-child td { border-bottom: none; }
+.natal-table th:last-child, .natal-table td:last-child { border-right: none; }
+.natal-table .col-planet { color: var(--gold); font-family: sans-serif; font-size: 0.85rem; }
+.natal-table .col-natal, .natal-table .col-transit { font-family: sans-serif; font-size: 0.85rem; }
+.natal-table tr.natal-row-hl td { background: var(--hover-fill); box-shadow: inset 0 1px 0 var(--border-h), inset 0 -1px 0 var(--border-h); }
+.natal-table th.col-hl, .natal-table td.col-hl { background: var(--hover-fill); box-shadow: inset 1px 0 0 var(--border-h), inset -1px 0 0 var(--border-h); }
+.natal-table td.cell-hl { background: var(--hover-fill); outline: 1px solid var(--border-h); outline-offset: -1px; }
+.natal-table td.col-border-only { box-shadow: inset 1px 0 0 var(--border-h), inset -1px 0 0 var(--border-h); }
+.natal-table td.row-border-only { box-shadow: inset 0 1px 0 var(--border-h), inset 0 -1px 0 var(--border-h); }
+.natal-table td.cell-hl-hborder { background: var(--hover-fill); box-shadow: inset 0 1px 0 var(--border-h), inset 0 -1px 0 var(--border-h); }
+
 /* ── Transit wheel ── */
 .wheel-wrap {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-#transit-wheel { width: 290px; height: 290px; }
+#transit-wheel { width: 240px; height: 240px; }
+
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .page { padding: 24px 20px 64px; }
   .transits-row { grid-template-columns: 1fr; }
-  .wheel-wrap { display: none; }
+  .wheel-wrap { width: 100%; align-items: center; }
+  #transit-wheel { width: 100%; height: auto; }
   .horoscope-title { font-size: 1.8rem; }
   nav { flex-direction: column; align-items: flex-start; gap: 6px; }
   .playlist-layout { grid-template-columns: 1fr; }
@@ -590,6 +626,14 @@ nav {
       </div>
       <div class="wheel-wrap">
         <svg id="transit-wheel" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg"></svg>
+        <table class="natal-table" id="natal-positions-table">
+          <thead><tr>
+            <th id="th-planet" style="color:var(--gold)">planet</th>
+            <th id="th-natal" style="color:var(--cream)">natal</th>
+            <th id="th-transit" style="color:var(--cream)">transit</th>
+          </tr></thead>
+          <tbody id="natal-table-body"></tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -601,11 +645,14 @@ nav {
 
 <!-- Planet + aspect data injected by Flask for the transit wheel -->
 <script>
-const NATAL_PLANETS   = {{ natal_planets | tojson }};
-const TRANSIT_PLANETS = {{ transit_planets | tojson }};
-const ASPECT_DATA     = {{ aspects | tojson }};
-const TARGET_VECTOR   = {{ target_vector | tojson }};
-const INITIAL_TRACKS  = {{ tracks | tojson }};
+const NATAL_PLANETS        = {{ natal_planets | tojson }};
+const TRANSIT_PLANETS      = {{ transit_planets | tojson }};
+const ASPECT_DATA          = {{ aspects | tojson }};
+const TARGET_VECTOR        = {{ target_vector | tojson }};
+const INITIAL_TRACKS       = {{ tracks | tojson }};
+const PLANET_DESCRIPTIONS  = {{ planet_descriptions | tojson }};
+const NATAL_MEANINGS       = {{ natal_meanings | tojson }};
+const TRANSIT_MEANINGS     = {{ transit_meanings | tojson }};
 </script>
 
 <!-- Chart.js for radar -->
@@ -951,30 +998,63 @@ const cx = 130, cy = 130;
 const R_OUTER   = 130;
 const R_ZODIAC  = 112;
 const R_TRANSIT = 94;
-const R_DIVIDER = 72;
-const R_NATAL   = 54;   // 18px inside R_DIVIDER, matching transit planets' offset from their ring edge
+const R_DIVIDER = 67;
+const R_NATAL   = 49;   // 18px inside R_DIVIDER, matching transit planets' offset from their ring edge
 const R_CENTER  = 22;
+
 
 // Custom HTML tooltip
 const tip = document.createElement('div');
 Object.assign(tip.style, {
   position:'fixed', background:'#141c35',
   border:'1px solid rgba(212,175,106,0.35)',
-  borderRadius:'4px', padding:'8px 12px',
-  fontSize:'0.7rem', lineHeight:'1.5',
+  borderRadius:'4px', padding:'5px',
+  fontSize:'0.7rem', lineHeight:'1.4',
   color:'#f2e8cc', fontFamily:'Space Mono, monospace',
   pointerEvents:'none', opacity:'0',
   transition:'opacity 0.15s', zIndex:'1000',
-  maxWidth:'220px', whiteSpace:'normal'
+  width:'fit-content', maxWidth:'185px', whiteSpace:'normal', textAlign:'center',
 });
 document.body.appendChild(tip);
 
 function showTip(e, html) { tip.innerHTML = html; tip.style.opacity = '1'; moveTip(e); }
 function moveTip(e) {
-  const x = e.clientX + 14, y = e.clientY - 10;
   const w = tip.offsetWidth, h = tip.offsetHeight;
-  tip.style.left = (x + w > window.innerWidth  ? e.clientX - w - 10 : x) + 'px';
-  tip.style.top  = (y + h > window.innerHeight ? e.clientY - h - 10 : y) + 'px';
+  let x = e.clientX-w / 2;
+  let y = e.clientY + 16;
+  x = Math.max(4, Math.min(x, window.innerWidth -w-4));
+  if (y + h > window.innerHeight) y = e.clientY-h-10;
+  tip.style.left = x + 'px';
+  tip.style.top  = y + 'px';
+}
+function showTipBelow(elem, html, maxW) {
+  tip.style.width = 'auto';
+  tip.style.maxWidth = '600px';
+  tip.innerHTML = html; tip.style.opacity = '1';
+  const sw = tip.offsetWidth;
+  const lh = parseFloat(getComputedStyle(tip).lineHeight) || 14;
+  // widen from 55% until content fits in ≤3 lines
+  let pct = 0.55;
+  tip.style.maxWidth = Math.ceil(sw * pct) + 'px';
+  while (tip.offsetHeight > lh * 3.2 && pct < 0.95) {
+    pct += 0.05;
+    tip.style.maxWidth = Math.ceil(sw * pct) + 'px';
+  }
+  // binary search for narrowest width that keeps same line count (removes side padding)
+  const targetH = tip.offsetHeight;
+  let lo = Math.ceil(sw * 0.3), hi = parseInt(tip.style.maxWidth);
+  while (hi - lo > 4) {
+    const mid = Math.floor((lo + hi) / 2);
+    tip.style.maxWidth = mid + 'px';
+    if (tip.offsetHeight <= targetH) hi = mid; else lo = mid + 1;
+  }
+  tip.style.maxWidth = hi + 'px';
+  const r = elem.getBoundingClientRect();
+  const w = tip.offsetWidth;
+  let x = r.left + r.width / 2 - w / 2;
+  x = Math.max(4, Math.min(x, window.innerWidth - w - 4));
+  tip.style.left = x + 'px';
+  tip.style.top  = (r.bottom + 6) + 'px';
 }
 function hideTip() { tip.style.opacity = '0'; }
 
@@ -985,58 +1065,82 @@ function el(tag, attrs) {
 }
 
 function polar(deg, r) {
-  const rad = (deg - 90) * Math.PI / 180;
+  const rad = (deg-90) * Math.PI / 180;
   return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
 }
 
-function addTip(elem, html) {
+const GOLD        = '#d4af6a';
+const GOLD_BORDER = 'rgba(212,175,106,0.45)';
+const HOVER_FILL  = 'rgba(212,175,106,0.22)';
+
+function addTip(elem, html, maxW) {
   elem.style.cursor = 'default';
-  elem.addEventListener('mouseenter', e => showTip(e, html));
+  elem.addEventListener('mouseenter', e => { if (maxW) tip.style.maxWidth = maxW; showTip(e, html); });
   elem.addEventListener('mousemove',  e => moveTip(e));
   elem.addEventListener('mouseleave', hideTip);
 }
-
-const HOVER_FILL = 'rgba(212,175,106,0.09)';
-function addRingTip(elem, html) {
+function addRingTip(elem, html, maxW) {
   elem.style.cursor = 'default';
-  elem.addEventListener('mouseenter', e => { elem.setAttribute('fill', HOVER_FILL); showTip(e, html); });
+  elem.addEventListener('mouseenter', e => { elem.setAttribute('fill', HOVER_FILL); elem.setAttribute('stroke', GOLD_BORDER); elem.setAttribute('stroke-width', '0.75'); if (maxW) tip.style.maxWidth = maxW; showTip(e, html); });
   elem.addEventListener('mousemove',  e => moveTip(e));
-  elem.addEventListener('mouseleave', () => { elem.setAttribute('fill', 'transparent'); hideTip(); });
+  elem.addEventListener('mouseleave', () => { elem.setAttribute('fill', 'transparent'); elem.setAttribute('stroke', 'none'); hideTip(); });
 }
 
 // ── Background ──
 svg.appendChild(el('circle', {cx,cy,r:R_OUTER, fill:'#0d1128', stroke:'none'}));
 
+// ── Highlight layer (inserted early so tint renders behind all glyphs/rings) ──
+const tRing = el('path', {
+  d: `M${cx},${cy-(R_ZODIAC-1)} A${R_ZODIAC-1},${R_ZODIAC-1} 0 1,1 ${cx-0.001},${cy-(R_ZODIAC-1)} Z ` +
+     `M${cx},${cy-(R_DIVIDER+1)} A${R_DIVIDER+1},${R_DIVIDER+1} 0 1,1 ${cx-0.001},${cy-(R_DIVIDER+1)} Z`,
+  fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd', 'pointer-events': 'none'
+});
+const nRing = el('path', {
+  d: `M${cx},${cy-(R_DIVIDER-1)} A${R_DIVIDER-1},${R_DIVIDER-1} 0 1,1 ${cx-0.001},${cy-(R_DIVIDER-1)} Z ` +
+     `M${cx},${cy-(R_CENTER+1)} A${R_CENTER+1},${R_CENTER+1} 0 1,1 ${cx-0.001},${cy-(R_CENTER+1)} Z`,
+  fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd', 'pointer-events': 'none'
+});
+svg.appendChild(tRing);
+svg.appendChild(nRing);
+
 // ── Rings ──
 const ringStroke = 'rgba(212,175,106,0.25)';
-svg.appendChild(el('circle', {cx,cy,r:R_OUTER, fill:'none', stroke:ringStroke, 'stroke-width':'1'}));
-svg.appendChild(el('circle', {cx,cy,r:R_ZODIAC, fill:'none', stroke:ringStroke, 'stroke-width':'1'}));
-svg.appendChild(el('circle', {cx,cy,r:R_DIVIDER, fill:'rgba(8,10,35,0.4)', stroke:'rgba(255,255,255,0.22)', 'stroke-width':'1'}));
-svg.appendChild(el('circle', {cx,cy,r:R_CENTER, fill:'rgba(8,10,35,0.85)', stroke:'rgba(212,175,106,0.15)', 'stroke-width':'0.5'}));
+[
+  {r:R_OUTER,   fill:'none'},
+  {r:R_ZODIAC,  fill:'none'},
+  {r:R_DIVIDER, fill:'rgba(8,10,35,0.4)'},
+  {r:R_CENTER,  fill:'rgba(8,10,35,0.85)'},
+].forEach(({r,fill}) => svg.appendChild(el('circle', {cx,cy,r, fill, stroke:ringStroke, 'stroke-width':'1'})));
 
 // ── Zodiac signs ──
+const signWedgeMap = {};
+const signGlyphMap = {};
 const SIGNS = [
-  { sym:'♈︎', name:'Aries',       desc:'Fire · Cardinal · Mar 21–Apr 19' },
-  { sym:'♉︎', name:'Taurus',      desc:'Earth · Fixed · Apr 20–May 20' },
-  { sym:'♊︎', name:'Gemini',      desc:'Air · Mutable · May 21–Jun 20' },
-  { sym:'♋︎', name:'Cancer',      desc:'Water · Cardinal · Jun 21–Jul 22' },
-  { sym:'♌︎', name:'Leo',         desc:'Fire · Fixed · Jul 23–Aug 22' },
-  { sym:'♍︎', name:'Virgo',       desc:'Earth · Mutable · Aug 23–Sep 22' },
-  { sym:'♎︎', name:'Libra',       desc:'Air · Cardinal · Sep 23–Oct 22' },
-  { sym:'♏︎', name:'Scorpio',     desc:'Water · Fixed · Oct 23–Nov 21' },
-  { sym:'♐︎', name:'Sagittarius', desc:'Fire · Mutable · Nov 22–Dec 21' },
-  { sym:'♑︎', name:'Capricorn',   desc:'Earth · Cardinal · Dec 22–Jan 19' },
-  { sym:'♒︎', name:'Aquarius',    desc:'Air · Fixed · Jan 20–Feb 18' },
-  { sym:'♓︎', name:'Pisces',      desc:'Water · Mutable · Feb 19–Mar 20' },
+  { sym:'♈︎', name:'Aries',       element:'Fire',  modality:'Cardinal', dates:'4/14-5/14' },
+  { sym:'♉︎', name:'Taurus',      element:'Earth', modality:'Fixed',    dates:'5/15-6/14' },
+  { sym:'♊︎', name:'Gemini',      element:'Air',   modality:'Mutable',  dates:'6/15-7/16' },
+  { sym:'♋︎', name:'Cancer',      element:'Water', modality:'Cardinal', dates:'7/17-8/16' },
+  { sym:'♌︎', name:'Leo',         element:'Fire',  modality:'Fixed',    dates:'8/17-9/16' },
+  { sym:'♍︎', name:'Virgo',       element:'Earth', modality:'Mutable',  dates:'9/17-10/17' },
+  { sym:'♎︎', name:'Libra',       element:'Air',   modality:'Cardinal', dates:'10/18-11/16' },
+  { sym:'♏︎', name:'Scorpio',     element:'Water', modality:'Fixed',    dates:'11/17-12/15' },
+  { sym:'♐︎', name:'Sagittarius', element:'Fire',  modality:'Mutable',  dates:'12/16-1/14' },
+  { sym:'♑︎', name:'Capricorn',   element:'Earth', modality:'Cardinal', dates:'1/15-2/12' },
+  { sym:'♒︎', name:'Aquarius',    element:'Air',   modality:'Fixed',    dates:'2/13-3/14' },
+  { sym:'♓︎', name:'Pisces',      element:'Water', modality:'Mutable',  dates:'3/15-4/13' },
 ];
+
+const signTipHtml = s =>
+  `<span style="color:${GOLD}">${s.name}</span> <span style="color:${GOLD};font-size:0.55rem">(${s.dates})</span><br><span style="color:#888;font-size:0.65rem">${s.element} · ${s.modality}</span>`;
+const ringStrokeDim = 'rgba(212,175,106,0.25)';
 
 for (let i = 0; i < 12; i++) {
   const deg = i * 30;
   const [x1,y1] = polar(deg, R_OUTER);
   const [x2,y2] = polar(deg, R_ZODIAC);
-  svg.appendChild(el('line', {x1,y1,x2,y2, stroke:'rgba(212,175,106,0.25)', 'stroke-width':'0.75'}));
+  svg.appendChild(el('line', {x1,y1,x2,y2, stroke:ringStrokeDim, 'stroke-width':'0.75'}));
 
-  const startDeg = deg - 90, endDeg = deg + 30 - 90;
+  const startDeg = deg-90, endDeg = deg + 30-90;
   const s1 = startDeg * Math.PI / 180, e1 = endDeg * Math.PI / 180;
   const ox1 = cx + R_OUTER * Math.cos(s1), oy1 = cy + R_OUTER * Math.sin(s1);
   const ox2 = cx + R_OUTER * Math.cos(e1), oy2 = cy + R_OUTER * Math.sin(e1);
@@ -1046,55 +1150,50 @@ for (let i = 0; i < 12; i++) {
     d: `M${ox1},${oy1} A${R_OUTER},${R_OUTER} 0 0,1 ${ox2},${oy2} L${ix2},${iy2} A${R_ZODIAC},${R_ZODIAC} 0 0,0 ${ix1},${iy1} Z`,
     fill: 'transparent', stroke: 'none'
   });
-  addRingTip(wedge, `<strong style="color:#d4af6a">${SIGNS[i].sym} ${SIGNS[i].name}</strong>`);
+  const tipHtml = signTipHtml(SIGNS[i]);
+  addRingTip(wedge, tipHtml, '220px');
   svg.appendChild(wedge);
+  signWedgeMap[SIGNS[i].name] = wedge;
 
   const [lx,ly] = polar(deg + 15, (R_OUTER + R_ZODIAC) / 2);
   const txt = el('text', {x:lx, y:ly, 'text-anchor':'middle', 'dominant-baseline':'middle',
-    fill:'rgba(255,255,255,0.55)', 'font-size':'11', 'font-family':'sans-serif',
+    fill:'rgba(255,255,255,0.9)', 'font-size':'13', 'font-family':'sans-serif',
     'font-variant':'normal', style:'font-variant-emoji:text'});
   txt.textContent = SIGNS[i].sym;
+  addTip(txt, tipHtml, '220px');
+  txt.addEventListener('mouseenter', () => { wedge.setAttribute('fill', HOVER_FILL); wedge.setAttribute('stroke', GOLD_BORDER); wedge.setAttribute('stroke-width', '0.75'); });
+  txt.addEventListener('mouseleave', () => { wedge.setAttribute('fill', 'transparent'); wedge.setAttribute('stroke', 'none'); });
   svg.appendChild(txt);
+  signGlyphMap[SIGNS[i].name] = txt;
 }
 
-// ── Transit ring hit areas ──
-const TRANSIT_TIP = '<strong style="color:#d4af6a">Transit Chart</strong><br>Today\'s planet positions in the sky';
-const NATAL_TIP   = '<strong style="color:#d4af6a">Natal Chart</strong><br>Planet positions at the moment of your birth';
+// ── Transit ring hit areas (tRing/nRing created early above; wire events here) ──
+const TRANSIT_TIP = '<span style="color:#888;font-size:0.6rem">Transit Chart</span>';
+const NATAL_TIP   = '<span style="color:#888;font-size:0.6rem">Natal Chart</span>';
 
-// Single annulus for transit ring hover (fill-rule evenodd = donut shape)
-const tRing = el('path', {
-  d: `M${cx},${cy - (R_ZODIAC-1)} A${R_ZODIAC-1},${R_ZODIAC-1} 0 1,1 ${cx - 0.001},${cy - (R_ZODIAC-1)} Z ` +
-     `M${cx},${cy - (R_DIVIDER+1)} A${R_DIVIDER+1},${R_DIVIDER+1} 0 1,1 ${cx - 0.001},${cy - (R_DIVIDER+1)} Z`,
+// Invisible hit-area overlays (pointer-events enabled) placed over each ring
+const tRingHit = el('path', {
+  d: `M${cx},${cy-(R_ZODIAC-1)} A${R_ZODIAC-1},${R_ZODIAC-1} 0 1,1 ${cx-0.001},${cy-(R_ZODIAC-1)} Z ` +
+     `M${cx},${cy-(R_DIVIDER+1)} A${R_DIVIDER+1},${R_DIVIDER+1} 0 1,1 ${cx-0.001},${cy-(R_DIVIDER+1)} Z`,
   fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd'
 });
-addRingTip(tRing, TRANSIT_TIP);
-svg.appendChild(tRing);
+addTip(tRingHit, TRANSIT_TIP);
+tRingHit.addEventListener('mouseenter', () => { highlightRing('transit'); highlightCol('transit'); });
+tRingHit.addEventListener('mouseleave', () => { clearRingHighlight(); clearColHighlight(); });
+svg.appendChild(tRingHit);
 
-
-// Single annulus for natal ring hover
-const nRing = el('path', {
-  d: `M${cx},${cy - (R_DIVIDER-1)} A${R_DIVIDER-1},${R_DIVIDER-1} 0 1,1 ${cx - 0.001},${cy - (R_DIVIDER-1)} Z ` +
-     `M${cx},${cy - (R_CENTER+1)} A${R_CENTER+1},${R_CENTER+1} 0 1,1 ${cx - 0.001},${cy - (R_CENTER+1)} Z`,
+const nRingHit = el('path', {
+  d: `M${cx},${cy-(R_DIVIDER-1)} A${R_DIVIDER-1},${R_DIVIDER-1} 0 1,1 ${cx-0.001},${cy-(R_DIVIDER-1)} Z ` +
+     `M${cx},${cy-(R_CENTER+1)} A${R_CENTER+1},${R_CENTER+1} 0 1,1 ${cx-0.001},${cy-(R_CENTER+1)} Z`,
   fill: 'transparent', stroke: 'none', 'fill-rule': 'evenodd'
 });
-addRingTip(nRing, NATAL_TIP);
-svg.appendChild(nRing);
+addTip(nRingHit, NATAL_TIP);
+nRingHit.addEventListener('mouseenter', () => { highlightRing('natal'); highlightCol('natal'); });
+nRingHit.addEventListener('mouseleave', () => { clearRingHighlight(); clearColHighlight(); });
+svg.appendChild(nRingHit);
 
 
-// ── Planet descriptions & symbols ──
-const PLANET_DESC = {
-  'Sun':     'Core identity and conscious self — vitality, ego, purpose.',
-  'Moon':    'Emotional world and inner life — instincts, needs, memory.',
-  'Mercury': 'Mind and communication — thought, language, perception.',
-  'Venus':   'Love and values — beauty, desire, connection.',
-  'Mars':    'Drive and action — ambition, will, assertion.',
-  'Jupiter': 'Expansion and fortune — growth, abundance, belief.',
-  'Saturn':  'Structure and discipline — limits, responsibility, mastery.',
-  'Uranus':  'Change and innovation — disruption, freedom, awakening.',
-  'Neptune': 'Imagination and spirit — dreams, intuition, dissolution.',
-  'Pluto':   'Transformation and power — depth, renewal, the hidden.',
-};
-
+// ── Planet symbols + aspect types ──
 const PLANET_SYMBOLS = {
   'Sun':'☉', 'Moon':'☽', 'Mercury':'☿', 'Venus':'♀',
   'Mars':'♂', 'Jupiter':'♃', 'Saturn':'♄', 'Uranus':'♅',
@@ -1102,20 +1201,24 @@ const PLANET_SYMBOLS = {
 };
 
 const ASPECT_DESC = {
-  conjunction: 'Conjunction (0°) — planets merged — intensity, focus, fusion.',
-  opposition:  'Opposition (180°) — planets in tension — polarity, awareness, balance.',
-  trine:       'Trine (120°) — planets in flow — ease, harmony, creative support.',
-  square:      'Square (90°) — planets in friction — challenge, pressure, growth.',
-  sextile:     'Sextile (60°) — planets in dialogue — opportunity, cooperation, potential.',
+  conjunction: 'fusion — energies merging into one intensified force',
+  opposition:  'tension — energies pulling apart, demanding awareness and balance',
+  trine:       'flow — energies supporting each other with natural ease',
+  square:      'friction — energies in conflict, creating pressure that drives growth',
+  sextile:     'opportunity — energies in dialogue, opening a door worth walking through',
 };
 
-const ASPECT_COLORS = ['#d4af6a', '#c47a8a', '#7ab3c8'];
+const ASPECT_COLORS = ['#c47a8a', '#7ab3c8', '#8bbf8e'];
 
 // ── Filter to only planets in active aspects ──
-const _natalNames   = new Set(ASPECT_DATA.map(a => a.planet1));
-const _transitNames = new Set(ASPECT_DATA.map(a => a.planet2));
-const activaNatal   = NATAL_PLANETS.filter(p => _natalNames.has(p.name));
-const activaTransit = TRANSIT_PLANETS.filter(p => _transitNames.has(p.name));
+const _natalNames    = new Set(ASPECT_DATA.map(a => a.planet1));
+const _transitNames  = new Set(ASPECT_DATA.map(a => a.planet2));
+const activeNatal    = NATAL_PLANETS.filter(p => _natalNames.has(p.name));
+const activeTransit  = TRANSIT_PLANETS.filter(p => _transitNames.has(p.name));
+const natalGlyphMap   = {};
+const transitGlyphMap = {};
+
+// ── Resolve overlapping glyphs before drawing lines or planets ──
 
 // ── Per-aspect wheel element registry ──
 const aspectWheelGroups = ASPECT_DATA.map(() => ({ line: null, natal: null, transit: null }));
@@ -1123,16 +1226,16 @@ const aspectWheelGroups = ASPECT_DATA.map(() => ({ line: null, natal: null, tran
 // ── Aspect lines ──
 const PLANET_R = 11; // matches the hit-circle radius on each glyph
 ASPECT_DATA.forEach((a, idx) => {
-  const np = activaNatal.find(p => p.name === a.planet1);
-  const tp = activaTransit.find(p => p.name === a.planet2);
+  const np = activeNatal.find(p => p.name === a.planet1);
+  const tp = activeTransit.find(p => p.name === a.planet2);
   if (!np || !tp) return;
 
-  // Planet centres
+  // Planet centres (use resolved radii)
   const [ncx, ncy] = polar(np.deg, R_NATAL);
   const [tcx, tcy] = polar(tp.deg, R_TRANSIT);
 
   // Unit vector along the line
-  const dx = tcx - ncx, dy = tcy - ncy;
+  const dx = tcx-ncx, dy = tcy-ncy;
   const len = Math.sqrt(dx * dx + dy * dy);
   const ux = dx / len, uy = dy / len;
 
@@ -1140,19 +1243,27 @@ ASPECT_DATA.forEach((a, idx) => {
   // starts/ends at the circle edge regardless of angle
   const x1 = ncx + ux * PLANET_R;
   const y1 = ncy + uy * PLANET_R;
-  const x2 = tcx - ux * PLANET_R;
-  const y2 = tcy - uy * PLANET_R;
+  const x2 = tcx-ux * PLANET_R;
+  const y2 = tcy-uy * PLANET_R;
   const line = el('line', {
     x1, y1, x2, y2,
     stroke: 'rgba(212,175,106,0.25)',
     'stroke-width': '0.75',
-    'stroke-dasharray': a.aspect_type === 'trine' ? '' : '3,2',
+    'stroke-dasharray': '3,2',
+    'pointer-events': 'none',
   });
-  addTip(line, `<strong style="color:#d4af6a">Natal ${a.planet1} ${a.aspect_type} Transiting ${a.planet2}</strong><br>${ASPECT_DESC[a.aspect_type] || ''}`);
-  line.addEventListener('mouseenter', () => { hideTip(); setAspectHighlight(idx, 'wheel'); });
-  line.addEventListener('mouseleave', clearAspectHighlight);
   svg.appendChild(line);
   aspectWheelGroups[idx].line = line;
+
+  // wide invisible hit area for easy hovering
+  const aspectTitle = a.aspect_type.charAt(0).toUpperCase() + a.aspect_type.slice(1);
+  const lineTipHtml = `<div style="font-size:0.65rem;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;text-wrap:balance;color:#888"><span style="color:${GOLD}">${aspectTitle}:</span> ${ASPECT_DESC[a.aspect_type] || ''}</div>`;
+  const lineHit = el('line', { x1, y1, x2, y2, stroke: 'transparent', 'stroke-width': '10' });
+  lineHit.style.cursor = 'default';
+  lineHit.addEventListener('mouseenter', e => { tip.style.maxWidth = '600px'; tip.style.width = 'fit-content'; tip.innerHTML = lineTipHtml; tip.style.opacity = '1'; const sw = tip.offsetWidth; tip.style.maxWidth = Math.ceil(sw * 0.55) + 'px'; moveTip(e); setAspectHighlight(idx, 'wheel'); });
+  lineHit.addEventListener('mousemove',  moveTip);
+  lineHit.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
+  svg.appendChild(lineHit);
 });
 
 // ── Planet glyph helper ──
@@ -1162,8 +1273,8 @@ function makePlanetGlyph(x, y, planet, isNatal, opacity = 1) {
   g.style.cursor = 'default';
   g.setAttribute('opacity', opacity);
   const hlCircle = el('circle', {
-    cx: x, cy: y, r: '11', fill: 'none', stroke: '#d4af6a',
-    'stroke-width': '1.5', opacity: '0',
+    cx: x, cy: y, r: '11', fill: '#0d1128', stroke: GOLD,
+    'stroke-width': '0.75', opacity: '0',
   });
   g.appendChild(hlCircle);
   g._hlCircle = hlCircle;
@@ -1180,47 +1291,42 @@ function makePlanetGlyph(x, y, planet, isNatal, opacity = 1) {
   return g;
 }
 
-// ── All transit planets (inactive first so active render on top) ──
-[...TRANSIT_PLANETS].sort((a,b) => _transitNames.has(a.name) - _transitNames.has(b.name)).forEach(p => {
-  const active = _transitNames.has(p.name);
+// ── All transit planets ──
+TRANSIT_PLANETS.forEach(p => {
   const [x, y] = polar(p.deg, R_TRANSIT);
-  const [tx1, ty1] = polar(p.deg, R_ZODIAC - 1);
-  const [tx2, ty2] = polar(p.deg, R_ZODIAC - 7);
-  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color,
-    'stroke-width': active ? '0.7' : '0.5', opacity: active ? '0.35' : '0.2' }));
-  const g = makePlanetGlyph(x, y, p, false, active ? 1 : 0.35);
+  const [tx1, ty1] = polar(p.deg, R_ZODIAC-1);
+  const [tx2, ty2] = polar(p.deg, R_ZODIAC-7);
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.6', opacity:'0.35' }));
+  const g = makePlanetGlyph(x, y, p, false, 1);
+  g._baseOpacity = 1;
+  g._sign = p.sign;
   const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet2 === p.name ? [...acc, i] : acc), []);
-  g._tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(transit)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
-  addTip(g, g._tipHtml);
-  if (active) {
-    g.addEventListener('mouseenter', (e) => { showTip(e, g._tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
-    g.addEventListener('mousemove',  moveTip);
-    g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
-    idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].transit = g; });
-  }
+  g._tipHtml = `<span style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(transit)</span></span>`;
+  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].transit = g; });
+  g.addEventListener('mouseenter', e => { showTip(e, g._tipHtml); highlightSign(p.sign); highlightTransitCell(p.name); dimOtherGlyphs(g, p.sign); if (g._hlCircle) { g._hlCircle.setAttribute('stroke', GOLD); g._hlCircle.setAttribute('opacity', '1'); } });
+  g.addEventListener('mousemove',  moveTip);
+  g.addEventListener('mouseleave', () => { hideTip(); clearSignHighlight(); clearTransitCellHighlight(); clearGlyphDim(); if (g._hlCircle) g._hlCircle.setAttribute('opacity', '0'); });
   svg.appendChild(g);
+  transitGlyphMap[p.name] = g;
 });
 
-// ── All natal planets (inactive first so active render on top) ──
-[...NATAL_PLANETS].sort((a,b) => _natalNames.has(a.name) - _natalNames.has(b.name)).forEach(p => {
-  const active = _natalNames.has(p.name);
+// ── All natal planets ──
+NATAL_PLANETS.forEach(p => {
   const [x, y] = polar(p.deg, R_NATAL);
-  const [tx1, ty1] = polar(p.deg, R_DIVIDER - 1);
-  const [tx2, ty2] = polar(p.deg, R_DIVIDER - 6);
-  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color,
-    'stroke-width': active ? '0.7' : '0.5', opacity: active ? '0.4' : '0.2' }));
-  const g = makePlanetGlyph(x, y, p, true, active ? 0.9 : 0.35);
+  const [tx1, ty1] = polar(p.deg, R_DIVIDER-1);
+  const [tx2, ty2] = polar(p.deg, R_DIVIDER-6);
+  svg.appendChild(el('line', { x1:tx1, y1:ty1, x2:tx2, y2:ty2, stroke:p.color, 'stroke-width':'0.6', opacity:'0.4' }));
+  const g = makePlanetGlyph(x, y, p, true, 1);
+  g._baseOpacity = 1;
+  g._sign = p.sign;
   const idxs = ASPECT_DATA.reduce((acc, a, i) => (a.planet1 === p.name ? [...acc, i] : acc), []);
-  const tipHtml = `<strong style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(natal)</span></strong><br>${PLANET_DESC[p.name] || ''}`;
-  g._tipHtml = tipHtml;
-  addTip(g, tipHtml);
-  if (active) {
-    g.addEventListener('mouseenter', (e) => { showTip(e, tipHtml); setAspectHighlight(idxs[0] ?? -1, 'wheel'); });
-    g.addEventListener('mousemove',  moveTip);
-    g.addEventListener('mouseleave', () => { hideTip(); clearAspectHighlight(); });
-    idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].natal = g; });
-  }
+  g._tipHtml = `<span style="color:${p.color}">${PLANET_SYMBOLS[p.name] || ''} ${p.name} <span style="opacity:0.6;font-size:0.85em">(natal)</span></span>`;
+  idxs.forEach(i => { if (aspectWheelGroups[i]) aspectWheelGroups[i].natal = g; });
+  g.addEventListener('mouseenter', e => { showTip(e, g._tipHtml); highlightSign(p.sign); highlightNatalCell(p.name); dimOtherGlyphs(g, p.sign); if (g._hlCircle) { g._hlCircle.setAttribute('stroke', GOLD); g._hlCircle.setAttribute('opacity', '1'); } });
+  g.addEventListener('mousemove',  moveTip);
+  g.addEventListener('mouseleave', () => { hideTip(); clearSignHighlight(); clearNatalCellHighlight(); clearGlyphDim(); if (g._hlCircle) g._hlCircle.setAttribute('opacity', '0'); });
   svg.appendChild(g);
+  natalGlyphMap[p.name] = g;
 });
 
 // ── Bidirectional highlight ──
@@ -1237,16 +1343,32 @@ function setAspectHighlight(idx, source) {
     wg.line.setAttribute('stroke-width', '1.5');
     wg.line.setAttribute('opacity', '0.85');
   }
-  if (wg.natal && wg.natal._hlCircle) {
+  if (wg.natal?._hlCircle) {
     wg.natal._hlCircle.setAttribute('stroke', color);
     wg.natal._hlCircle.setAttribute('opacity', '1');
   }
-  if (wg.transit && wg.transit._hlCircle) {
+  if (wg.transit?._hlCircle) {
     wg.transit._hlCircle.setAttribute('stroke', color);
     wg.transit._hlCircle.setAttribute('opacity', '1');
   }
   if (wg.natal)   wg.natal.style.opacity   = '1';
   if (wg.transit) wg.transit.style.opacity = '1';
+  // dim all other glyphs
+  [...Object.values(natalGlyphMap), ...Object.values(transitGlyphMap)].forEach(g => {
+    if (g !== wg.natal && g !== wg.transit) g.style.opacity = '0.15';
+  });
+  // dim all other zodiac wedges + glyphs, highlight active ones
+  const activeSignsA = new Set([wg.natal && wg.natal._sign, wg.transit && wg.transit._sign]);
+  Object.entries(signWedgeMap).forEach(([sign, w]) => {
+    const v = activeSignsA.has(sign) ? '1' : '0.15';
+    w.style.opacity = v;
+    if (signGlyphMap[sign]) signGlyphMap[sign].style.opacity = v;
+  });
+  if (wg.natal && wg.natal._sign)     highlightSign(wg.natal._sign);
+  if (wg.transit && wg.transit._sign) highlightSign(wg.transit._sign, 1);
+  // highlight table cells
+  const ad = ASPECT_DATA[idx];
+  if (ad) { highlightNatalCell(ad.planet1); highlightTransitCell(ad.planet2); }
   document.querySelectorAll('.aspect-pill[data-aspect-idx]').forEach(p => {
     const isActive = parseInt(p.dataset.aspectIdx) === idx;
     p.classList.toggle('aspect-highlighted', isActive);
@@ -1261,20 +1383,124 @@ function clearAspectHighlight() {
   if (_hlIdx < 0) return;
   const wg = aspectWheelGroups[_hlIdx];
   if (wg.line) {
-    wg.line.setAttribute('stroke', 'rgba(212,175,106,0.25)');
+    wg.line.setAttribute('stroke', ringStroke);
     wg.line.setAttribute('stroke-width', '0.75');
     wg.line.setAttribute('opacity', '1');
   }
-  if (wg.natal && wg.natal._hlCircle)     wg.natal._hlCircle.setAttribute('opacity', '0');
-  if (wg.transit && wg.transit._hlCircle) wg.transit._hlCircle.setAttribute('opacity', '0');
-  if (wg.natal)   wg.natal.style.opacity   = '';
-  if (wg.transit) wg.transit.style.opacity = '';
+  wg.natal?._hlCircle?.setAttribute('opacity', '0');
+  wg.transit?._hlCircle?.setAttribute('opacity', '0');
+  [...Object.values(natalGlyphMap), ...Object.values(transitGlyphMap)].forEach(g => {
+    g.style.opacity = g._baseOpacity;
+  });
+  Object.values(signWedgeMap).forEach(w => { w.style.opacity = '1'; });
+  Object.values(signGlyphMap).forEach(t => { t.style.opacity = '1'; });
+  clearSignHighlight();
+  clearSignHighlight(1);
   document.querySelectorAll('.aspect-pill').forEach(p => {
     p.classList.remove('aspect-highlighted');
     p.style.borderColor = '';
     p.style.background  = '';
   });
+  clearNatalCellHighlight();
+  clearTransitCellHighlight();
   _hlIdx = -1;
+}
+
+// ── Glyph dim helpers (used by direct glyph hover) ──
+let _hlGlyphFocused = null;
+function dimOtherGlyphs(focusedG, activeSign) {
+  // focusedG and activeSign can each be a single value or an array
+  const focused = Array.isArray(focusedG) ? focusedG : [focusedG];
+  const signs   = Array.isArray(activeSign) ? activeSign : [activeSign];
+  _hlGlyphFocused = focused[0];
+  [...Object.values(natalGlyphMap), ...Object.values(transitGlyphMap)].forEach(g => {
+    g.style.opacity = focused.includes(g) ? '1' : '0.15';
+  });
+  Object.entries(signWedgeMap).forEach(([sign, w]) => {
+    const v = signs.includes(sign) ? '1' : '0.15';
+    w.style.opacity = v;
+    if (signGlyphMap[sign]) signGlyphMap[sign].style.opacity = v;
+  });
+}
+function clearGlyphDim() {
+  if (!_hlGlyphFocused) return;
+  [...Object.values(natalGlyphMap), ...Object.values(transitGlyphMap)].forEach(g => {
+    g.style.opacity = g._baseOpacity;
+  });
+  Object.values(signWedgeMap).forEach(w => { w.style.opacity = '1'; });
+  Object.values(signGlyphMap).forEach(t => { t.style.opacity = '1'; });
+  _hlGlyphFocused = null;
+}
+
+// ── Sign highlight helpers (slot 0 = natal, slot 1 = transit) ──
+const _hlSigns = [null, null];
+function highlightSign(signName, slot = 0) {
+  clearSignHighlight(slot);
+  const w = signWedgeMap[signName];
+  if (w) { w.setAttribute('fill', HOVER_FILL); w.setAttribute('stroke', GOLD_BORDER); w.setAttribute('stroke-width', '0.75'); _hlSigns[slot] = w; }
+}
+function clearSignHighlight(slot = 0) {
+  if (_hlSigns[slot]) { _hlSigns[slot].setAttribute('fill', 'transparent'); _hlSigns[slot].setAttribute('stroke', 'none'); _hlSigns[slot] = null; }
+}
+
+// ── Table cell highlight helpers ──
+const _hlCell = { natal: null, transit: null };
+function highlightNatalCell(name)   { _hlCell.natal   && (_hlCell.natal.classList.remove('cell-hl'),   _hlCell.natal   = null); const tr = document.querySelector(`#natal-table-body tr[data-planet="${name}"]`); const td = tr && tr.querySelector('.col-natal');   if (td) { td.classList.add('cell-hl'); _hlCell.natal   = td; } }
+function highlightTransitCell(name) { _hlCell.transit && (_hlCell.transit.classList.remove('cell-hl'), _hlCell.transit = null); const tr = document.querySelector(`#natal-table-body tr[data-planet="${name}"]`); const td = tr && tr.querySelector('.col-transit'); if (td) { td.classList.add('cell-hl'); _hlCell.transit = td; } }
+function clearNatalCellHighlight()   { if (_hlCell.natal)   { _hlCell.natal.classList.remove('cell-hl');   _hlCell.natal   = null; } }
+function clearTransitCellHighlight() { if (_hlCell.transit) { _hlCell.transit.classList.remove('cell-hl'); _hlCell.transit = null; } }
+
+// ── Glyph highlight helpers (re-appends to SVG end for z-order) ──
+const _hlGlyph = { natal: { g: null, next: null }, transit: { g: null, next: null } };
+function _highlightGlyph(type, glyphMap, name) {
+  _clearGlyphHighlight(type);
+  const g = glyphMap[name];
+  if (g && g._hlCircle) {
+    g._hlCircle.setAttribute('stroke', GOLD);
+    g._hlCircle.setAttribute('opacity', '1');
+    _hlGlyph[type].next = g.nextSibling;
+    g.parentNode.appendChild(g);
+    _hlGlyph[type].g = g;
+  }
+}
+function _clearGlyphHighlight(type) {
+  const s = _hlGlyph[type];
+  if (s.g && s.g._hlCircle) {
+    s.g._hlCircle.setAttribute('opacity', '0');
+    if (s.next) s.g.parentNode.insertBefore(s.g, s.next);
+    s.g = null; s.next = null;
+  }
+}
+function highlightNatalGlyph(name)       { _highlightGlyph('natal',   natalGlyphMap,   name); }
+function highlightTransitGlyph(name)     { _highlightGlyph('transit', transitGlyphMap, name); }
+function clearNatalGlyphHighlight()      { _clearGlyphHighlight('natal'); }
+function clearTransitGlyphHighlight()    { _clearGlyphHighlight('transit'); }
+
+// ── Column highlight ──
+function highlightCol(which) {
+  clearColHighlight();
+  const th = document.getElementById('th-' + which);
+  if (th) th.classList.add('col-hl');
+  document.querySelectorAll('.col-' + which).forEach(td => td.classList.add('col-border-only'));
+}
+function clearColHighlight() {
+  ['natal', 'transit'].forEach(w => {
+    const th = document.getElementById('th-' + w);
+    if (th) th.classList.remove('col-hl');
+    document.querySelectorAll('.col-' + w).forEach(td => td.classList.remove('col-border-only'));
+  });
+}
+
+// ── Ring area highlight (fills the annulus on the chart) ──
+function highlightRing(which) {
+  clearRingHighlight();
+  const path = which === 'natal' ? nRing : tRing;
+  path.setAttribute('fill', HOVER_FILL);
+  path.setAttribute('stroke', GOLD_BORDER);
+  path.setAttribute('stroke-width', '0.75');
+}
+function clearRingHighlight() {
+  [nRing, tRing].forEach(p => { p.setAttribute('fill', 'transparent'); p.setAttribute('stroke', 'none'); });
 }
 
 // ── Wire pill hover → wheel highlight ──
@@ -1283,6 +1509,108 @@ document.querySelectorAll('.aspect-pill[data-aspect-idx]').forEach(pill => {
   pill.addEventListener('mouseenter', () => setAspectHighlight(idx, 'pill'));
   pill.addEventListener('mouseleave', clearAspectHighlight);
 });
+
+// ── Wire column header hover ──
+['natal', 'transit'].forEach(w => {
+  const th = document.getElementById('th-' + w);
+  if (th) {
+    th.addEventListener('mouseenter', () => { highlightCol(w); highlightRing(w); });
+    th.addEventListener('mouseleave', () => { clearColHighlight(); clearRingHighlight(); });
+  }
+});
+</script>
+
+<script>
+// ── Natal positions table ──
+(function () {
+  const SIGN_SYM      = Object.fromEntries(SIGNS.map(s => [s.name, s.sym]));
+  const transitSignMap = Object.fromEntries(TRANSIT_PLANETS.map(p => [p.name, p.sign || '']));
+
+  const planetOrder = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+  const planetMap   = Object.fromEntries(NATAL_PLANETS.map(p => [p.name, p]));
+
+  const tbody = document.getElementById('natal-table-body');
+  planetOrder.forEach(name => {
+    const p = planetMap[name];
+    if (!p) return;
+    const natalSign   = p.sign || '';
+    const transitSign = transitSignMap[name] || '';
+    const meaning     = (NATAL_MEANINGS[name] || {})[natalSign] || '';
+
+    const tr = document.createElement('tr');
+    tr.dataset.planet = name;
+
+    // planet glyph
+    const tdP = document.createElement('td');
+    tdP.className = 'col-planet';
+    tdP.textContent = PLANET_SYMBOLS[name] || name[0];
+    const planetDesc = PLANET_DESCRIPTIONS[name] || '';
+    tdP.addEventListener('mouseenter', () => showTipBelow(tdP, planetDesc
+      ? `<div style="font-size:0.65rem;text-wrap:balance"><span style="color:${GOLD}">${name}:</span> ${planetDesc}</div>`
+      : `<span style="color:${GOLD};font-size:0.65rem">${name}</span>`, '320px'));
+    tdP.addEventListener('mouseleave', hideTip);
+
+    // natal sign glyph — tooltip shows meaning
+    const tdN = document.createElement('td');
+    tdN.className = 'col-natal';
+    tdN.textContent = SIGN_SYM[natalSign] || natalSign;
+    if (meaning) {
+      tdN.addEventListener('mouseenter', () => showTipBelow(tdN, `<span style="color:${GOLD};font-size:0.65rem">Natal ${name} in ${natalSign}</span><br><div style="font-size:0.65rem;text-wrap:balance">${meaning}</div>`, '320px'));
+      tdN.addEventListener('mouseleave', hideTip);
+    }
+
+    // transit sign glyph
+    const tdT = document.createElement('td');
+    tdT.className = 'col-transit';
+    tdT.textContent = SIGN_SYM[transitSign] || transitSign;
+    const transitMeaning = (TRANSIT_MEANINGS[name] || {})[transitSign] || '';
+    tdT.addEventListener('mouseenter', () => showTipBelow(tdT, transitMeaning
+      ? `<span style="color:${GOLD};font-size:0.65rem">Transit ${name} in ${transitSign}</span><br><div style="font-size:0.65rem;text-wrap:balance">${transitMeaning}</div>`
+      : `<span style="color:${GOLD};font-size:0.65rem">Transit ${name} in ${transitSign}</span>`, '320px'));
+    tdT.addEventListener('mouseleave', hideTip);
+
+    tr.appendChild(tdP);
+    tr.appendChild(tdN);
+    tr.appendChild(tdT);
+    tbody.appendChild(tr);
+
+    // planet cell → highlight planet cell only, border-only on sign cells, dim chart
+    tdP.addEventListener('mouseenter', () => {
+      tdP.classList.add('cell-hl-hborder');
+      tdN.classList.add('row-border-only'); tdT.classList.add('row-border-only');
+      highlightNatalGlyph(name); highlightSign(natalSign);
+      highlightTransitGlyph(name); highlightSign(transitSign, 1);
+      dimOtherGlyphs([natalGlyphMap[name], transitGlyphMap[name]], [natalSign, transitSign]);
+    });
+    tdP.addEventListener('mouseleave', () => {
+      tdP.classList.remove('cell-hl-hborder');
+      tdN.classList.remove('row-border-only'); tdT.classList.remove('row-border-only');
+      clearNatalGlyphHighlight(); clearSignHighlight();
+      clearTransitGlyphHighlight(); clearSignHighlight(1);
+      clearGlyphDim();
+    });
+
+    // natal sign cell → circle natal planet on chart + highlight natal sign wedge + dim others
+    tdN.addEventListener('mouseenter', () => { tdN.classList.add('cell-hl'); highlightNatalGlyph(name); highlightSign(natalSign); dimOtherGlyphs(natalGlyphMap[name], natalSign); });
+    tdN.addEventListener('mouseleave', () => { tdN.classList.remove('cell-hl'); clearNatalGlyphHighlight(); clearSignHighlight(); clearGlyphDim(); });
+
+    // transit sign cell → circle transit planet on chart + highlight transit sign wedge + dim others
+    tdT.addEventListener('mouseenter', () => { tdT.classList.add('cell-hl'); highlightTransitGlyph(name); highlightSign(transitSign); dimOtherGlyphs(transitGlyphMap[name], transitSign); });
+    tdT.addEventListener('mouseleave', () => { tdT.classList.remove('cell-hl'); clearTransitGlyphHighlight(); clearSignHighlight(); clearGlyphDim(); });
+  });
+
+  // column header tooltips
+  const thN = document.getElementById('th-natal');
+  const thT = document.getElementById('th-transit');
+  if (thN) {
+    thN.addEventListener('mouseenter', () => showTipBelow(thN, '<span style="font-size:0.65rem">planet positions at the moment of your birth</span>'));
+    thN.addEventListener('mouseleave', hideTip);
+  }
+  if (thT) {
+    thT.addEventListener('mouseenter', () => showTipBelow(thT, '<span style="font-size:0.65rem">planet positions in the current sky</span>'));
+    thT.addEventListener('mouseleave', hideTip);
+  }
+})();
 </script>
 </body>
 </html>
