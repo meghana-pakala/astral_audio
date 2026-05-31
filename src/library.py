@@ -1,7 +1,7 @@
 """
-Load music library from:
-- user upload  — Exportify CSV with audio features (used directly for that session)
-- local library — persistent pool CSV; supports genre and decade filtering
+load music library from:
+- user upload - Exportify CSV with audio features (new tracks merged into local library)
+- local library - persistent pool CSV; supports genre and decade filtering
 """
 import logging
 import pandas as pd
@@ -11,15 +11,13 @@ from typing import Optional
 AUDIO_FEATURES = ['valence', 'energy', 'danceability', 'acousticness', 'tempo', 'mode']
 REQUIRED_COLS  = ['track_uri', 'track_name', 'artist_names', 'release_date'] + AUDIO_FEATURES
 
-
+# lowercase column names, replace spaces with underscores, fix plurals
 def _normalise_columns(df: pd.DataFrame) -> pd.DataFrame:
-    """Lowercase column names, replace spaces with underscores, fix plural suffix."""
     df.columns = [c.lower().replace(' ', '_').replace('(s)', 's') for c in df.columns]
     return df
 
-
+# load Exportify CSV and return normalised df with audio feature columns
 def load_user_playlist(path: str) -> pd.DataFrame:
-    """Load an Exportify CSV. Returns a normalised DataFrame with audio feature columns."""
     try:
         df = _normalise_columns(pd.read_csv(path))
     except Exception as e:
@@ -35,11 +33,71 @@ def load_user_playlist(path: str) -> pd.DataFrame:
     logging.info(f'Loaded {len(df)} tracks from {Path(path).name}')
     return df
 
+# append tracks from user playlist to local library
+# deduplicate on track_uri and track_name + artist_names, keeping oldest release_date
+def merge_into_library(user_csv_path: str, local_library_path: str) -> int:
+    try:
+        user_df = _normalise_columns(pd.read_csv(user_csv_path))
+        user_df = user_df.dropna(subset=AUDIO_FEATURES)
+    except Exception:
+        return 0
 
+    local_path = Path(local_library_path)
+    if not local_path.exists():
+        user_df.to_csv(local_library_path, index=False)
+        return len(user_df)
+
+    try:
+        local_df = _normalise_columns(pd.read_csv(local_library_path))
+    except Exception:
+        return 0
+
+    existing_uris = set(local_df['track_uri'])
+
+    # build lookup: (name, artist) -> release year, for tracks already in library
+    existing_release = {
+        (str(row['track_name']).lower().strip(), str(row['artist_names']).lower().strip()):
+        pd.to_numeric(str(row['release_date'])[:4], errors='coerce')
+        for _, row in local_df.iterrows()
+        }
+
+    truly_new, to_replace = [], []
+    for _, row in user_df.iterrows():
+        if row['track_uri'] in existing_uris:
+            continue  # skip exact URI match
+        key = (str(row['track_name']).lower().strip(), str(row['artist_names']).lower().strip())
+        if key in existing_release:
+            upload_year = pd.to_numeric(str(row['release_date'])[:4], errors='coerce')
+            if upload_year < existing_release[key]:
+                to_replace.append(key)  # replace library entry with earlier release
+            continue 
+        truly_new.append(row)
+
+    new_tracks = pd.DataFrame(truly_new)
+
+    # replace library entries where upload has an older release
+    if to_replace:
+        replace_keys = set(to_replace)
+        local_df = local_df[~local_df.apply(
+            lambda r: (str(r['track_name']).lower().strip(),
+                       str(r['artist_names']).lower().strip()) in replace_keys, axis=1
+                       )]
+        replacements = user_df[user_df.apply(
+            lambda r: (str(r['track_name']).lower().strip(),
+                       str(r['artist_names']).lower().strip()) in replace_keys, axis=1
+                       )]
+        new_tracks = pd.concat([new_tracks, replacements], ignore_index=True)
+
+    if new_tracks.empty:
+        return 0
+
+    pd.concat([local_df, new_tracks], ignore_index=True).to_csv(local_library_path, index=False)
+    return len(new_tracks)
+
+# filter library by genre/decade, return original if no filters set
 def apply_library_filters(df: pd.DataFrame,
                           genre_filters: Optional[list] = None,
                           decade_filters: Optional[list] = None) -> pd.DataFrame:
-    """Filter a library DataFrame by genre and/or decade. Returns unfiltered df if no matches."""
     filtered = df.copy()
 
     if genre_filters and 'genre_categories' in filtered.columns:
@@ -59,47 +117,11 @@ def apply_library_filters(df: pd.DataFrame,
 
     return filtered
 
-
-def merge_into_library(user_csv_path: str, local_library_path: str) -> int:
-    """
-    Append tracks from an Exportify CSV that aren't already in the local library.
-    Deduplication key: track_uri.
-    Returns the number of new tracks added (0 on any error).
-    """
-    try:
-        user_df = _normalise_columns(pd.read_csv(user_csv_path))
-        user_df = user_df.dropna(subset=[c for c in AUDIO_FEATURES if c in user_df.columns])
-        if 'track_uri' not in user_df.columns:
-            return 0
-    except Exception:
-        return 0
-
-    local_path = Path(local_library_path)
-    if not local_path.exists():
-        user_df.to_csv(local_library_path, index=False)
-        return len(user_df)
-
-    try:
-        local_df = _normalise_columns(pd.read_csv(local_library_path))
-    except Exception:
-        return 0
-
-    if 'track_uri' not in local_df.columns:
-        return 0
-
-    new_tracks = user_df[~user_df['track_uri'].isin(set(local_df['track_uri'].dropna()))]
-    if new_tracks.empty:
-        return 0
-
-    pd.concat([local_df, new_tracks], ignore_index=True).to_csv(local_library_path, index=False)
-    return len(new_tracks)
-
-
+# return preferred library for track scoring
 def load_music_library(user_playlist_path: Optional[str] = None,
                        local_library_path: str = '',
                        genre_filters: Optional[list] = None,
                        decade_filters: Optional[list] = None) -> pd.DataFrame:
-    """Return the best available music library as a DataFrame."""
     if user_playlist_path and Path(user_playlist_path).exists():
         try:
             df = load_user_playlist(user_playlist_path)
@@ -112,7 +134,7 @@ def load_music_library(user_playlist_path: Optional[str] = None,
         raise FileNotFoundError(
             'No local music library found. '
             'Please upload your Exportify CSV or ensure the local library file exists.'
-        )
+            )
 
     df = load_user_playlist(local_library_path)
     df = apply_library_filters(df, genre_filters, decade_filters)

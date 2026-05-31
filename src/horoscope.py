@@ -1,6 +1,5 @@
 """
 LLM horoscope generation via Gemini
-Takes daily aspect text and returns structured horoscope dict
 """
 import json
 import logging
@@ -9,7 +8,49 @@ import re
 from google import genai
 from aspects import format_aspects
 
-SYSTEM_PROMPT = """You are an astrology interpreter. Given today's planetary aspects, you generate a daily horoscope and select the aspects that will shape a personalized music playlist.
+# hardcoded example to run full pipeline without Gemini API
+# enable with BYPASS_GEMINI=1 in the environment
+
+from types import SimpleNamespace
+
+_stub_aspects = [
+    SimpleNamespace(p1_name='Moon',   aspect='conjunction', p2_name='Moon',    orbit=0.5),
+    SimpleNamespace(p1_name='Mars',   aspect='opposition',  p2_name='Mercury', orbit=1.2),
+    SimpleNamespace(p1_name='Saturn', aspect='trine',       p2_name='Moon',    orbit=2.1),
+]
+
+_stub_horoscope = {
+    'daily_summary': (
+        'Today marks a profound emotional reset, guiding you to reconnect with your inner self '
+        'with a quiet, introspective quality. Beneath this sensitive new beginning, a mature '
+        'groundedness anchors your feelings, providing a steady, comforting rhythm. However, '
+        "don't be surprised if your thoughts are sharp and assertive, bringing a dynamic, even "
+        'percussive energy to your communications and mental processes.'
+    ),
+    'daily_keywords': ['introspective', 'grounded', 'sharp'],
+    'aspects': [
+        {'aspect':  'Natal Moon in conjunction with transiting Moon',
+         'meaning': (
+             'Today marks a personal emotional reset, a tender new beginning where your inner world '
+             "feels fresh and perhaps a little sensitive. It's a moment to reconnect with your core "
+             'feelings and intuition, setting the tone with a quiet, introspective hum.'
+             ),},
+        {'aspect':  'Natal Mars in opposition with transiting Mercury',
+         'meaning': (
+             'Your mind is sharp and quick, potentially leading to spirited debates or a restless '
+             "mental energy that demands expression. There's a dynamic, percussive edge to your "
+             'thoughts and words, driving you to articulate your will or defend your ideas.'
+             ),},
+        {'aspect':  'Natal Saturn in trine with transiting Moon',
+         'meaning': (
+             'A deep sense of emotional groundedness and maturity permeates your feelings, allowing '
+             'you to approach any sensitivities with calm wisdom. This aspect provides a comforting, '
+             'steadying influence, like a low, resonant drone that supports your inner landscape.'
+             ),},],
+        }
+
+# define LLM prompt
+SYSTEM_PROMPT = """You are an astrology interpreter. Given today's planetary aspects, generate a daily horoscope and select the aspects that will shape a personalized music playlist.
 
 Instructions:
 
@@ -22,7 +63,6 @@ Instructions:
 2. For each selected aspect provide:
    - "aspect": the aspect label exactly as given, e.g. "Natal Moon in square with transiting Saturn"
    - "meaning": 1-2 sentences. Describe the psychological and felt quality of this energy — how it shows up in mood, attention, or the texture of the day. Subtly hint at its sonic character (e.g. something restless and percussive, something slow and reverb-heavy, something bright and melodic) without making it explicitly about music.
-   - "keywords": 2-3 single-word descriptors for the aspect energy
 
 3. Synthesize into:
    - "daily_summary": 2-3 sentences. Capture the overall feeling of the day — what kind of inner weather it brings, and implicitly what it might sound like. Write for a general audience; keep it grounded and personal, but hint at the sonic character similar to the aspect descriptions. 
@@ -31,56 +71,10 @@ Instructions:
 Return only valid JSON with no markdown fences:
 {"daily_summary": "...",
  "daily_keywords": ["word", "word", "word"],
- "aspects": [{"aspect": "...", "meaning": "...", "keywords": ["...", "..."]},
-             {"aspect": "...", "meaning": "...", "keywords": ["...", "..."]},
-             {"aspect": "...", "meaning": "...", "keywords": ["...", "..."]}
+ "aspects": [{"aspect": "...", "meaning": "..."},
+             {"aspect": "...", "meaning": "..."},
+             {"aspect": "...", "meaning": "..."}
              ]}"""
-
-def _stub_horoscope(transit_aspects):
-    """
-    Build a valid horoscope dict from real aspects without calling Gemini.
-    Uses the first 3 aspects so the rest of the pipeline runs normally.
-    Enable with BYPASS_GEMINI=1 in your environment.
-    """
-    selected = transit_aspects[:3]
-    stub_meanings = {
-        'conjunction': 'These two energies merge, intensifying their shared themes.',
-        'opposition':  'A push-pull dynamic invites reflection and balance.',
-        'trine':       'A harmonious flow supports ease and creative expression.',
-        'square':      'Friction between these planets sparks growth and action.',
-        'sextile':     'A cooperative energy opens up new opportunities.',
-    }
-    stub_keywords = {
-        'conjunction': ['electric', 'focused', 'charged'],
-        'opposition':  ['restless', 'searching', 'open'],
-        'trine':       ['fluid', 'warm', 'luminous'],
-        'square':      ['driven', 'edgy', 'kinetic'],
-        'sextile':     ['bright', 'curious', 'light'],
-    }
-    aspects_out = []
-    all_keywords = []
-    for a in selected:
-        key = f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}'
-        kws = stub_keywords.get(a.aspect, ['reflection', 'energy', 'movement'])
-        aspects_out.append({
-            'aspect':   key,
-            'meaning':  f'{a.p1_name} and {a.p2_name}: {stub_meanings.get(a.aspect, "Notable planetary contact today.")}',
-            'keywords': kws[:2],
-        })
-        all_keywords.extend(kws[:1])
-
-    daily_keywords = list(dict.fromkeys(all_keywords))[:3] or ['reflection', 'flow', 'presence']
-    summary_planets = ' and '.join({a.p1_name for a in selected} | {a.p2_name for a in selected})
-    return {
-        'daily_summary': (
-            f'Today\'s chart highlights {summary_planets}, '
-            'weaving a mood that calls for presence and attunement. '
-            'Let the music reflect where you are right now.'
-        ),
-        'daily_keywords': daily_keywords,
-        'aspects': aspects_out,
-    }
-
 
 # call Gemini to interpret aspects and generate horoscope
 def _call_gemini(api_key, prompt):
@@ -96,7 +90,7 @@ def _call_gemini(api_key, prompt):
 
 def get_horoscope(transit_aspects):
     if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
-        return _stub_horoscope(transit_aspects)
+        return _stub_horoscope
 
     primary_key = os.environ.get('GEMINI_API_KEY')
     backup_key = os.environ.get('GEMINI_API_KEY_2')
@@ -118,8 +112,11 @@ def get_horoscope(transit_aspects):
 
 # match selected aspects from horoscope back to transit aspect objects
 def get_select_aspects(transit_aspects: list, horoscope: dict) -> list:
+    if os.environ.get('BYPASS_GEMINI', '').strip() not in ('', '0', 'false', 'False'):
+        return _stub_aspects
+
     selected = {a['aspect'].split(' (orb:')[0].strip() for a in horoscope.get('aspects', [])}
     return [
         a for a in transit_aspects
         if f'Natal {a.p1_name} in {a.aspect} with transiting {a.p2_name}' in selected
-    ]
+        ]
