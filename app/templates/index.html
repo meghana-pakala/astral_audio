@@ -152,9 +152,6 @@ body::before{
 .seg-display::placeholder{color:var(--text-dim)}
 .seg-display:hover{background:var(--border-dim);color:var(--gold-pale)}
 .seg-display.open,.seg-display:focus{background:rgba(212,175,106,0.15);color:var(--gold);outline:none}
-.ampm-btn{font-family:var(--mono);font-size:13px;border:1px solid var(--border);background:transparent;cursor:pointer;padding:2px 8px;border-radius:2px;outline:none;color:var(--text-dim);transition:color .15s,border-color .15s,background .15s}
-.ampm-btn.ampm-selected{color:var(--cream);border-color:var(--cream);background:rgba(255,248,230,.06)}
-.ampm-sep{color:var(--text-dim);opacity:.5;padding:0 3px;font-family:var(--mono);font-size:13px;user-select:none}
 .seg-sep{font-family:var(--mono);font-size:13px;color:var(--text-dim);padding:0 5px;user-select:none}
 .seg-picker{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:100;background:var(--navy-card);border:1px solid var(--border-h);border-radius:4px;width:72px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.7)}
 .seg-picker.open{display:block}
@@ -169,20 +166,21 @@ body::before{
 .picker-item.selected{color:var(--gold);font-size:13px}
 .picker-item.picker-highlight{color:var(--gold-pale);background:rgba(212,175,106,0.12)}
 
-/* ── Library toggle ── */
-.lib-toggle{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:10px}
-.lib-opt{border:1px solid var(--border);border-radius:4px;padding:18px 20px;cursor:pointer;text-align:center;transition:all .25s}
-.lib-opt.on{border-color:var(--gold);background:rgba(212,175,106,.06)}
-.lib-opt:hover{border-color:var(--border-h)}
-.lib-t{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--cream);margin-bottom:6px}
-.lib-s{font-size:10px;color:var(--text-dim)}
-.lib-badge{display:inline-block;margin-top:8px;padding:3px 10px;border:1px solid var(--gold-dim);border-radius:20px;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim)}
+/* ── Library ── */
+.lib-tagline{font-family:var(--mono);font-style:italic;font-size:13px;color:var(--cream);margin:10px 0 18px;line-height:1.6}
+.lib-tagline-sub{color:var(--text-dim);font-style:normal;font-family:var(--mono);font-size:12px;line-height:1.6;text-align:center}
+.lib-tagline-sub a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(212,175,106,.3)}
+.lib-badge{display:inline-block;padding:3px 10px;border:1px solid var(--gold-dim);border-radius:20px;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim)}
+.lib-filter-box{border:1px solid var(--border-mid);border-radius:4px;margin-bottom:36px}
+.lib-filter-toggle{width:100%;background:none;border:none;padding:20px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-family:var(--mono);font-size:13px;letter-spacing:.08em;color:var(--cream);text-transform:none;text-align:center}
+.lib-filter-toggle:hover{background:rgba(212,175,106,.03)}
+.lib-filter-toggle em{font-style:italic}
+.filter-chevron{color:var(--gold-dim);font-size:16px;transition:transform .2s;line-height:1}
+.lib-filter-panel{padding:0 16px 16px}
+.lib-pool-count{color:var(--text-dim);text-transform:none;letter-spacing:0;font-size:11px}
 
 /* ── Upload ── */
-.library-panel{padding-top:0;margin-bottom:36px}
-.library-upload-hint{font-size:13px;color:var(--cream);margin-bottom:14px;line-height:1.6;text-align:center;font-family:var(--mono)}
-.library-upload-hint a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(212,175,106,.3)}
-.upload-area{position:relative;border:1px dashed var(--border);border-radius:4px;padding:28px;text-align:center;transition:border-color .2s,background .2s;cursor:pointer}
+.upload-area{position:relative;border:1px dashed var(--border);border-radius:4px;padding:20px;text-align:center;transition:border-color .2s,background .2s;cursor:pointer}
 .upload-area:hover,.upload-area.drag-over{border-color:var(--border-h);background:rgba(212,175,106,0.04)}
 .upload-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .upload-label{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
@@ -201,7 +199,7 @@ body::before{
 .row-break{width:100%;height:0}
 
 /* ── Submit button ── */
-.btn-gen{display:block;width:100%;padding:18px 32px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:44px;position:relative;overflow:hidden}
+.btn-gen{display:block;width:fit-content;margin:44px auto 0;padding:14px 28px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .btn-gen::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .3s;z-index:-1}
 .btn-gen:hover{color:var(--navy)}
 .btn-gen:hover::before{transform:translateX(0)}
@@ -261,7 +259,6 @@ background-image:
 @media(max-width:960px){
   .form-card{padding:32px 24px}
   .form-row2{grid-template-columns:1fr;gap:0}
-  .lib-toggle{grid-template-columns:1fr}
   .birth-time-col{padding-top:28px}
 
   /* Hero: stack chart above text on narrow screens */
@@ -593,9 +590,10 @@ background-image:
                 <div class="seg-picker" id="pickerMin"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollMin"></div></div></div>
               </div>
               <span class="seg-sep" style="padding:0 8px"></span>
-              <button class="ampm-btn" id="ampmAM" tabindex="-1" type="button">AM</button>
-              <span class="ampm-sep">/</span>
-              <button class="ampm-btn" id="ampmPM" tabindex="-1" type="button">PM</button>
+              <div class="seg" id="segAmpm">
+                <input class="seg-display" id="dispAmpm" tabindex="7" type="text" maxlength="2" size="2" placeholder="AM" autocomplete="off" readonly>
+                <div class="seg-picker" id="pickerAmpm"><div class="picker-scroll-wrap"><div class="picker-scroll" id="scrollAmpm" style="height:auto;max-height:72px"></div></div></div>
+              </div>
             </div>
             <input type="hidden" id="birth_time" name="birth_time">
           </div>
@@ -605,7 +603,7 @@ background-image:
         <div class="form-group">
           <label class="lbl">Birthplace</label>
           <div class="location-wrap">
-            <input class="inp" type="text" id="birth_location" tabindex="7" placeholder="Type to search" autocomplete="off">
+            <input class="inp" type="text" id="birth_location" tabindex="8" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="birthList"></div>
             <span class="loc-check" id="birthCheck">✓</span>
           </div>
@@ -619,7 +617,7 @@ background-image:
         <div class="form-group">
           <label class="lbl">Current Location</label>
           <div class="location-wrap">
-            <input class="inp" type="text" id="current_location" tabindex="8" placeholder="Type to search" autocomplete="off">
+            <input class="inp" type="text" id="current_location" tabindex="9" placeholder="Type to search" autocomplete="off">
             <div class="autocomplete-list" id="currentList"></div>
             <span class="loc-check" id="currentCheck">✓</span>
           </div>
@@ -630,65 +628,58 @@ background-image:
         </div>
 
         <!-- Music Library -->
-        <div class="form-group" style="margin-bottom:18px">
+        <div class="form-group" style="margin-bottom:14px">
           <label class="lbl">Music Library</label>
-          <div class="lib-toggle">
-            <div class="lib-opt on" id="optUpload">
-              <div class="lib-t">Upload Playlist</div>
-              <span class="lib-badge">Recommended</span>
-            </div>
-            <div class="lib-opt" id="optPool">
-              <div class="lib-t">Local Library</div>
-              <div class="lib-s">{% if pool_count %}~{{ ((pool_count + 500) // 1000) }}K Song Database{% endif %}</div>
-            </div>
-          </div>
-          <input type="hidden" id="library_choice" name="library_choice" value="upload">
+          <p class="lib-tagline">Your stars tune the signal — your songs write the score.</p>
         </div>
 
-        <!-- Pool panel (hidden by default) -->
-        <div class="library-panel" id="panelPool" style="display:none">
-          <div class="form-group" style="margin-bottom:20px">
-            <div class="filter-label">Genre</div>
-            <div class="pill-group">
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="acoustic"><span>Acoustic / Folk</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="alternative"><span>Alternative</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="country"><span>Country</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="edm"><span>EDM</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="funk"><span>Funk</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="hip hop"><span>Hip-Hop</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="metal"><span>Metal</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="pop"><span>Pop</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="punk"><span>Punk</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="r&b"><span>R&amp;B / Soul</span></label>
-              <label class="check-pill"><input type="checkbox" name="genre_filter" value="rock"><span>Rock</span></label>
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <div class="filter-label">Decade</div>
-            <div class="pill-group">
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="pre1960"><span style="text-transform:none">Pre-1960s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1960"><span style="text-transform:none">1960s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1970"><span style="text-transform:none">1970s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1980"><span style="text-transform:none">1980s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="1990"><span style="text-transform:none">1990s</span></label>
-              <div class="row-break"></div>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2000"><span style="text-transform:none">2000s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2010"><span style="text-transform:none">2010s</span></label>
-              <label class="check-pill"><input type="checkbox" name="decade_filter" value="2020"><span style="text-transform:none">2020s</span></label>
-            </div>
-          </div>
+        <!-- Upload -->
+        <div class="upload-area" id="uploadArea" style="margin-bottom:10px">
+          <input class="upload-input" type="file" id="csvFile" name="liked_songs_csv" accept=".csv">
+          <label class="upload-label" for="csvFile">
+            <span class="upload-primary" id="uploadPrimary">Drop your playlist CSV here</span>
+            <span class="lib-badge" style="margin-top:6px">Recommended</span>
+          </label>
+          <button type="button" id="clearUploadBtn" onclick="clearUpload(event)" style="display:none;position:absolute;top:8px;right:10px;background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.1rem;line-height:1;opacity:0.7;padding:4px;z-index:2" title="Remove file">&times;</button>
         </div>
+        <p class="lib-tagline-sub" style="margin-bottom:28px">Upload your Liked Songs from <a href="https://exportify.net" target="_blank" rel="noopener">exportify.net</a> — we'll learn what you love and calibrate to your frequency. New tracks will be added to the local music database. Filter the full library below.</p>
 
-        <!-- Upload panel (hidden by default) -->
-        <div class="library-panel" id="panelUpload">
-          <p class="library-upload-hint">For a personalized playlist, export your Liked Songs at <a href="https://exportify.net" target="_blank" rel="noopener">exportify.net</a></p>
-          <div class="upload-area" id="uploadArea">
-            <input class="upload-input" type="file" id="csvFile" name="liked_songs_csv" accept=".csv">
-            <label class="upload-label" for="csvFile">
-              <span class="upload-icon">↑</span>
-              <span class="upload-primary" id="uploadPrimary">Drop CSV Here</span>
-            </label>
-            <button type="button" id="clearUploadBtn" onclick="clearUpload(event)" style="display:none;position:absolute;top:8px;right:10px;background:none;border:none;color:var(--gold);cursor:pointer;font-size:1.1rem;line-height:1;opacity:0.7;padding:4px;z-index:2" title="Remove file">&times;</button>
+        <!-- Filter collapsible -->
+        <div class="lib-filter-box" id="filterBox">
+          <button type="button" class="lib-filter-toggle" id="filterToggle" onclick="toggleFilters()">
+            <span><em>Local Library</em><br><span class="lib-pool-count">{% if pool_count %}~{{ ((pool_count + 500) // 1000) }}K Songs{% endif %}</span></span>
+            <span class="filter-chevron" id="filterChevron">▾</span>
+          </button>
+          <div class="lib-filter-panel" id="filterPanel" style="display:none">
+            <div class="form-group" style="margin-bottom:20px;padding-top:18px">
+              <div class="filter-label">Genre</div>
+              <div class="pill-group">
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="acoustic"><span>Acoustic / Folk</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="alternative"><span>Alternative</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="country"><span>Country</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="electronic"><span>Electronic / EDM</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="funk"><span>Funk / Disco</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="hip_hop"><span>Hip-Hop</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="jazz_blues"><span>Jazz / Blues</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="pop"><span>Pop</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="r&b"><span>R&amp;B / Soul</span></label>
+                <label class="check-pill"><input type="checkbox" name="genre_filter" value="rock"><span>Rock</span></label>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:4px">
+              <div class="filter-label">Decade</div>
+              <div class="pill-group">
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="pre1960"><span style="text-transform:none">Pre-1960s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="1960"><span style="text-transform:none">1960s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="1970"><span style="text-transform:none">1970s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="1980"><span style="text-transform:none">1980s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="1990"><span style="text-transform:none">1990s</span></label>
+                <div class="row-break"></div>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="2000"><span style="text-transform:none">2000s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="2010"><span style="text-transform:none">2010s</span></label>
+                <label class="check-pill"><input type="checkbox" name="decade_filter" value="2020"><span style="text-transform:none">2020s</span></label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -856,17 +847,16 @@ async function geocodeCity(name) {
   } catch { return null; }
 }
 
-// ── Library toggle ──
-document.getElementById('optPool').addEventListener('click', function() {
-  this.classList.add('on'); document.getElementById('optUpload').classList.remove('on');
-  document.getElementById('panelPool').style.display='block'; document.getElementById('panelUpload').style.display='none';
-  document.getElementById('library_choice').value='pool';
-});
-document.getElementById('optUpload').addEventListener('click', function() {
-  this.classList.add('on'); document.getElementById('optPool').classList.remove('on');
-  document.getElementById('panelUpload').style.display='block'; document.getElementById('panelPool').style.display='none';
-  document.getElementById('library_choice').value='upload';
-});
+// ── Filter toggle ──
+function toggleFilters() {
+  var panel = document.getElementById('filterPanel');
+  var chevron = document.getElementById('filterChevron');
+  var open = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  chevron.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+// ── Upload area ──
 (function() {
   var area  = document.getElementById('uploadArea');
   var input = document.getElementById('csvFile');
@@ -875,12 +865,13 @@ document.getElementById('optUpload').addEventListener('click', function() {
   var clearBtn = document.getElementById('clearUploadBtn');
 
   var uploadIcon = document.querySelector('#uploadArea .upload-icon');
+  var badge = document.querySelector('#uploadArea .lib-badge');
 
   function setFile(name) {
     if (uploadIcon) uploadIcon.style.display = 'none';
+    if (badge) badge.style.display = 'none';
     label.textContent = name;
-    label.style.fontSize = '14px';
-    label.style.color = 'var(--cream)';
+    label.style.color = 'var(--gold-dim)';
     label.style.letterSpacing = '0';
     area.style.borderColor = 'rgba(212,175,106,0.5)';
     clearBtn.style.display = 'block';
@@ -889,8 +880,8 @@ document.getElementById('optUpload').addEventListener('click', function() {
   function clearFile() {
     input.value = '';
     if (uploadIcon) uploadIcon.style.display = '';
-    label.textContent = 'Drop CSV Here';
-    label.style.fontSize = '';
+    if (badge) badge.style.display = '';
+    label.textContent = 'Drop your playlist CSV here';
     label.style.color = '';
     label.style.letterSpacing = '';
     area.style.borderColor = '';
@@ -948,7 +939,11 @@ var pickerConfigs = [
   {id:'Min', scrollId:'scrollMin', dispId:'dispMin', pickerId:'pickerMin',
    min:0, max:59, pad:2, placeholder:'MM',
    items: Array.from({length:60}, function(_,i){return {value:i, label:String(i).padStart(2,'0')}}),
-   onSelect: function(v){timeState.min=v; syncTime();}, nextId:null},
+   onSelect: function(v){timeState.min=v; syncTime();}, nextId:'dispAmpm'},
+  {id:'Ampm', scrollId:'scrollAmpm', dispId:'dispAmpm', pickerId:'pickerAmpm',
+   placeholder:'AM',
+   items: [{value:'AM', label:'AM'}, {value:'PM', label:'PM'}],
+   onSelect: function(v){timeState.ampm=v; syncTime();}, nextId:null},
 ];
 
 function getCfg(dispId) { return pickerConfigs.find(function(c){return c.dispId===dispId;}); }
@@ -1163,11 +1158,12 @@ function bindInput(cfg) {
       var highlighted = scroll.querySelector('.picker-item.picker-highlight');
       if (highlighted) {
         e.preventDefault();
-        var val = parseInt(highlighted.dataset.value);
-        inp.value = String(val).padStart(cfg.pad, '0');
+        var rawVal = highlighted.dataset.value;
+        var val = (cfg.id === 'Ampm') ? rawVal : parseInt(rawVal);
+        inp.value = (cfg.id === 'Ampm') ? rawVal : String(val).padStart(cfg.pad, '0');
         cfg.onSelect(val);
         markSelected(cfg, val);
-        scrollToValue(cfg, val);
+        if (cfg.id !== 'Ampm') scrollToValue(cfg, val);
         scroll.querySelectorAll('.picker-item').forEach(function(el){ el.classList.remove('picker-highlight'); });
         closePicker();
         if (cfg.nextId) {
@@ -1178,24 +1174,22 @@ function bindInput(cfg) {
         closePicker();
       }
     }
+
+    // AM/PM: type 'a' for AM, 'p' for PM
+    if (cfg.id === 'Ampm') {
+      if (e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        inp.value = 'AM'; cfg.onSelect('AM'); markSelected(cfg, 'AM'); closePicker();
+      } else if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        inp.value = 'PM'; cfg.onSelect('PM'); markSelected(cfg, 'PM'); closePicker();
+      }
+    }
   });
 }
 
 pickerConfigs.forEach(bindInput);
 
-// AM/PM
-document.getElementById('ampmAM').addEventListener('click', function(){
-  timeState.ampm = 'AM';
-  document.getElementById('ampmAM').classList.add('ampm-selected');
-  document.getElementById('ampmPM').classList.remove('ampm-selected');
-  syncTime();
-});
-document.getElementById('ampmPM').addEventListener('click', function(){
-  timeState.ampm = 'PM';
-  document.getElementById('ampmPM').classList.add('ampm-selected');
-  document.getElementById('ampmAM').classList.remove('ampm-selected');
-  syncTime();
-});
 
 document.addEventListener('click', function(){ closePicker(); });
 document.querySelectorAll('.seg-picker').forEach(function(p){
