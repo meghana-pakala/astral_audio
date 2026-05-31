@@ -21,7 +21,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 from dotenv import load_dotenv
-from flask import Flask, jsonify, redirect, render_template, request, session, Response, stream_with_context, send_file
+from flask import Flask, jsonify, redirect, render_template, request, session, Response, stream_with_context
 
 # load local.env when running locally
 load_dotenv('local.env')
@@ -208,10 +208,9 @@ def start():
     except (ValueError, KeyError):
         return redirect('/?error=invalid_form_data')
 
-    # library choice + filters
-    session['library_choice']  = request.form.get('library_choice', 'upload')
-    session['genre_filters']   = request.form.getlist('genre_filter')
-    session['decade_filters']  = request.form.getlist('decade_filter')
+    # filters
+    session['genre_filters']  = request.form.getlist('genre_filter')
+    session['decade_filters'] = request.form.getlist('decade_filter')
 
     # handle optional Exportify CSV upload
     csv_file = request.files.get('liked_songs_csv')
@@ -252,7 +251,6 @@ def progress():
     birth_data       = session['birth_data']
     current_location = session['current_location']
     uploaded_csv     = session.get('csv_path')
-    library_choice   = session.get('library_choice', 'upload')
     genre_filters    = session.get('genre_filters') or []
     decade_filters   = session.get('decade_filters') or []
 
@@ -544,11 +542,6 @@ def api_timezone():
         return jsonify({'timezone': tz})
     except Exception:
         return jsonify({'timezone': 'UTC'})
-
-
-@app.route('/admin/download-library')
-def download_library():
-    return send_file(LOCAL_LIBRARY_PATH, as_attachment=True, download_name='music_library.csv')
 
 
 @app.route('/health')
