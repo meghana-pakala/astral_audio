@@ -460,7 +460,7 @@ nav {
 
 .transits-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
+  grid-template-columns: minmax(0, 1fr) 250px;
   gap: 28px; align-items: center;
 }
 .aspects-list {
@@ -471,7 +471,7 @@ nav {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 14px 16px; border-radius: 4px;
   font-family: var(--mono);
-  font-size: 0.7rem; letter-spacing: 0.05em;
+  font-size: 11.7px; letter-spacing: 0.05em;
   position: relative; cursor: default;
   transition: transform .15s;
   background: rgba(255,252,245,0.03);
@@ -487,7 +487,7 @@ nav {
   font-style: italic;
 }
 .aspect-meaning {
-  font-size: 0.68rem; color: var(--text-dim);
+  font-size: 11.2px; color: var(--text-dim);
   margin-top: 5px; line-height: 1.5; display: block;
   font-family: var(--mono);
 }
@@ -499,7 +499,7 @@ nav {
 }
 .aspect-feature {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 10.2px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -511,7 +511,7 @@ nav {
 
 /* ── Natal positions table ── */
 .natal-table {
-  width: 100%; border-collapse: collapse; table-layout: fixed;
+  width: 225px; border-collapse: collapse; table-layout: fixed;
   font-family: var(--mono);
   font-size: 0.58rem;
   margin-top: 14px;
@@ -521,22 +521,22 @@ nav {
   border-right: 1px solid rgba(255,255,255,0.04);
 }
 .natal-table th {
-  text-align: center; padding: 0; height: 28px;
+  text-align: center; padding: 0; height: 21px;
   color: var(--text-dim); font-weight: normal;
   letter-spacing: 0.08em; text-transform: uppercase;
-  font-size: 0.5rem; vertical-align: middle;
+  font-size: 9px; vertical-align: middle;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 .natal-table td {
-  padding: 0; height: 28px;
+  padding: 0; height: 21px;
   border-bottom: 1px solid rgba(255,255,255,0.04);
   color: var(--cream); vertical-align: middle;
   text-align: center; cursor: default;
 }
 .natal-table tr:last-child td { border-bottom: none; }
 .natal-table th:last-child, .natal-table td:last-child { border-right: none; }
-.natal-table .col-planet { color: var(--gold); font-family: sans-serif; font-size: 0.85rem; }
-.natal-table .col-natal, .natal-table .col-transit { font-family: sans-serif; font-size: 0.85rem; }
+.natal-table .col-planet { color: var(--gold); font-family: sans-serif; font-size: 14px; line-height: 21px; text-align: center; }
+.natal-table .col-natal, .natal-table .col-transit { font-family: sans-serif; font-size: 14px; line-height: 21px; text-align: center; }
 .natal-table tr.natal-row-hl td { background: var(--hover-fill); box-shadow: inset 0 1px 0 var(--border-h), inset 0 -1px 0 var(--border-h); }
 .natal-table th.col-hl, .natal-table td.col-hl { background: var(--hover-fill); box-shadow: inset 1px 0 0 var(--border-h), inset -1px 0 0 var(--border-h); }
 .natal-table td.cell-hl { background: var(--hover-fill); outline: 1px solid var(--border-h); outline-offset: -1px; }
@@ -548,7 +548,7 @@ nav {
 .wheel-wrap {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
 }
-#transit-wheel { width: 240px; height: 240px; }
+#transit-wheel { width: 250px; height: 250px; }
 
 
 /* ── Responsive ── */
@@ -588,7 +588,7 @@ nav {
     <div class="section-divider"><span class="section-divider-title">Astral  Audio</span></div>
 
     <div class="personalize-bar">
-      <span class="personalize-label">Adjust the audio features and rate tracks to personalize your playlist.</span>
+      <span class="personalize-label">Refine the signal — adjust the target audio features and rate your tracks to recalibrate.</span>
     </div>
 
     <div class="playlist-layout">
@@ -951,7 +951,7 @@ document.getElementById('remap-btn').addEventListener('click', async function() 
   btn.disabled = true;
   btn.classList.add('loading');
   const orig = btn.textContent;
-  btn.textContent = 'remapping…';
+  btn.textContent = 'rescoring…';
 
   const sliders = getSliderValues();
   const payload = {
@@ -1009,7 +1009,7 @@ const ns  = 'http://www.w3.org/2000/svg';
 const cx = 130, cy = 130;
 
 const R_OUTER   = 130;
-const R_ZODIAC  = 112;
+const R_ZODIAC  = 111;
 const R_TRANSIT = 94;
 const R_DIVIDER = 67;
 const R_NATAL   = 49;   // 18px inside R_DIVIDER, matching transit planets' offset from their ring edge
@@ -1296,7 +1296,7 @@ function makePlanetGlyph(x, y, planet, isNatal, opacity = 1) {
   t.setAttribute('text-anchor', 'middle');
   t.setAttribute('dominant-baseline', 'middle');
   t.setAttribute('fill', planet.color);
-  t.setAttribute('font-size', '13');
+  t.setAttribute('font-size', '14');
   t.setAttribute('font-family', 'serif');
   t.textContent = sym;
   g.appendChild(t);
