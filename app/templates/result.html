@@ -111,7 +111,7 @@ body::before {
 .page {
   position: relative; z-index: 1;
   max-width: 950px; margin: 0 auto;
-  padding: 32px 32px 80px;
+  padding: 32px 32px 24px;
   animation: fadeIn .4s ease;
 }
 
@@ -121,7 +121,7 @@ body::before {
 /* ── Footer ── */
 .site-footer{
   margin-top:80px;
-  padding:24px 0 40px;
+  padding-top:24px;
   border-top:1px solid var(--border-dim);
   font-family:var(--mono);font-size:10px;letter-spacing:.12em;
   color:var(--text-dim);
@@ -132,7 +132,7 @@ body::before {
 
 /* ── Header nav ── */
 nav {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 16px;
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
@@ -152,7 +152,7 @@ nav {
 .nav-link:hover { border-color: var(--border-h); color: var(--gold); }
 .logo {
   font-family: var(--cinzel);
-  font-size: clamp(14px, 1.8vw, 22px);
+  font-size: clamp(16px, 1.8vw, 22px);
   font-weight: 700;
   letter-spacing: -0.5px;
   line-height: 1.05;
@@ -574,12 +574,12 @@ nav {
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
-  .page { padding: 24px 20px 64px; }
+  .page { padding: 24px 16px 32px; }
   .transits-row { grid-template-columns: 1fr; }
-  .wheel-wrap { width: 100%; align-items: center; }
-  #transit-wheel { width: 100%; height: auto; }
+  .wheel-wrap { width: 100%; flex-direction: row; align-items: flex-start; justify-content: center; gap: 24px; }
+  #transit-wheel { width: 250px; height: 250px; }
   .horoscope-title { font-size: 1.8rem; }
-  nav { flex-direction: column; align-items: flex-start; gap: 6px; }
+  nav { flex-direction: row; align-items: center; flex-wrap: nowrap; }
   .playlist-layout { grid-template-columns: 1fr; }
   .controls-col { border-right: none; padding-right: 0; margin-right: 0; }
   .remap-btn { margin-bottom: 28px; }
@@ -594,7 +594,7 @@ nav {
 
   <!-- ── HEADER ── -->
   <nav>
-    <a href="/" class="logo">Harmony of the Spheres</a>
+    <a href="/" class="logo">Harmony of the&nbsp;Spheres</a>
     <a href="/about" class="nav-link">Philosophy</a>
   </nav>
 

@@ -70,7 +70,7 @@ body::before{
 .screen{position:relative;z-index:1;animation:fadeIn .4s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.page-wrap{max-width:950px;margin:0 auto;padding:32px 32px 40px}
+.page-wrap{max-width:950px;margin:0 auto;padding:32px 32px 24px}
 
 /* ── Header ── */
 .page-header{text-align:center;margin-bottom:24px}
@@ -142,7 +142,7 @@ blockquote cite{
 
 /* ── Nav header ── */
 nav{
-  display:flex;justify-content:space-between;align-items:center;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
   margin-bottom:24px;padding-bottom:16px;
   border-bottom:1px solid rgba(212,175,106,0.4);
 }
@@ -155,9 +155,13 @@ nav{
 }
 .nav-link:hover{border-color:var(--border-h);color:var(--gold)}
 .logo{
-  font-family:var(--cinzel);font-size:clamp(14px,1.8vw,22px);
+  font-family:var(--cinzel);font-size:clamp(16px,1.8vw,22px);
   font-weight:700;letter-spacing:-0.5px;line-height:1.05;color:var(--gold);
   text-decoration:none;
+}
+@media(max-width:768px){
+  .page-wrap{padding:24px 16px 32px}
+  .nav-link{white-space:normal;text-align:center;padding:6px 8px}
 }
 </style>
 </head>
@@ -166,7 +170,7 @@ nav{
   <div class="page-wrap">
 
     <nav>
-      <a href="/" class="logo">Harmony of the Spheres</a>
+      <a href="/" class="logo">Harmony of the&nbsp;Spheres</a>
       <a href="https://github.com/meghana-pakala/astral-audio" target="_blank" rel="noopener" class="nav-link">Stars to Sonics</a>
     </nav>
 
