@@ -110,13 +110,25 @@ body::before {
 /* ── Page layout ── */
 .page {
   position: relative; z-index: 1;
-  max-width: 820px; margin: 0 auto;
+  max-width: 950px; margin: 0 auto;
   padding: 32px 32px 80px;
   animation: fadeIn .4s ease;
 }
 
 @keyframes fadeIn  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeUp  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Footer ── */
+.site-footer{
+  margin-top:80px;
+  padding:24px 0 40px;
+  border-top:1px solid var(--border-dim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  color:var(--text-dim);
+  display:flex;justify-content:center;align-items:center;gap:12px;
+}
+.site-footer a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+.site-footer a:hover{color:var(--gold)}
 
 /* ── Header nav ── */
 nav {
@@ -128,7 +140,8 @@ nav {
 .nav-link {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: .12em;
+  letter-spacing: .15em;
+  text-transform: uppercase;
   color: var(--cream);
   text-decoration: none;
   border: 1px solid var(--border);
@@ -149,6 +162,8 @@ nav {
 /* ── Horoscope card ── */
 .horoscope-block {
   margin-bottom: 20px;
+  margin-left: clamp(8px,1.5vw,24px);
+  margin-right: clamp(8px,1.5vw,24px);
   background: rgba(13,17,40,0.75);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -173,6 +188,7 @@ nav {
   font-size: 0.8rem; line-height: 1.9;
   color: rgba(242,232,204,0.80);
   margin-bottom: 24px;
+  padding: 0 clamp(8px,1.5vw,24px);
   text-align: center;
   opacity: 0; animation: fadeUp .7s .1s ease forwards;
 }
@@ -188,7 +204,7 @@ nav {
 }
 .section-divider-title {
   font-family: var(--cinzel);
-  font-size: 16px; font-weight: 400; letter-spacing: 0.18em;
+  font-size: 19px; font-weight: 400; letter-spacing: 0.18em;
   text-transform: uppercase; color: var(--gold);
   white-space: nowrap; flex-shrink: 0;
 }
@@ -196,14 +212,16 @@ nav {
 /* ── Playlist layout: left col (controls) + right col (tracks) ── */
 .playlist-layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 0;
   align-items: start;
+  padding: 0 clamp(8px,1.5vw,24px);
 }
 .controls-col {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-left: 16px;
   padding-right: 28px;
   border-right: 1px solid var(--border);
 }
@@ -320,6 +338,8 @@ nav {
 /* ── Personalize bar (full-width row under section title) ── */
 .personalize-bar {
   margin-bottom: 20px;
+  margin-left: clamp(8px,1.5vw,24px);
+  margin-right: clamp(8px,1.5vw,24px);
   padding: 10px 10px;
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -354,7 +374,7 @@ nav {
 
 /* ── Playlist block ── */
 .playlist-block {
-  margin-bottom: 44px;
+  margin-bottom: 50px;
   opacity: 0; animation: fadeUp .6s .2s ease forwards;
 }
 
@@ -460,11 +480,12 @@ nav {
 
 .transits-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  padding: 0 clamp(8px,1.5vw,24px);
+  grid-template-columns: minmax(0, 550px) 260px;
   gap: 28px; align-items: center;
 }
 .aspects-list {
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 16px;
   padding-top: 4px;
 }
 .aspect-pill {
@@ -574,7 +595,7 @@ nav {
   <!-- ── HEADER ── -->
   <nav>
     <a href="/" class="logo">Harmony of the Spheres</a>
-    <a href="https://github.com/meghana-pakala/astral_audio" target="_blank" rel="noopener" class="nav-link">Stars &amp; Stats</a>
+    <a href="/about" class="nav-link">Philosophy</a>
   </nav>
 
   <!-- ── HOROSCOPE ── -->
@@ -650,6 +671,14 @@ nav {
       </div>
     </div>
   </div>
+
+  <footer class="site-footer">
+    <span>2026</span>
+    <span>·</span>
+    <span>meghana pakala</span>
+    <span>·</span>
+    <a href="https://github.com/meghana-pakala/astral_audio" target="_blank" rel="noopener">github</a>
+  </footer>
 
 </div><!-- end .page -->
 

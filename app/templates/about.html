@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony of the Spheres — Philosophy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:      #080A23;
+  --navy-mid:  #111830;
+  --navy-card: #141c35;
+  --gold:      #d4af6a;
+  --gold-dim:  #a88840;
+  --gold-pale: #f0dfa0;
+  --cream:     #f2e8cc;
+  --border-dim: rgba(212,175,106,0.1);
+  --border:    rgba(212,175,106,0.18);
+  --border-mid: rgba(212,175,106,0.35);
+  --border-h:  rgba(212,175,106,0.45);
+  --text-dim:  rgba(242,232,204,0.5);
+  --cinzel:    'Cinzel Decorative', Georgia, serif;
+  --mono:      'Space Mono', monospace;
+  --serif:     'Cormorant Garamond', Georgia, serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#080A23;font-family:var(--serif);color:var(--cream);min-height:100vh;overflow-x:hidden}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-pale)}
+
+/* ── Starfield ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 63.8% 3.0%,rgba(255,255,255,0.64) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 73.4% 67.5%,rgba(255,255,255,0.58) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 42.3% 3.4%,rgba(255,255,255,0.75) 0%,transparent 100%),
+    radial-gradient(2px 2px at 3.1% 20.2%,rgba(255,255,255,0.77) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 22.3% 58.8%,rgba(255,255,255,0.55) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 80.3% 69.6%,rgba(255,255,255,0.61) 0%,transparent 100%),
+    radial-gradient(1px 1px at 95.3% 33.8%,rgba(255,255,255,0.59) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 84.4% 60.3%,rgba(255,255,255,0.84) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 53.6% 96.8%,rgba(255,255,255,0.77) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 70.3% 5.0%,rgba(255,255,255,0.67) 0%,transparent 100%),
+    radial-gradient(1px 1px at 8.4% 23.5%,rgba(255,255,255,0.66) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 63.4% 36.6%,rgba(255,255,255,0.63) 0%,transparent 100%),
+    radial-gradient(2px 2px at 26.9% 93.2%,rgba(255,255,255,0.79) 0%,transparent 100%),
+    radial-gradient(1px 1px at 17.4% 72.7%,rgba(255,255,255,0.7) 0%,transparent 100%),
+    radial-gradient(2px 2px at 98.5% 63.9%,rgba(255,255,255,0.82) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 31.7% 27.0%,rgba(255,255,255,0.93) 0%,transparent 100%),
+    radial-gradient(2px 2px at 87.3% 31.7%,rgba(255,255,255,0.71) 0%,transparent 100%),
+    radial-gradient(2px 2px at 56.1% 26.5%,rgba(255,255,255,0.91) 0%,transparent 100%),
+    radial-gradient(3px 3px at 40.0% 22.2%,rgba(255,255,255,0.75) 0%,transparent 100%),
+    radial-gradient(1px 1px at 78.9% 42.3%,rgba(255,255,255,0.7) 0%,transparent 100%),
+    radial-gradient(3px 3px at 99.1% 52.9%,rgba(255,255,255,0.89) 0%,transparent 100%),
+    radial-gradient(2px 2px at 1.6% 71.9%,rgba(255,255,255,0.76) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 45.4% 94.9%,rgba(255,255,255,0.66) 0%,transparent 100%),
+    radial-gradient(2.5px 2.5px at 50.1% 18.2%,rgba(255,255,255,0.9) 0%,transparent 100%),
+    radial-gradient(3px 3px at 45.5% 42.4%,rgba(255,255,255,0.95) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 38.0% 98.0%,rgba(255,255,255,0.86) 0%,transparent 100%),
+    radial-gradient(2px 2px at 83.0% 70.2%,rgba(255,255,255,0.94) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 15.2% 13.1%,rgba(255,255,255,0.91) 0%,transparent 100%),
+    radial-gradient(3px 3px at 64.0% 40.1%,rgba(255,255,255,0.76) 0%,transparent 100%),
+    radial-gradient(3px 3px at 33.0% 86.1%,rgba(255,255,255,0.66) 0%,transparent 100%);
+}
+
+/* ── Layout ── */
+.screen{position:relative;z-index:1;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.page-wrap{max-width:950px;margin:0 auto;padding:32px 32px 40px}
+
+/* ── Header ── */
+.page-header{text-align:center;margin-bottom:24px}
+.eyebrow{
+  font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold-dim);margin-bottom:24px;display:block;
+}
+.page-title{
+  font-family:var(--cinzel);color:var(--gold);
+  font-size:clamp(22px,3vw,42px);font-weight:700;line-height:1.1;letter-spacing:-0.5px;
+  margin-bottom:20px;
+}
+.title-rule{
+  width:60px;height:1px;background:var(--border-mid);margin:0 auto;
+}
+
+/* ── Content inset ── */
+.content-inset{padding:0 clamp(8px,1.5vw,24px)}
+
+/* ── Body text ── */
+.section{margin-bottom:40px}
+
+.section-heading{
+  display:flex;align-items:center;gap:18px;
+  font-family:var(--cinzel);color:var(--gold);
+  font-size:clamp(16px,1.7vw,22px);font-weight:700;letter-spacing:.04em;
+  white-space:nowrap;margin-bottom:24px;
+}
+.section-heading::before,.section-heading::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+.body-text{
+  font-family:var(--serif);font-size:clamp(16px,1.6vw,20px);
+  font-weight:300;line-height:1.8;color:var(--cream);
+}
+.body-text + .body-text{margin-top:1.2em}
+
+/* ── Blockquote ── */
+blockquote{
+  margin:24px auto;
+  max-width:90%;
+  padding:14px 28px 20px;
+  border-left:2px solid var(--gold-dim);
+  background:rgba(212,175,106,0.04);
+  border-radius:0 4px 4px 0;
+}
+blockquote p{
+  font-family:var(--mono);font-size:clamp(12px,1.1vw,15px);
+  font-style:italic;font-weight:300;line-height:1.85;
+  color:var(--gold);
+}
+blockquote cite{
+  display:block;margin-top:0;text-align:right;padding-right:8px;
+  font-family:var(--mono);font-size:clamp(10px,0.95vw,13px);letter-spacing:.08em;
+  color:var(--text-dim);font-style:normal;
+}
+
+/* ── Footer ── */
+.site-footer{
+  margin-top:80px;padding-top:24px;
+  border-top:1px solid var(--border-dim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  color:var(--text-dim);
+  display:flex;justify-content:center;align-items:center;gap:12px;
+}
+.site-footer a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+.site-footer a:hover{color:var(--gold)}
+
+/* ── Nav header ── */
+nav{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:24px;padding-bottom:16px;
+  border-bottom:1px solid rgba(212,175,106,0.4);
+}
+.nav-link{
+  font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--cream);text-decoration:none;
+  border:1px solid var(--border);border-radius:4px;
+  padding:6px 12px;transition:border-color .2s,color .2s;
+}
+.nav-link:hover{border-color:var(--border-h);color:var(--gold)}
+.logo{
+  font-family:var(--cinzel);font-size:clamp(14px,1.8vw,22px);
+  font-weight:700;letter-spacing:-0.5px;line-height:1.05;color:var(--gold);
+  text-decoration:none;
+}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="page-wrap">
+
+    <nav>
+      <a href="/" class="logo">Harmony of the Spheres</a>
+      <a href="https://github.com/meghana-pakala/astral_audio" target="_blank" rel="noopener" class="nav-link">Stars to Sonics</a>
+    </nav>
+
+    <header class="page-header">
+      <span class="eyebrow">Philosophy</span>
+      <h1 class="page-title">The Astro-Logic</h1>
+      <div class="title-rule"></div>
+    </header>
+
+    <section class="section">
+      <div class="content-inset">
+        <p class="body-text">Music recommendation today is a backwards-looking system. Streaming services know your listening history and optimize for your past self, which makes them bad at the one thing you actually want from music: meeting you where you are right now.</p>
+        <p class="body-text">The missing variable is a predictive measure of emotional state. Music serves as a medium for sharing the human experience — astrology evolved as a system for mapping that experience to the cosmos.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Musica Universalis</h2>
+      <div class="content-inset">
+        <p class="body-text">Pythagoras proposed that the Sun, Moon and planets each emit a unique hum based on their orbital motion — that the universe has a celestial sound, imperceptible but omnipresent.</p>
+
+        <blockquote>
+          <p>The sound is in our ears from the very moment of birth and is thus indistinguishable from its contrary silence. What happens to men, then, is just what happens to coppersmiths, who are so accustomed to the noise of the smithy that it makes no difference to them.</p>
+          <cite>— Aristotle, <em>De Caelo</em></cite>
+        </blockquote>
+
+        <p class="body-text">The concept of <em>musica universalis</em> — harmony of the spheres — holds that mathematical relationships express "tones" of energy manifesting in angles, shapes, and sounds, all connected within a pattern of proportion.</p>
+        <p class="body-text">Johannes Kepler formalized this in <em>Harmonices Mundi</em> (1619), demonstrating that the same ratios governing musical consonance define the geometric relationships between planetary positions. A trine at 120° is a perfect fifth. A square at 90° sits at the boundary between consonance and dissonance. The geometry of the sky and the structure of sound are bridged by the same underlying mathematics.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">From Stars to Sonics</h2>
+      <div class="content-inset">
+        <p class="body-text">Astrology operates in the framework of correlation not causation — the same bet that every predictive model makes. We are each a repository of memories and experiences with no dashboard and no readout. Amidst the static of the universe, we are challenged to discover patterns and chart our own paths.</p>
+
+        <blockquote>
+          <p>We are born at a given moment, in a given place and, like vintage years of wine, we have the qualities of the year and of the season of which we are born. Astrology does not lay claim to anything more.</p>
+          <cite>— Carl Jung</cite>
+        </blockquote>
+
+        <p class="body-text">The ancient philosophers posited that there exists a cosmic energy that affects us all differently depending where in the universe the planets were at the moment we entered the material world. Astral Audio leverages the natural harmonic ratios to map your personal astrological transits and find the songs that match your sky today.</p>
+        <p class="body-text closing">Mapping stars to sonics is not a science, but perhaps when the silence feels louder than usual, the solution lies in tuning your own cosmic harmony.</p>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <span>2026</span>
+      <span class="footer-divider">·</span>
+      <span>meghana pakala</span>
+      <span class="footer-divider">·</span>
+      <a href="https://github.com/meghana-pakala/astral_audio" target="_blank" rel="noopener">github</a>
+    </footer>
+
+  </div>
+</div>
+</body>
+</html>

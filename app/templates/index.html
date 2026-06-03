@@ -28,6 +28,18 @@
 html{scroll-behavior:smooth}
 body{background:#080A23;font-family:var(--mono);color:var(--cream);min-height:100vh;overflow-x:hidden}
 a{color:var(--gold);text-decoration:none}
+.philosophy-link{transition:color .2s}
+.site-footer{
+  margin:0 auto;max-width:950px;
+  padding:24px 32px 40px;
+  border-top:1px solid var(--border-dim);
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  color:var(--text-dim);
+  display:flex;justify-content:center;align-items:center;gap:12px;
+}
+.site-footer a{color:var(--text-dim);text-decoration:none;transition:color .2s}
+.site-footer a:hover{color:var(--gold)}
+.philosophy-link:hover{color:var(--cream)!important;text-decoration-color:rgba(242,232,204,.4)!important}
 
 /* ── Starfield ── */
 body::before{
@@ -119,7 +131,7 @@ body::before{
 }
 
 /* ── Form section wrapper ── */
-.form-section{padding:56px 4vw 80px;max-width:960px;margin:0 auto}
+.form-section{padding:56px 4vw 80px;max-width:950px;margin:0 auto}
 
 /* ── Form card ── */
 .form-card{
@@ -294,6 +306,7 @@ background-image:
     box-sizing:border-box !important;
     grid-column:1 / -1 !important;
   }
+  .cinzel-title br{ display:none; }
 }
 </style>
 {% if maps_key %}
@@ -512,19 +525,15 @@ background-image:
 
       <div style="width:clamp(80px,8vw,120px);height:1px;background:var(--border-mid);"></div>
 
-      <div style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.9;color:var(--text-dim);max-width:38vw;">
-        <p style="margin:0 0 1.2em 0;">
-          <em style="color:var(--gold);font-style:italic;">Musica Universalis</em> — Harmony of the Spheres — is the ancient idea that <span style="color:var(--cream);opacity:0.9;">planetary motion has a frequency.</span>
-        </p>
+      <div style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.9;color:var(--text-dim);max-width:100%;">
         <p style="margin:0;">
-          Music theory defines <span style="color:var(--cream);opacity:0.9;"> natural harmonic ratios</span>, giving us a mathematical bridge between the geometry of the solar system and the structure of sound.
-        </p>
+          <em style="color:var(--gold);font-style:italic;">Musica Universalis</em> — Harmony of the Spheres — is the ancient idea that <span style="color:var(--gold);">planetary motion has a frequency</span> and that <span style="color:var(--gold);">natural harmonic ratios</span> connect the geometry of the solar system to the structure of sound.<br><a href="/about" class="philosophy-link" style="color:var(--gold);text-decoration:underline;text-decoration-color:rgba(212,175,106,.3);font-style:italic;">Read the philosophy.</a></p>
       </div>
 
       <div style="width:clamp(80px,8vw,120px);height:1px;background:var(--border-mid);"></div>
 
-      <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.7;margin:0;max-width:38vw;">
-        <span style="color:var(--cream);">Enter your details below</span><span style="color:var(--text-dim);"> to generate your astrological chart and derive its audio features.</span> <span style="color:var(--gold);font-style:italic;">Your songs, mapped to the stars.</span>
+      <p style="font-family:var(--mono);font-size:clamp(13px,1.1vw,14px);line-height:1.7;margin:0;max-width:100%;color:var(--cream);">
+        Enter your details below to generate your astrological chart and derive its sonic structure. <span style="color:var(--gold);font-style:italic;">Your songs, mapped to the stars.</span>
       </p>
 
     </div>
@@ -1199,5 +1208,12 @@ document.querySelectorAll('.seg-picker').forEach(function(p){
 function syncDate(){var m=dateState.month,d=dateState.day,y=dateState.year;if(m&&d&&y)document.getElementById('birth_date').value=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
 function syncTime(){var h=timeState.hour,m=timeState.min,a=timeState.ampm;if(h!==null&&m!==null){var h24=h;if(a==='AM'&&h===12)h24=0;if(a==='PM'&&h!==12)h24=h+12;document.getElementById('birth_time').value=String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');}}
 </script>
+<footer class="site-footer">
+  <span>2026</span>
+  <span class="footer-divider">·</span>
+  <span>meghana pakala</span>
+  <span class="footer-divider">·</span>
+  <a href="https://github.com/meghana-pakala/astral_audio" target="_blank" rel="noopener">github</a>
+</footer>
 </body>
 </html>
