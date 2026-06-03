@@ -63,6 +63,8 @@ Once an aspect is identified, its moiety determines how strongly it influences t
 
 A Venus trine Saturn at 0.06° carries near-full weight. The same aspect at 3° carries about 10%. Influence fades continuously rather than cutting off at a hard threshold.
 
+---
+
 ## Mapping Stars to Sonics
 
 Each planet is encoded as a profile across five continuous audio features plus mode:
@@ -85,16 +87,11 @@ Each aspect's profile is the average of the two planet profiles, reflecting that
 ### Personal Model
 
 The baseline vector captures universal astrological logic but knows nothing about individual taste. Uploading an [Exportify](https://exportify.net) CSV of Liked Songs trains a personal Lasso regression model on top of it.
-
-**Training Signal:** Each Liked Song has an `added_at` timestamp - the day the user saved it, treated as a weak proxy for mood. The assumption is that a song saved on a given day reflects what the user wanted to hear that day.
-
-**Feature Engineering:** For each save date, active transit aspects are computed and encoded as a sparse vector - one slot per possible natal/aspect/transit planet combination (10 planets × 5 aspect types × 10 planets = 500 features), valued by signal strength. Most slots are 0 on any given day.
-
-**Target:** The deviation of each song's audio features from the user's personal mean. Training on deltas anchors the model to the user's baseline taste range - it only needs to explain mood shifts, not reconstruct absolute preferences from scratch.
-
-**Model:** One `LassoCV` per audio feature. Lasso suits this problem well: the feature space is sparse, the dataset is small (typically a few hundred to few thousand tracks), and the L1 penalty automatically zeroes out aspect combinations that aren't predictive for that user.
-
-**Blend:** The model prediction is combined with the baseline vector at 30% model / 70% baseline. This is intentionally conservative - save date is a noisy signal, and the blend lets the model nudge results toward personal taste without overriding the astrological logic.
+- **Training Signal:** Each Liked Song has an `added_at` timestamp - the day the user saved it, treated as a weak proxy for mood. The assumption is that a song saved on a given day reflects what the user wanted to hear that day.
+- **Feature Engineering:** For each save date, active transit aspects are computed and encoded as a sparse vector - one slot per possible natal/aspect/transit planet combination (10 planets × 5 aspect types × 10 planets = 500 features), valued by signal strength. Most slots are 0 on any given day.
+- **Target:** The deviation of each song's audio features from the user's personal mean. Training on deltas anchors the model to the user's baseline taste range - it only needs to explain mood shifts, not reconstruct absolute preferences from scratch.
+- **Model:** One `LassoCV` per audio feature. Lasso suits this problem well: the feature space is sparse, the dataset is small (typically a few hundred to few thousand tracks), and the L1 penalty automatically zeroes out aspect combinations that aren't predictive for that user.
+- **Blend:** The model prediction is combined with the baseline vector at 30% model / 70% baseline. This is intentionally conservative - save date is a noisy signal, and the blend lets the model nudge results toward personal taste without overriding the astrological logic.
 
 ### Scoring & Tuning
 
@@ -104,7 +101,7 @@ The app displays the target vector as a radar chart and allows the user to refin
 
 ---
 
-## Limitations & Future Directions
+## Limitations & Future Direction
 
 **Planet-to-Audio Mappings:** The planetary profiles are hand-coded from astrological interpretation, not learned from data. The most impactful next step would be replacing them with data-driven weights. The user feedback loop is already built to collect the necessary signal — with account creation and enough sessions, aggregated ratings could be used to fit the planet-to-audio-feature weights directly. If ratings cluster around specific aspect configurations, the heuristic profiles get replaced by learned ones, turning the system from interpretive to empirical.
 
@@ -140,7 +137,7 @@ astral_audio/
 │   ├── model.py              # Lasso model training, prediction
 │   ├── score.py              # target vector construction, track scoring
 │   └── backfill_genres.py    # utility: genre metadata enrichment
-├── pipeline.ipynb
+├── astral_audio.ipynb
 ├── music_library.csv
 └── README.md
 ```
