@@ -182,6 +182,11 @@ def index():
                            pool_count=_pool_count())
 
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
 @app.route('/start', methods=['POST'])
 def start():
     """Validate form, save data to session, redirect to loading page."""
