@@ -30,7 +30,6 @@ Astral Audio maps your personal astrological transits to audio feature targets a
 6. **Tune & Rescore** (in-app)
    - Adjust the target vector directly with audio feature sliders
    - Like/dislike individual tracks to shift the vector toward/away from that song's profile
-   - Rescores in-session without rerunning the full pipeline
 
 Run the full pipeline via [`astral_audio.ipynb`](astral_audio.ipynb)
 
