@@ -114,7 +114,7 @@ body::before {
 /* Loading text */
 .load-label {
   position:absolute;
-  bottom:7%;
+  bottom:5%;
   left:50%;
   transform:translateX(-50%);
   display:flex; flex-direction:column; align-items:center; gap:10px;
@@ -143,6 +143,12 @@ body::before {
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
 
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@media (max-width: 600px) {
+  .natal-chart-wrap { width: 92vw; height: 92vw; }
+  .load-text { font-size: 15px; }
+  .load-count { font-size: 9px; }
+}
 </style>
 </head>
 <body>
