@@ -575,9 +575,11 @@ nav {
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .page { padding: 24px 16px 32px; }
-  .transits-row { grid-template-columns: 1fr; }
-  .wheel-wrap { width: 100%; flex-direction: row; align-items: flex-start; justify-content: center; gap: 24px; }
-  #transit-wheel { width: 250px; height: 250px; }
+  .transits-row { grid-template-columns: 1fr; padding: 0; }
+  .aspects-list { min-width: 0; width: 100%; }
+  .aspect-pill { min-width: 0; overflow: hidden; }
+  .wheel-wrap { width: 100%; flex-direction: column; align-items: center; gap: 16px; }
+  #transit-wheel { width: 100%; max-width: 300px; height: auto; }
   .horoscope-title { font-size: 1.8rem; }
   nav { flex-direction: row; align-items: center; flex-wrap: nowrap; }
   .playlist-layout { grid-template-columns: 1fr; }
